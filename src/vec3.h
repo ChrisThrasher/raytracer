@@ -163,3 +163,11 @@ auto reflect(const vec3& v, const vec3& n)
 {
     return v - 2 * dot(v, n) * n;
 }
+
+auto refract(const vec3& uv, const vec3& n, const double etai_over_etat)
+{
+    const auto cos_theta = dot(-uv, n);
+    auto r_out_parallel = etai_over_etat * (uv + cos_theta * n);
+    auto r_out_perp = -std::sqrt(1.0 - r_out_parallel.length2()) * n;
+    return r_out_parallel + r_out_perp;
+}

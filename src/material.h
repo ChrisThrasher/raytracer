@@ -53,3 +53,33 @@ public:
         return dot(scattered.direction(), rec.normal) > 0;
     }
 };
+
+class dielectric final : public material
+{
+    double ref_idx{0.0};
+
+public:
+    dielectric(const double ri) : ref_idx(ri) {}
+
+    virtual bool scatter(const ray& r_in,
+                         const hit_record& rec,
+                         color& attenuation,
+                         ray& scattered) const
+    {
+        attenuation = color(1.0, 1.0, 1.0);
+        double etai_over_etat = 0;
+        if (rec.front_face) // TODO use ternary here
+        {
+            etai_over_etat = 1.0 / ref_idx;
+        }
+        else
+        {
+            etai_over_etat = ref_idx;
+        }
+
+        auto unit_direction = unit_vector(r_in.direction());
+        auto refracted = refract(unit_direction, rec.normal, etai_over_etat);
+        scattered = ray(rec.p, refracted);
+        return true;
+    }
+};

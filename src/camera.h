@@ -10,10 +10,10 @@ class camera
 public:
     camera()
     {
-        auto aspect_ratio = 16.0 / 9.0;
-        auto viewport_height = 2.0;
-        auto viewport_width = aspect_ratio * viewport_height;
-        auto focal_length = 1.0;
+        constexpr auto aspect_ratio = 16.0 / 9.0;
+        constexpr auto viewport_height = 2.0;
+        constexpr auto viewport_width = aspect_ratio * viewport_height;
+        constexpr auto focal_length = 1.0;
 
         origin = point3(0, 0, 0);
         horizontal = vec3(viewport_width, 0.0, 0.0);

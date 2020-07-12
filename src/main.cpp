@@ -23,10 +23,10 @@ auto ray_color(const ray& r, const hittable& world)
 
 int main()
 {
-    const auto aspect_ratio = 16.0 / 9.0;
-    const auto image_width = 384;
-    const auto image_height = static_cast<int>(image_width / aspect_ratio);
-    const auto samples_per_pixel = 100;
+    constexpr auto aspect_ratio = 16.0 / 9.0;
+    constexpr auto image_width = 384;
+    constexpr auto image_height = static_cast<int>(image_width / aspect_ratio);
+    constexpr auto samples_per_pixel = 100;
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 

@@ -9,6 +9,7 @@ class vec3
     std::array<double, 3> e{};
 
 public:
+    vec3() = default;
     vec3(const double e1, const double e2, const double e3)
         : e{e1, e2, e3}
     {}

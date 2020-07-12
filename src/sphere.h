@@ -39,7 +39,8 @@ bool sphere::hit(const ray& r,
         {
             rec.t = temp;
             rec.p = r.at(rec.t);
-            rec.normal = (rec.p - center) / radius;
+            const auto outward_normal = (rec.p - center) / radius;
+            rec.set_face_normal(r, outward_normal);
             return true;
         }
         temp = (-half_b + root) / a;
@@ -47,7 +48,8 @@ bool sphere::hit(const ray& r,
         {
             rec.t = temp;
             rec.p = r.at(rec.t);
-            rec.normal = (rec.p - center) / radius;
+            const auto outward_normal = (rec.p - center) / radius;
+            rec.set_face_normal(r, outward_normal);
             return true;
         }
     }

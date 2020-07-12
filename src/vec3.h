@@ -72,6 +72,11 @@ inline auto operator-(const vec3& lhs, const vec3& rhs)
     return vec3(lhs.x() - rhs.x(), lhs.y() - rhs.y(), lhs.z() - rhs.z());
 }
 
+inline auto operator-(const vec3& v)
+{
+    return vec3(-v.x(), -v.y(), -v.z());
+}
+
 inline auto operator*(const vec3& lhs, const vec3& rhs)
 {
     return vec3(lhs.x() * rhs.x(), lhs.y() * rhs.y(), lhs.z() * rhs.z());

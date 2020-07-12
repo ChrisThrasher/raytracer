@@ -25,12 +25,12 @@ auto ray_color(const ray& r)
 
 int main()
 {
-    const auto image_width = 256;
-    const auto image_height = 256;
+    const auto aspect_ratio = 16.0 / 9.0;
+    const auto image_width = 384;
+    const auto image_height = static_cast<int>(image_width / aspect_ratio);
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
-    const auto aspect_ratio = 16.0 / 9.0;
     const auto viewport_height = 2.0;
     const auto viewport_width = aspect_ratio * viewport_height;
     const auto focal_length = 1.0;

@@ -9,12 +9,13 @@
 
 #include <iostream>
 
-constexpr auto ray_color(const ray& r, const hittable& world)
+constexpr auto ray_color(const ray& r, const hittable& world) -> color
 {
     auto rec = hit_record();
     if (world.hit(r, 0, infinity, rec))
     {
-        return 0.5 * (rec.normal + color(1, 1, 1));
+        auto target = rec.p + rec.normal + random_in_unit_sphere();
+        return 0.5 * ray_color(ray(rec.p, target - rec.p), world);
     }
     const auto unit_direction = unit_vector(r.direction());
     const auto t = 0.5 * (unit_direction.y() + 1.0);

@@ -17,3 +17,8 @@ inline auto random_double()
     static auto generator = std::mt19937();
     return distribution(generator);
 }
+
+inline auto random_double(const double min, const double max)
+{
+    return std::clamp(random_double(), min, max);
+}

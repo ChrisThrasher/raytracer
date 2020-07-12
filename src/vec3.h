@@ -52,6 +52,18 @@ public:
     {
         return std::sqrt(length2());
     }
+
+    inline static auto random()
+    {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    inline static auto random(const double min, const double max)
+    {
+        return vec3(random_double(min, max),
+                    random_double(min, max),
+                    random_double(min, max));
+    }
 };
 
 using point3 = vec3;
@@ -114,4 +126,14 @@ constexpr inline auto cross(const vec3& lhs, const vec3& rhs)
 inline auto unit_vector(const vec3& v)
 {
     return v / v.length();
+}
+
+auto random_in_unit_sphere()
+{
+    while (true)
+    {
+        const auto p = vec3::random(-1, 1);
+        if (p.length2() >= 1) continue;
+        return p;
+    }
 }

@@ -4,8 +4,20 @@
 
 #include <iostream>
 
+bool hit_sphere(const point3& center, const double radius, const ray& r)
+{
+    const auto oc = r.origin() - center;
+    const auto a = dot(r.direction(), r.direction());
+    const auto b = 2.0 * dot(oc, r.direction());
+    const auto c = dot(oc, oc) - radius * radius;
+    const auto discriminant = b * b - 4 * a * c;
+    return discriminant > 0;
+}
+
 auto ray_color(const ray& r)
 {
+    if (hit_sphere(point3(0, 0, -1), 0.5, r))
+        return color(1, 0, 0);
     const auto unit_direction = unit_vector(r.direction());
     const auto t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);

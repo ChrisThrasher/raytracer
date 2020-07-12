@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ray.h"
+#include "hittable.h"
+
 class material
 {
 public:
@@ -9,14 +12,14 @@ public:
                          ray& scattered) const = 0;
 };
 
-class lambertian : public material
+class lambertian final : public material
 {
     color albedo{};
 
 public:
     lambertian(const color& a) : albedo(a) {}
 
-    virtual bool scatter(const ray& r_in,
+    virtual bool scatter(const ray&,
                          const hit_record& rec,
                          color& attenuation,
                          ray& scattered) const
@@ -28,7 +31,7 @@ public:
     }
 };
 
-class metal : public material
+class metal final : public material
 {
     color albedo{};
 
@@ -40,7 +43,7 @@ public:
                          color& attenuation,
                          ray& scattered) const
     {
-        auto reflected = reflect(unit_vector(r_in.direction()), normal);
+        auto reflected = reflect(unit_vector(r_in.direction()), rec.normal);
         scattered = ray(rec.p, reflected);
         attenuation = albedo;
         return dot(scattered.direction(), rec.normal) > 0;

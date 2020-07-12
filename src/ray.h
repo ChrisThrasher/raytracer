@@ -8,6 +8,7 @@ class ray
     vec3 dir{};
 
 public:
+    constexpr ray() = default;
     constexpr ray(const point3& origin, const vec3& direction)
         : orig(origin), dir(direction)
     {}

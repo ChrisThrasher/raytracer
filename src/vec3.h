@@ -161,5 +161,5 @@ auto random_in_hemisphere(const vec3& normal)
 
 auto reflect(const vec3& v, const vec3& n)
 {
-    reeturn v - 2 * dot(v, n) * n;
+    return v - 2 * dot(v, n) * n;
 }

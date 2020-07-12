@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ray.h"
-#include "material.h"
+
+class material;
 
 struct hit_record
 {

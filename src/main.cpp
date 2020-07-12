@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-constexpr auto ray_color(const ray& r, const hittable& world, const int depth)
+auto ray_color(const ray& r, const hittable& world, const int depth)
     -> color
 {
     if (depth <= 0)
@@ -21,7 +21,7 @@ constexpr auto ray_color(const ray& r, const hittable& world, const int depth)
     {
         auto scattered = ray();
         auto attenuation = color();
-        if (rec.map_ptr->scatter(r, rec, attenuation, scattered))
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
             return attenuation * ray_color(scattered, world, depth - 1);
         return color(0, 0, 0);
     }
@@ -41,8 +41,14 @@ int main()
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     auto world = hittable_list();
-    world.add(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
-    world.add(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
+    world.add(std::make_shared<sphere>(
+        point3(0, 0, -1), 0.5, std::make_shared<lambertian>(color(0.7, 0.3, 0.3))));
+    world.add(std::make_shared<sphere>(
+        point3(0, -100.5, -1), 100, std::make_shared<lambertian>(color(0.8, 0.8, 0.0))));
+    world.add(std::make_shared<sphere>(
+        point3(1, 0, -1), 0.5, std::make_shared<metal>(color(0.8, 0.6, 0.2))));
+    world.add(std::make_shared<sphere>(
+        point3(-1, 0, -1), 0.5, std::make_shared<metal>(color(0.8, 0.8, 0.8))));
 
     constexpr auto cam = camera();
 

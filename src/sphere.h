@@ -10,7 +10,7 @@ class sphere final : public hittable
     std::shared_ptr<material> mat_ptr{};
 
 public:
-    sphere(const point3 cen, const double r, const std::shared_ptr<material> m)
+    sphere(const point3 cen, const double r, const std::shared_ptr<material>& m)
         : center(cen)
         , radius(r)
         , mat_ptr(m)

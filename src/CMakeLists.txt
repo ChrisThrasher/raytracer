@@ -10,6 +10,10 @@ add_compile_options(
     -Wall
     -Wextra
     -Wpedantic
+    -Wshadow
+    -Wconversion
+    -Wsign-conversion
+    -Wold-style-cast
 )
 
 add_executable(main main.cpp)

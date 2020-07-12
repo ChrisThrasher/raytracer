@@ -128,10 +128,33 @@ inline auto unit_vector(const vec3& v)
     return v / v.length();
 }
 
+auto random_in_unit_sphere()
+{
+    while (true)
+    {
+        const auto p = vec3::random(-1, 1);
+        if (p.length2() >= 1) continue;
+        return p;
+    }
+}
+
 auto random_unit_vector()
 {
     auto a = random_double(0, 2 * pi);
     auto z = random_double(-1, 1);
     auto r = std::sqrt(1 - z * z);
     return vec3(r * std::cos(a), r * std::sin(a), z);
+}
+
+auto random_in_hemisphere(const vec3& normal)
+{
+    auto in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0)
+    {
+        return in_unit_sphere;
+    }
+    else
+    {
+        return -in_unit_sphere;
+    }
 }

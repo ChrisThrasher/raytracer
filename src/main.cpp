@@ -18,7 +18,7 @@ constexpr auto ray_color(const ray& r, const hittable& world, const int depth)
     auto rec = hit_record();
     if (world.hit(r, 0.001, infinity, rec))
     {
-        auto target = rec.p + rec.normal + random_unit_vector();
+        auto target = rec.p + random_in_hemisphere(rec.normal);
         return 0.5 * ray_color(ray(rec.p, target - rec.p), world, depth - 1);
     }
     const auto unit_direction = unit_vector(r.direction());

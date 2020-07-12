@@ -7,17 +7,17 @@
 auto hit_sphere(const point3& center, const double radius, const ray& r)
 {
     const auto oc = r.origin() - center;
-    const auto a = dot(r.direction(), r.direction());
-    const auto b = 2.0 * dot(oc, r.direction());
-    const auto c = dot(oc, oc) - radius * radius;
-    const auto discriminant = b * b - 4 * a * c;
+    const auto a = r.direction().length2();
+    const auto half_b = dot(oc, r.direction());
+    const auto c = oc.length2() - radius * radius;
+    const auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0)
     {
         return -1.0;
     }
     else
     {
-        return (-b - std::sqrt(discriminant)) / (2.0 * a);
+        return (-half_b - std::sqrt(discriminant)) / a;
     }
 }
 

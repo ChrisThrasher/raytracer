@@ -21,6 +21,4 @@ int main()
             write_color(std::cout, pixel_color);
         }
     }
-
-    return 0;
 }

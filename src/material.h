@@ -67,17 +67,17 @@ public:
                          ray& scattered) const
     {
         attenuation = color(1.0, 1.0, 1.0);
-        double etai_over_etat = 0;
-        if (rec.front_face) // TODO use ternary here
+        double etai_over_etat = (rec.front_face) ? (1.0 / ref_idx) : ref_idx;
+        auto unit_direction = unit_vector(r_in.direction());
+        double cos_theta = std::fmin(dot(-unit_direction, rec.normal), 1.0);
+        double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
+        if (etai_over_etat * sin_theta > 1.0)
         {
-            etai_over_etat = 1.0 / ref_idx;
-        }
-        else
-        {
-            etai_over_etat = ref_idx;
+            auto reflected = reflect(unit_direction, rec.normal);
+            scattered = ray(rec.p, reflected);
+            return true;
         }
 
-        auto unit_direction = unit_vector(r_in.direction());
         auto refracted = refract(unit_direction, rec.normal, etai_over_etat);
         scattered = ray(rec.p, refracted);
         return true;

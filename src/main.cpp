@@ -6,6 +6,7 @@
 #include "hittable_list.h"
 #include "sphere.h"
 #include "camera.h"
+#include "material.h"
 
 #include <iostream>
 
@@ -18,8 +19,11 @@ constexpr auto ray_color(const ray& r, const hittable& world, const int depth)
     auto rec = hit_record();
     if (world.hit(r, 0.001, infinity, rec))
     {
-        auto target = rec.p + random_in_hemisphere(rec.normal);
-        return 0.5 * ray_color(ray(rec.p, target - rec.p), world, depth - 1);
+        auto scattered = ray();
+        auto attenuation = color();
+        if (rec.map_ptr->scatter(r, rec, attenuation, scattered))
+            return attenuation * ray_color(scattered, world, depth - 1);
+        return color(0, 0, 0);
     }
     const auto unit_direction = unit_vector(r.direction());
     const auto t = 0.5 * (unit_direction.y() + 1.0);

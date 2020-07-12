@@ -5,96 +5,96 @@
 
 #include <cmath>
 
-auto schlick(const double cosine, const double ref_idx)
+auto Schlick(const double cosine, const double ref_idx)
 {
     auto r0 = (1 - ref_idx) / (1 + ref_idx);
     r0 = r0 * r0;
     return r0 + (1 - r0) * std::pow((1 - cosine), 5);
 }
 
-class material
+class Material
 {
 public:
-    virtual bool scatter(const ray& r_in,
-                         const hit_record& rec,
+    virtual bool Scatter(const Ray& r_in,
+                         const HitRecord& rec,
                          color& attenuation,
-                         ray& scattered) const = 0;
+                         Ray& scattered) const = 0;
 };
 
-class lambertian final : public material
+class Lambertian final : public Material
 {
     color albedo{};
 
 public:
-    lambertian(const color& a) : albedo(a) {}
+    Lambertian(const color& a) : albedo(a) {}
 
-    virtual bool scatter(const ray&,
-                         const hit_record& rec,
+    virtual bool Scatter(const Ray&,
+                         const HitRecord& rec,
                          color& attenuation,
-                         ray& scattered) const
+                         Ray& scattered) const
     {
-        auto scatter_direction = rec.normal + random_unit_vector();
-        scattered = ray(rec.p, scatter_direction);
+        auto scatter_direction = rec.normal + RandomUnitVector();
+        scattered = Ray(rec.p, scatter_direction);
         attenuation = albedo;
         return true;
     }
 };
 
-class metal final : public material
+class Metal final : public Material
 {
     color albedo{};
     double fuzz{0.0};
 
 public:
-    metal(const color& a, const double f)
+    Metal(const color& a, const double f)
         : albedo(a)
         , fuzz(f < 1 ? f : 1)
     {}
 
-    virtual bool scatter(const ray& r_in,
-                         const hit_record& rec,
+    virtual bool Scatter(const Ray& r_in,
+                         const HitRecord& rec,
                          color& attenuation,
-                         ray& scattered) const
+                         Ray& scattered) const
     {
-        auto reflected = reflect(unit_vector(r_in.direction()), rec.normal);
-        scattered = ray(rec.p, reflected + fuzz * random_in_unit_sphere());
+        auto reflected = Reflect(UnitVector(r_in.Direction()), rec.normal);
+        scattered = Ray(rec.p, reflected + fuzz * RandomInUnitSphere());
         attenuation = albedo;
-        return dot(scattered.direction(), rec.normal) > 0;
+        return Dot(scattered.Direction(), rec.normal) > 0;
     }
 };
 
-class dielectric final : public material
+class Dielectric final : public Material
 {
     double ref_idx{0.0};
 
 public:
-    dielectric(const double ri) : ref_idx(ri) {}
+    Dielectric(const double ri) : ref_idx(ri) {}
 
-    virtual bool scatter(const ray& r_in,
-                         const hit_record& rec,
+    virtual bool Scatter(const Ray& r_in,
+                         const HitRecord& rec,
                          color& attenuation,
-                         ray& scattered) const
+                         Ray& scattered) const
     {
         attenuation = color(1.0, 1.0, 1.0);
         double etai_over_etat = (rec.front_face) ? (1.0 / ref_idx) : ref_idx;
-        auto unit_direction = unit_vector(r_in.direction());
-        double cos_theta = std::fmin(dot(-unit_direction, rec.normal), 1.0);
+        auto unit_direction = UnitVector(r_in.Direction());
+        double cos_theta = std::fmin(Dot(-unit_direction, rec.normal), 1.0);
         double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
         if (etai_over_etat * sin_theta > 1.0)
         {
-            auto reflected = reflect(unit_direction, rec.normal);
-            scattered = ray(rec.p, reflected);
+            auto reflected = Reflect(unit_direction, rec.normal);
+            scattered = Ray(rec.p, reflected);
             return true;
         }
-        double reflect_prob = schlick(cos_theta, etai_over_etat);
-        if (random_double() < reflect_prob)
+        double reflect_prob = Schlick(cos_theta, etai_over_etat);
+        if (RandomDouble() < reflect_prob)
         {
-            auto reflected = reflect(unit_direction, rec.normal);
-            scattered = ray(rec.p, reflected);
+            auto reflected = Reflect(unit_direction, rec.normal);
+            scattered = Ray(rec.p, reflected);
             return true;
         }
-        auto refracted = refract(unit_direction, rec.normal, etai_over_etat);
-        scattered = ray(rec.p, refracted);
+        auto refracted = Refract(unit_direction, rec.normal, etai_over_etat);
+        scattered = Ray(rec.p, refracted);
         return true;
     }
 };

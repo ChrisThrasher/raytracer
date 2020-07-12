@@ -1,6 +1,6 @@
 #pragma once
 
-class camera
+class Camera
 {
     point3 origin{};
     point3 lower_left_corner{};
@@ -8,7 +8,7 @@ class camera
     vec3 vertical{};
 
 public:
-    constexpr camera()
+    constexpr Camera()
     {
         constexpr auto aspect_ratio = 16.0 / 9.0;
         constexpr auto viewport_height = 2.0;
@@ -24,9 +24,9 @@ public:
                           - vec3(0, 0, focal_length);
     }
 
-    constexpr auto get_ray(const double u, const double v) const
+    constexpr auto GetRay(const double u, const double v) const
     {
-        return ray(origin,
+        return Ray(origin,
                    lower_left_corner
                    + u * horizontal
                    + v * vertical

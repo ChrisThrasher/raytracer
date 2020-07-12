@@ -3,11 +3,11 @@
 #include "vec3.h"
 #include <iostream>
 
-void write_color(std::ostream& out, const color pixel_color, const int samples_per_pixel)
+void WriteColor(std::ostream& out, const color pixel_color, const int samples_per_pixel)
 {
-    auto r = pixel_color.x();
-    auto g = pixel_color.y();
-    auto b = pixel_color.z();
+    auto r = pixel_color.X();
+    auto g = pixel_color.Y();
+    auto b = pixel_color.Z();
 
     // Divide the color total by the number of samples
     auto scale = 1.0 / samples_per_pixel;

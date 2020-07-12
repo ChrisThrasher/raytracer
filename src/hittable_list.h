@@ -5,35 +5,35 @@
 #include <memory>
 #include <vector>
 
-class hittable_list : public hittable
+class HittableList : public Hittable
 {
-    std::vector<std::shared_ptr<hittable>> objects;
+    std::vector<std::shared_ptr<Hittable>> objects;
 
 public:
-    hittable_list() = default;
-    hittable_list(const std::shared_ptr<hittable>& object) { add(object); }
+    HittableList() = default;
+    HittableList(const std::shared_ptr<Hittable>& object) { Add(object); }
 
-    void clear() { objects.clear(); }
-    void add(const std::shared_ptr<hittable>& object) { objects.push_back(object); }
+    void Clear() { objects.clear(); }
+    void Add(const std::shared_ptr<Hittable>& object) { objects.push_back(object); }
 
-    virtual bool hit(const ray& r,
+    virtual bool Hit(const Ray& r,
                      const double t_min,
                      const double t_max,
-                     hit_record& rec) const;
+                     HitRecord& rec) const;
 };
 
-bool hittable_list::hit(const ray& r,
+bool HittableList::Hit(const Ray& r,
                         const double t_min,
                         const double t_max,
-                        hit_record& rec) const
+                        HitRecord& rec) const
 {
-    auto temp_rec = hit_record();
+    auto temp_rec = HitRecord();
     bool hit_anything = false;
     auto closest_so_far = t_max;
 
     for (const auto& object : objects)
     {
-        if (object->hit(r, t_min, closest_so_far, temp_rec))
+        if (object->Hit(r, t_min, closest_so_far, temp_rec))
         {
             hit_anything = true;
             closest_so_far = temp_rec.t;

@@ -2,21 +2,21 @@
 
 #include "vec3.h"
 
-class ray
+class Ray
 {
     point3 orig{};
     vec3 dir{};
 
 public:
-    constexpr ray() = default;
-    constexpr ray(const point3& origin, const vec3& direction)
+    constexpr Ray() = default;
+    constexpr Ray(const point3& origin, const vec3& direction)
         : orig(origin), dir(direction)
     {}
 
-    constexpr auto origin() const { return orig; }
-    constexpr auto direction() const { return dir; }
+    constexpr auto Origin() const { return orig; }
+    constexpr auto Direction() const { return dir; }
 
-    constexpr auto at(const double t) const
+    constexpr auto At(const double t) const
     {
         return orig + t * dir;
     }

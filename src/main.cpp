@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-auto ray_color(const ray& r, const hittable& world)
+constexpr auto ray_color(const ray& r, const hittable& world)
 {
     auto rec = hit_record();
     if (world.hit(r, 0, infinity, rec))

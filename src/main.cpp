@@ -34,7 +34,7 @@ int main()
     world.add(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
     world.add(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
 
-    const auto cam = camera();
+    constexpr auto cam = camera();
 
     for (int j = image_height - 1; j >= 0; --j)
     {

@@ -8,7 +8,7 @@ class camera
     vec3 vertical{};
 
 public:
-    camera()
+    constexpr camera()
     {
         constexpr auto aspect_ratio = 16.0 / 9.0;
         constexpr auto viewport_height = 2.0;
@@ -24,7 +24,7 @@ public:
                           - vec3(0, 0, focal_length);
     }
 
-    auto get_ray(const double u, const double v) const
+    constexpr auto get_ray(const double u, const double v) const
     {
         return ray(origin,
                    lower_left_corner

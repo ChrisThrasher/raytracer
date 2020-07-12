@@ -6,9 +6,9 @@
 
 class vec3
 {
-public:
     std::array<double, 3> e{};
 
+public:
     vec3(const double e1, const double e2, const double e3)
         : e{e1, e2, e3}
     {}
@@ -58,27 +58,27 @@ using color = vec3;
 
 inline auto& operator<<(std::ostream& out, const vec3& v)
 {
-    return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
+    return out << v.x() << ' ' << v.y() << ' ' << v.z();
 }
 
 inline auto operator+(const vec3& lhs, const vec3& rhs)
 {
-    return vec3(lhs.e[0] + rhs.e[0], lhs.e[1] + rhs.e[1], lhs.e[2] + rhs.e[2]);
+    return vec3(lhs.x() + rhs.x(), lhs.y() + rhs.y(), lhs.z() + rhs.z());
 }
 
 inline auto operator-(const vec3& lhs, const vec3& rhs)
 {
-    return vec3(lhs.e[0] - rhs.e[0], lhs.e[1] - rhs.e[1], lhs.e[2] - rhs.e[2]);
+    return vec3(lhs.x() - rhs.x(), lhs.y() - rhs.y(), lhs.z() - rhs.z());
 }
 
 inline auto operator*(const vec3& lhs, const vec3& rhs)
 {
-    return vec3(lhs.e[0] * rhs.e[0], lhs.e[1] * rhs.e[1], lhs.e[2] * rhs.e[2]);
+    return vec3(lhs.x() * rhs.x(), lhs.y() * rhs.y(), lhs.z() * rhs.z());
 }
 
 inline auto operator*(const double t, const vec3& v)
 {
-    return vec3(t * v.e[0], t * v.e[1], t * v.e[2]);
+    return vec3(t * v.x(), t * v.y(), t * v.z());
 }
 
 inline auto operator*(const vec3& v, const double t)
@@ -93,16 +93,16 @@ inline auto operator/(const vec3& v, const double t)
 
 inline auto dot(const vec3& lhs, const vec3& rhs)
 {
-    return lhs.e[0] * rhs.e[0]
-         + lhs.e[1] * rhs.e[1]
-         + lhs.e[2] * rhs.e[2];
+    return lhs.x() * rhs.x()
+         + lhs.y() * rhs.y()
+         + lhs.z() * rhs.z();
 }
 
 inline auto cross(const vec3& lhs, const vec3& rhs)
 {
-    return vec3(lhs.e[1] * rhs.e[2] - lhs.e[2] * rhs.e[1],
-                lhs.e[2] * rhs.e[0] - lhs.e[0] * rhs.e[2],
-                lhs.e[0] * rhs.e[1] - lhs.e[1] * rhs.e[0]);
+    return vec3(lhs.y() * rhs.z() - lhs.z() * rhs.y(),
+                lhs.z() * rhs.x() - lhs.x() * rhs.z(),
+                lhs.x() * rhs.y() - lhs.y() * rhs.x());
 }
 
 inline auto unit_vector(const vec3& v)

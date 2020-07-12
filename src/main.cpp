@@ -46,9 +46,9 @@ int main()
     world.add(std::make_shared<sphere>(
         point3(0, -100.5, -1), 100, std::make_shared<lambertian>(color(0.8, 0.8, 0.0))));
     world.add(std::make_shared<sphere>(
-        point3(1, 0, -1), 0.5, std::make_shared<metal>(color(0.8, 0.6, 0.2))));
+        point3(1, 0, -1), 0.5, std::make_shared<metal>(color(0.8, 0.6, 0.2), 0.3)));
     world.add(std::make_shared<sphere>(
-        point3(-1, 0, -1), 0.5, std::make_shared<metal>(color(0.8, 0.8, 0.8))));
+        point3(-1, 0, -1), 0.5, std::make_shared<metal>(color(0.8, 0.8, 0.8), 1.0)));
 
     constexpr auto cam = camera();
 

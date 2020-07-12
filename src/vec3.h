@@ -6,35 +6,35 @@
 
 class Vec3
 {
-    std::array<double, 3> e{};
+    std::array<double, 3> m_e{};
 
 public:
     constexpr Vec3() = default;
     constexpr Vec3(const double e1, const double e2, const double e3)
-        : e{e1, e2, e3}
+        : m_e{e1, e2, e3}
     {}
 
-    constexpr auto X() const { return e[0]; }
-    constexpr auto Y() const { return e[1]; }
-    constexpr auto Z() const { return e[2]; }
+    constexpr auto X() const { return m_e[0]; }
+    constexpr auto Y() const { return m_e[1]; }
+    constexpr auto Z() const { return m_e[2]; }
 
-    constexpr auto operator~() const { return Vec3(-e[0], -e[1], -e[2]); }
-    constexpr auto operator[](size_t i) const { return e.at(i); }
-    constexpr auto& operator[](size_t i) { return e.at(i); }
+    constexpr auto operator~() const { return Vec3(-m_e[0], -m_e[1], -m_e[2]); }
+    constexpr auto operator[](size_t i) const { return m_e.at(i); }
+    constexpr auto& operator[](size_t i) { return m_e.at(i); }
 
     constexpr auto& operator+=(const Vec3& v)
     {
-        e[0] += v.e[0];
-        e[1] += v.e[1];
-        e[2] += v.e[2];
+        m_e[0] += v.m_e[0];
+        m_e[1] += v.m_e[1];
+        m_e[2] += v.m_e[2];
         return *this;
     }
 
     constexpr auto& operator*=(const double t)
     {
-        e[0] *= t;
-        e[1] *= t;
-        e[2] *= t;
+        m_e[0] *= t;
+        m_e[1] *= t;
+        m_e[2] *= t;
         return *this;
     }
 
@@ -45,7 +45,7 @@ public:
 
     constexpr auto Length2() const
     {
-        return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+        return m_e[0] * m_e[0] + m_e[1] * m_e[1] + m_e[2] * m_e[2];
     }
 
     auto Length() const

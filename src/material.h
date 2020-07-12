@@ -23,10 +23,10 @@ public:
 
 class Lambertian final : public Material
 {
-    color albedo{};
+    color m_albedo{};
 
 public:
-    Lambertian(const color& a) : albedo(a) {}
+    Lambertian(const color& a) : m_albedo(a) {}
 
     virtual bool Scatter(const Ray&,
                          const HitRecord& rec,
@@ -35,20 +35,20 @@ public:
     {
         auto scatter_direction = rec.normal + RandomUnitVector();
         scattered = Ray(rec.p, scatter_direction);
-        attenuation = albedo;
+        attenuation = m_albedo;
         return true;
     }
 };
 
 class Metal final : public Material
 {
-    color albedo{};
-    double fuzz{0.0};
+    color m_albedo{};
+    double m_fuzz{0.0};
 
 public:
     Metal(const color& a, const double f)
-        : albedo(a)
-        , fuzz(f < 1 ? f : 1)
+        : m_albedo(a)
+        , m_fuzz(f < 1 ? f : 1)
     {}
 
     virtual bool Scatter(const Ray& r_in,
@@ -57,18 +57,18 @@ public:
                          Ray& scattered) const
     {
         auto reflected = Reflect(UnitVector(r_in.Direction()), rec.normal);
-        scattered = Ray(rec.p, reflected + fuzz * RandomInUnitSphere());
-        attenuation = albedo;
+        scattered = Ray(rec.p, reflected + m_fuzz * RandomInUnitSphere());
+        attenuation = m_albedo;
         return Dot(scattered.Direction(), rec.normal) > 0;
     }
 };
 
 class Dielectric final : public Material
 {
-    double ref_idx{0.0};
+    double m_ref_idx{0.0};
 
 public:
-    Dielectric(const double ri) : ref_idx(ri) {}
+    Dielectric(const double ri) : m_ref_idx(ri) {}
 
     virtual bool Scatter(const Ray& r_in,
                          const HitRecord& rec,
@@ -76,7 +76,7 @@ public:
                          Ray& scattered) const
     {
         attenuation = color(1.0, 1.0, 1.0);
-        double etai_over_etat = (rec.front_face) ? (1.0 / ref_idx) : ref_idx;
+        double etai_over_etat = (rec.front_face) ? (1.0 / m_ref_idx) : m_ref_idx;
         auto unit_direction = UnitVector(r_in.Direction());
         double cos_theta = std::fmin(Dot(-unit_direction, rec.normal), 1.0);
         double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);

@@ -7,14 +7,14 @@
 
 class HittableList : public Hittable
 {
-    std::vector<std::shared_ptr<Hittable>> objects;
+    std::vector<std::shared_ptr<Hittable>> m_objects;
 
 public:
     HittableList() = default;
     HittableList(const std::shared_ptr<Hittable>& object) { Add(object); }
 
-    void Clear() { objects.clear(); }
-    void Add(const std::shared_ptr<Hittable>& object) { objects.push_back(object); }
+    void Clear() { m_objects.clear(); }
+    void Add(const std::shared_ptr<Hittable>& object) { m_objects.push_back(object); }
 
     virtual bool Hit(const Ray& r,
                      const double t_min,
@@ -31,7 +31,7 @@ bool HittableList::Hit(const Ray& r,
     bool hit_anything = false;
     auto closest_so_far = t_max;
 
-    for (const auto& object : objects)
+    for (const auto& object : m_objects)
     {
         if (object->Hit(r, t_min, closest_so_far, temp_rec))
         {

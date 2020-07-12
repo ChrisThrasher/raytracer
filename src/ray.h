@@ -5,11 +5,11 @@
 class Ray
 {
     point3 orig{};
-    vec3 dir{};
+    Vec3 dir{};
 
 public:
     constexpr Ray() = default;
-    constexpr Ray(const point3& origin, const vec3& direction)
+    constexpr Ray(const point3& origin, const Vec3& direction)
         : orig(origin), dir(direction)
     {}
 

@@ -9,6 +9,7 @@ add_compile_options(
     -Werror
     -Wall
     -Wextra
+    -Wpedantic
 )
 
 add_executable(main main.cpp)

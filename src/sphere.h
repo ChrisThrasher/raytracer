@@ -3,7 +3,7 @@
 #include "hittable.h"
 #include "vec3.h"
 
-class sphere : public hittable
+class sphere final : public hittable
 {
     point3 center{};
     double radius;

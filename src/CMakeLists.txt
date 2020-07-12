@@ -4,4 +4,10 @@ project(raytracer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_compile_options(
+    -Werror
+    -Wall
+    -Wextra
+)
+
 add_executable(main main.cpp)

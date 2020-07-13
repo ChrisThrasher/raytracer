@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-auto RayColor(const Ray &r, const Hittable &world, const int depth) -> Color
+auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 {
     if (depth <= 0)
         return Color(0, 0, 0);

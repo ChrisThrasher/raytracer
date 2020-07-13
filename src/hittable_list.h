@@ -16,16 +16,10 @@ public:
     void Clear() { m_objects.clear(); }
     void Add(const std::shared_ptr<Hittable>& object) { m_objects.push_back(object); }
 
-    virtual bool Hit(const Ray& r,
-                     const double t_min,
-                     const double t_max,
-                     HitRecord& rec) const;
+    virtual bool Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const;
 };
 
-bool HittableList::Hit(const Ray& r,
-                        const double t_min,
-                        const double t_max,
-                        HitRecord& rec) const
+bool HittableList::Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const
 {
     auto temp_rec = HitRecord();
     bool hit_anything = false;

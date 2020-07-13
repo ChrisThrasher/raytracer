@@ -4,7 +4,10 @@ IndentWidth: 4
 
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
+AlwaysBreakAfterReturnType: None
 BinPackArguments: false
+BinPackParameters: false
 BreakBeforeBraces: Allman
 BreakConstructorInitializers: BeforeComma
 PointerAlignment: Left
+PenaltyReturnTypeOnItsOwnLine: 1000

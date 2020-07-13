@@ -47,7 +47,7 @@ int main()
         Point3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.0)));
     world.Add(std::make_shared<Sphere>(Point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
 
-    constexpr auto cam = Camera();
+    const auto cam = Camera(90, aspect_ratio);
 
     for (int j = image_height - 1; j >= 0; --j)
     {

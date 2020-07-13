@@ -7,13 +7,15 @@ class Sphere final : public Hittable
 {
     Point3 m_center{};
     double m_radius;
-    std::shared_ptr<Material> m_mat_ptr{};
+    std::shared_ptr<Material> m_material{};
 
 public:
-    Sphere(const Point3 cen, const double r, const std::shared_ptr<Material>& m)
-        : m_center(cen)
-        , m_radius(r)
-        , m_mat_ptr(m)
+    Sphere(const Point3 center,
+           const double radius,
+           const std::shared_ptr<Material>& material)
+        : m_center(center)
+        , m_radius(radius)
+        , m_material(material)
     {}
 
     virtual bool Hit(const Ray& r,
@@ -43,7 +45,7 @@ bool Sphere::Hit(const Ray& r,
             rec.p = r.At(rec.t);
             const auto outward_normal = (rec.p - m_center) / m_radius;
             rec.SetFaceNormal(r, outward_normal);
-            rec.mat_ptr = m_mat_ptr;
+            rec.mat_ptr = m_material;
             return true;
         }
         temp = (-half_b + root) / a;
@@ -53,7 +55,7 @@ bool Sphere::Hit(const Ray& r,
             rec.p = r.At(rec.t);
             const auto outward_normal = (rec.p - m_center) / m_radius;
             rec.SetFaceNormal(r, outward_normal);
-            rec.mat_ptr = m_mat_ptr;
+            rec.mat_ptr = m_material;
             return true;
         }
     }

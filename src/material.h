@@ -68,7 +68,7 @@ class Dielectric final : public Material
     double m_ref_idx{0.0};
 
 public:
-    Dielectric(const double ri) : m_ref_idx(ri) {}
+    Dielectric(const double ref_idx) : m_ref_idx(ref_idx) {}
 
     virtual bool Scatter(const Ray& r_in,
                          const HitRecord& rec,

@@ -4,20 +4,21 @@
 
 class Ray
 {
-    Point3 m_orig{};
-    Vec3 m_dir{};
+    Point3 m_origin{};
+    Vec3 m_direction{};
 
 public:
     constexpr Ray() = default;
     constexpr Ray(const Point3& origin, const Vec3& direction)
-        : m_orig(origin), m_dir(direction)
+        : m_origin(origin)
+        , m_direction(direction)
     {}
 
-    constexpr auto Origin() const { return m_orig; }
-    constexpr auto Direction() const { return m_dir; }
+    constexpr auto Origin() const { return m_origin; }
+    constexpr auto Direction() const { return m_direction; }
 
     constexpr auto At(const double t) const
     {
-        return m_orig + t * m_dir;
+        return m_origin + t * m_direction;
     }
 };

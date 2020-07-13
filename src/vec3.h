@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utilities.h"
+
 #include <array>
 #include <cmath>
 #include <iostream>

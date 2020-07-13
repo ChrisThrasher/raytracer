@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cmath>
 #include <array>
+#include <cmath>
 #include <iostream>
 
 class Vec3
@@ -12,7 +12,8 @@ public:
     constexpr Vec3() = default;
     constexpr Vec3(const double e1, const double e2, const double e3)
         : m_e{e1, e2, e3}
-    {}
+    {
+    }
 
     constexpr auto X() const { return m_e[0]; }
     constexpr auto Y() const { return m_e[1]; }
@@ -38,31 +39,17 @@ public:
         return *this;
     }
 
-    constexpr auto& operator/=(const double t)
-    {
-        return *this *= 1/t;
-    }
+    constexpr auto& operator/=(const double t) { return *this *= 1 / t; }
 
-    constexpr auto Length2() const
-    {
-        return m_e[0] * m_e[0] + m_e[1] * m_e[1] + m_e[2] * m_e[2];
-    }
+    constexpr auto Length2() const { return m_e[0] * m_e[0] + m_e[1] * m_e[1] + m_e[2] * m_e[2]; }
 
-    auto Length() const
-    {
-        return std::sqrt(Length2());
-    }
+    auto Length() const { return std::sqrt(Length2()); }
 
-    inline static auto Random()
-    {
-        return Vec3(RandomDouble(), RandomDouble(), RandomDouble());
-    }
+    inline static auto Random() { return Vec3(RandomDouble(), RandomDouble(), RandomDouble()); }
 
     inline static auto Random(const double min, const double max)
     {
-        return Vec3(RandomDouble(min, max),
-                    RandomDouble(min, max),
-                    RandomDouble(min, max));
+        return Vec3(RandomDouble(min, max), RandomDouble(min, max), RandomDouble(min, max));
     }
 };
 
@@ -84,10 +71,7 @@ constexpr inline auto operator-(const Vec3& lhs, const Vec3& rhs)
     return Vec3(lhs.X() - rhs.X(), lhs.Y() - rhs.Y(), lhs.Z() - rhs.Z());
 }
 
-constexpr inline auto operator-(const Vec3& v)
-{
-    return Vec3(-v.X(), -v.Y(), -v.Z());
-}
+constexpr inline auto operator-(const Vec3& v) { return Vec3(-v.X(), -v.Y(), -v.Z()); }
 
 constexpr inline auto operator*(const Vec3& lhs, const Vec3& rhs)
 {
@@ -99,21 +83,13 @@ constexpr inline auto operator*(const double t, const Vec3& v)
     return Vec3(t * v.X(), t * v.Y(), t * v.Z());
 }
 
-constexpr inline auto operator*(const Vec3& v, const double t)
-{
-    return t * v;
-}
+constexpr inline auto operator*(const Vec3& v, const double t) { return t * v; }
 
-constexpr inline auto operator/(const Vec3& v, const double t)
-{
-    return (1/t) * v;
-}
+constexpr inline auto operator/(const Vec3& v, const double t) { return (1 / t) * v; }
 
 constexpr inline auto Dot(const Vec3& lhs, const Vec3& rhs)
 {
-    return lhs.X() * rhs.X()
-         + lhs.Y() * rhs.Y()
-         + lhs.Z() * rhs.Z();
+    return lhs.X() * rhs.X() + lhs.Y() * rhs.Y() + lhs.Z() * rhs.Z();
 }
 
 constexpr inline auto Cross(const Vec3& lhs, const Vec3& rhs)
@@ -123,17 +99,15 @@ constexpr inline auto Cross(const Vec3& lhs, const Vec3& rhs)
                 lhs.X() * rhs.Y() - lhs.Y() * rhs.X());
 }
 
-inline auto UnitVector(const Vec3& v)
-{
-    return v / v.Length();
-}
+inline auto UnitVector(const Vec3& v) { return v / v.Length(); }
 
 auto RandomInUnitSphere()
 {
     while (true)
     {
         const auto p = Vec3::Random(-1, 1);
-        if (p.Length2() >= 1) continue;
+        if (p.Length2() >= 1)
+            continue;
         return p;
     }
 }
@@ -159,10 +133,7 @@ auto RandomInHemisphere(const Vec3& normal)
     }
 }
 
-auto Reflect(const Vec3& v, const Vec3& n)
-{
-    return v - 2 * Dot(v, n) * n;
-}
+auto Reflect(const Vec3& v, const Vec3& n) { return v - 2 * Dot(v, n) * n; }
 
 auto Refract(const Vec3& uv, const Vec3& n, const double etai_over_etat)
 {

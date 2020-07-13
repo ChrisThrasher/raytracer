@@ -3,7 +3,7 @@
 #include "vec3.h"
 #include <iostream>
 
-void WriteColor(std::ostream& out, const color pixel_color, const int samples_per_pixel)
+void WriteColor(std::ostream& out, const Color pixel_color, const int samples_per_pixel)
 {
     auto r = pixel_color.X();
     auto g = pixel_color.Y();

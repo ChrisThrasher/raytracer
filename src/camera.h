@@ -2,8 +2,8 @@
 
 class Camera
 {
-    point3 m_origin{};
-    point3 m_lower_left_corner{};
+    Point3 m_origin{};
+    Point3 m_lower_left_corner{};
     Vec3 m_horizontal{};
     Vec3 m_vertical{};
 
@@ -15,7 +15,7 @@ public:
         constexpr auto viewport_width = aspect_ratio * viewport_height;
         constexpr auto focal_length = 1.0;
 
-        m_origin = point3(0, 0, 0);
+        m_origin = Point3(0, 0, 0);
         m_horizontal = Vec3(viewport_width, 0.0, 0.0);
         m_vertical = Vec3(0.0, viewport_height, 0.0);
         m_lower_left_corner = m_origin

@@ -17,20 +17,20 @@ class Material
 public:
     virtual bool Scatter(const Ray& r_in,
                          const HitRecord& rec,
-                         color& attenuation,
+                         Color& attenuation,
                          Ray& scattered) const = 0;
 };
 
 class Lambertian final : public Material
 {
-    color m_albedo{};
+    Color m_albedo{};
 
 public:
-    Lambertian(const color& a) : m_albedo(a) {}
+    Lambertian(const Color& a) : m_albedo(a) {}
 
     virtual bool Scatter(const Ray&,
                          const HitRecord& rec,
-                         color& attenuation,
+                         Color& attenuation,
                          Ray& scattered) const
     {
         auto scatter_direction = rec.normal + RandomUnitVector();
@@ -42,18 +42,18 @@ public:
 
 class Metal final : public Material
 {
-    color m_albedo{};
+    Color m_albedo{};
     double m_fuzz{0.0};
 
 public:
-    Metal(const color& a, const double f)
+    Metal(const Color& a, const double f)
         : m_albedo(a)
         , m_fuzz(f < 1 ? f : 1)
     {}
 
     virtual bool Scatter(const Ray& r_in,
                          const HitRecord& rec,
-                         color& attenuation,
+                         Color& attenuation,
                          Ray& scattered) const
     {
         auto reflected = Reflect(UnitVector(r_in.Direction()), rec.normal);
@@ -72,10 +72,10 @@ public:
 
     virtual bool Scatter(const Ray& r_in,
                          const HitRecord& rec,
-                         color& attenuation,
+                         Color& attenuation,
                          Ray& scattered) const
     {
-        attenuation = color(1.0, 1.0, 1.0);
+        attenuation = Color(1.0, 1.0, 1.0);
         double etai_over_etat = (rec.front_face) ? (1.0 / m_ref_idx) : m_ref_idx;
         auto unit_direction = UnitVector(r_in.Direction());
         double cos_theta = std::fmin(Dot(-unit_direction, rec.normal), 1.0);

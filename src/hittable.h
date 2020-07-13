@@ -6,7 +6,7 @@ class Material;
 
 struct HitRecord
 {
-    point3 p{};
+    Point3 p{};
     Vec3 normal{};
     std::shared_ptr<Material> mat_ptr{};
     double t{0.0};

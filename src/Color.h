@@ -1,6 +1,7 @@
 #pragma once
 
-#include "vec3.h"
+#include "Vec3.h"
+
 #include <iostream>
 
 void WriteColor(std::ostream& out, const Color pixel_color, const int samples_per_pixel)

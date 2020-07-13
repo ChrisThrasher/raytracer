@@ -1,7 +1,7 @@
 #pragma once
 
-#include "hittable.h"
-#include "vec3.h"
+#include "Hittable.h"
+#include "Vec3.h"
 
 class Sphere final : public Hittable
 {

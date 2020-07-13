@@ -1,7 +1,7 @@
 #pragma once
 
-#include "hittable.h"
-#include "ray.h"
+#include "Hittable.h"
+#include "Ray.h"
 
 #include <cmath>
 

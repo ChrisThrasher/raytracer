@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hittable.h"
+#include "Hittable.h"
 
 #include <memory>
 #include <vector>

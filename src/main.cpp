@@ -47,7 +47,12 @@ int main()
         Point3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.0)));
     world.Add(std::make_shared<Sphere>(Point3(-1, 0, -1), -0.5, std::make_shared<Dielectric>(1.1)));
 
-    const auto cam = Camera(Point3(-2, 2, 1), Point3(0, 0, -1), Vec3(0, 1, 0), 25, aspect_ratio);
+    const auto lookfrom = Point3(3, 3, 2);
+    const auto lookat = Point3(0, 0, -1);
+    const auto vup = Vec3(0, 1, 0);
+    const auto focus_distance = (lookfrom - lookat).Length();
+    const auto aperture = 2.0;
+    const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
     for (int j = image_height - 1; j >= 0; --j)
     {

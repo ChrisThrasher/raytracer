@@ -10,24 +10,17 @@ class Sphere final : public Hittable
     std::shared_ptr<Material> m_material{};
 
 public:
-    Sphere(const Point3 center,
-           const double radius,
-           const std::shared_ptr<Material>& material)
+    Sphere(const Point3 center, const double radius, const std::shared_ptr<Material>& material)
         : m_center(center)
         , m_radius(radius)
         , m_material(material)
-    {}
+    {
+    }
 
-    virtual bool Hit(const Ray& r,
-                     const double t_min,
-                     const double t_max,
-                     HitRecord& rec) const;
+    virtual bool Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const;
 };
 
-bool Sphere::Hit(const Ray& r,
-                 const double t_min,
-                 const double t_max,
-                 HitRecord& rec) const
+bool Sphere::Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const
 {
     const auto oc = r.Origin() - m_center;
     const auto a = r.Direction().Length2();

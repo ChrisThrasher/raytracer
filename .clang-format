@@ -1,0 +1,10 @@
+Language: Cpp
+ColumnLimit: 100
+IndentWidth: 4
+
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+BinPackArguments: false
+BreakBeforeBraces: Allman
+BreakConstructorInitializers: BeforeComma
+PointerAlignment: Left

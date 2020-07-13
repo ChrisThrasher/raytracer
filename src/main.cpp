@@ -1,17 +1,16 @@
 #include "rtweekend.h"
 
-#include "vec3.h"
-#include "color.h"
-#include "ray.h"
-#include "hittable_list.h"
-#include "sphere.h"
 #include "camera.h"
+#include "color.h"
+#include "hittable_list.h"
 #include "material.h"
+#include "ray.h"
+#include "sphere.h"
+#include "vec3.h"
 
 #include <iostream>
 
-auto RayColor(const Ray& r, const Hittable& world, const int depth)
-    -> Color
+auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 {
     if (depth <= 0)
         return Color(0, 0, 0);
@@ -44,11 +43,10 @@ int main()
     world.Add(std::make_shared<Sphere>(
         Point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5))));
     world.Add(std::make_shared<Sphere>(
-        Point3(0, -100.5,- 1), 100, std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0))));
+        Point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0))));
     world.Add(std::make_shared<Sphere>(
         Point3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.0)));
-    world.Add(std::make_shared<Sphere>(
-        Point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
+    world.Add(std::make_shared<Sphere>(Point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
 
     constexpr auto cam = Camera();
 

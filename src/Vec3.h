@@ -135,6 +135,17 @@ auto RandomInHemisphere(const Vec3& normal)
     }
 }
 
+auto RandomInUnitDisk()
+{
+    while (true)
+    {
+        const auto p = Vec3(RandomDouble(-1, 1), RandomDouble(-1, 1), 0);
+        if (p.Length2() >= 1)
+            continue;
+        return p;
+    }
+}
+
 auto Reflect(const Vec3& v, const Vec3& n) { return v - 2 * Dot(v, n) * n; }
 
 auto Refract(const Vec3& uv, const Vec3& n, const double etai_over_etat)

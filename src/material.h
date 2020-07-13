@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ray.h"
 #include "hittable.h"
+#include "ray.h"
 
 #include <cmath>
 
@@ -15,9 +15,7 @@ auto Schlick(const double cosine, const double ref_idx)
 class Material
 {
 public:
-    virtual bool Scatter(const Ray& r_in,
-                         const HitRecord& rec,
-                         Color& attenuation,
+    virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation,
                          Ray& scattered) const = 0;
 };
 
@@ -26,12 +24,12 @@ class Lambertian final : public Material
     Color m_albedo{};
 
 public:
-    Lambertian(const Color& a) : m_albedo(a) {}
+    Lambertian(const Color& a)
+        : m_albedo(a)
+    {
+    }
 
-    virtual bool Scatter(const Ray&,
-                         const HitRecord& rec,
-                         Color& attenuation,
-                         Ray& scattered) const
+    virtual bool Scatter(const Ray&, const HitRecord& rec, Color& attenuation, Ray& scattered) const
     {
         auto scatter_direction = rec.normal + RandomUnitVector();
         scattered = Ray(rec.p, scatter_direction);
@@ -49,11 +47,10 @@ public:
     Metal(const Color& a, const double f)
         : m_albedo(a)
         , m_fuzz(f < 1 ? f : 1)
-    {}
+    {
+    }
 
-    virtual bool Scatter(const Ray& r_in,
-                         const HitRecord& rec,
-                         Color& attenuation,
+    virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation,
                          Ray& scattered) const
     {
         auto reflected = Reflect(UnitVector(r_in.Direction()), rec.normal);
@@ -68,11 +65,12 @@ class Dielectric final : public Material
     double m_ref_idx{0.0};
 
 public:
-    Dielectric(const double ref_idx) : m_ref_idx(ref_idx) {}
+    Dielectric(const double ref_idx)
+        : m_ref_idx(ref_idx)
+    {
+    }
 
-    virtual bool Scatter(const Ray& r_in,
-                         const HitRecord& rec,
-                         Color& attenuation,
+    virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation,
                          Ray& scattered) const
     {
         attenuation = Color(1.0, 1.0, 1.0);

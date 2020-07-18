@@ -6,15 +6,11 @@
 
 void WriteColor(std::ostream& out, const Color pixel_color, const int samples_per_pixel)
 {
-    auto r = pixel_color.X();
-    auto g = pixel_color.Y();
-    auto b = pixel_color.Z();
+    const auto scale = 1.0 / samples_per_pixel;
 
-    // Divide the color total by the number of samples
-    auto scale = 1.0 / samples_per_pixel;
-    r = std::sqrt(scale * r);
-    g = std::sqrt(scale * g);
-    b = std::sqrt(scale * b);
+    const auto r = std::sqrt(scale * pixel_color.X());
+    const auto g = std::sqrt(scale * pixel_color.Y());
+    const auto b = std::sqrt(scale * pixel_color.Z());
 
     out << static_cast<int>(255.999 * std::clamp(r, 0.0, 0.999)) << ' '
         << static_cast<int>(255.999 * std::clamp(g, 0.0, 0.999)) << ' '

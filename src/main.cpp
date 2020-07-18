@@ -114,9 +114,9 @@ int main()
             auto pixel_color = Color(0, 0, 0);
             for (int s = 0; s < samples_per_pixel; ++s)
             {
-                auto u = (i + RandomDouble()) / (image_width + 1);
-                auto v = (j + RandomDouble()) / (image_height + 1);
-                Ray r = cam.GetRay(u, v);
+                const auto u = (i + RandomDouble()) / (image_width + 1);
+                const auto v = (j + RandomDouble()) / (image_height + 1);
+                const Ray r = cam.GetRay(u, v);
                 pixel_color += RayColor(r, world, max_depth);
             }
             WriteColor(std::cout, pixel_color, samples_per_pixel);

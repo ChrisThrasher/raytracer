@@ -1,11 +1,11 @@
 #include "Camera.h"
-#include "Color.h"
 #include "HittableList.h"
 #include "Material.h"
 #include "Ray.h"
 #include "Sphere.h"
 #include "Utilities.h"
 #include "Vec3.h"
+#include "WriteColor.h"
 
 #include <iostream>
 

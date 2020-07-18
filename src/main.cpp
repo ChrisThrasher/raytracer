@@ -101,11 +101,11 @@ int main()
 
     const auto world = RandomScene();
 
-    const auto lookfrom = Point3(13, 2, 3);
-    const auto lookat = Point3(0, 0, 0);
-    const auto vup = Vec3(0, 1, 0);
-    const auto focus_distance = 10;
-    const auto aperture = 0.1;
+    constexpr auto lookfrom = Point3(13, 2, 3);
+    constexpr auto lookat = Point3(0, 0, 0);
+    constexpr auto vup = Vec3(0, 1, 0);
+    constexpr auto focus_distance = 10;
+    constexpr auto aperture = 0.1;
     const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
     for (int j = image_height - 1; j >= 0; --j)

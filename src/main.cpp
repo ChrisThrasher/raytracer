@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "HittableList.h"
+#include "Image.h"
 #include "Material.h"
 #include "Ray.h"
 #include "Sphere.h"
@@ -91,8 +92,8 @@ auto RandomScene()
 int main()
 {
     constexpr auto aspect_ratio = 16.0 / 9.0;
-    constexpr auto image_width = 120;
-    constexpr auto image_height = static_cast<int>(image_width / aspect_ratio);
+    constexpr auto image_width = 120ull;
+    constexpr auto image_height = static_cast<size_t>(image_width / aspect_ratio);
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;
 
@@ -105,11 +106,12 @@ int main()
     constexpr auto aperture = 0.1;
     const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-    for (int j = image_height - 1; j >= 0; --j)
+    auto image = Image<image_width, image_height>();
+    for (size_t j = 0; j < image_height; ++j)
     {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
-        for (int i = 0; i < image_width; ++i)
+        std::cerr << "\rScanlines remaining: " << image_height - j - 1 << ' ' << std::flush;
+        auto& row = image.at(j);
+        for (size_t i = 0; i < image_width; ++i)
         {
             auto pixel_color = Color(0, 0, 0);
             for (int s = 0; s < samples_per_pixel; ++s)
@@ -119,9 +121,10 @@ int main()
                 const Ray r = cam.GetRay(u, v);
                 pixel_color += RayColor(r, world, max_depth);
             }
-            WriteColor(std::cout, pixel_color, samples_per_pixel);
+            row.at(i) = WriteColor(pixel_color, samples_per_pixel);
         }
     }
 
-    std::cerr << "\nDone.\n";
+    std::cout << image;
+    std::cerr << "\rDone.\n";
 }

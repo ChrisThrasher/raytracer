@@ -1,0 +1,13 @@
+#pragma once
+
+struct Pixel
+{
+    int r{0};
+    int g{0};
+    int b{0};
+};
+
+void operator<<(std::ostream& ostream, const Pixel& pixel)
+{
+    ostream << pixel.r << ' ' << pixel.g << ' ' << pixel.b << '\n';
+}

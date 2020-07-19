@@ -120,19 +120,19 @@ int main(int argc, char* argv[])
     const auto filename = argv[1];
     std::cout << "Writing to " << filename << '\n';
     std::cout << "Scanlines remaining: " << image_height << std::flush;
-    const auto render_row = [cam, world](Row<image_width>& row, const size_t j) {
+    const auto render_row = [cam, world](Row<image_width>& row) {
         static std::atomic<size_t> rows_rendered = 0;
-        for (size_t i = 0; i < image_width; ++i)
+        for (auto& pixel : row)
         {
             auto pixel_color = Color(0, 0, 0);
             for (int s = 0; s < samples_per_pixel; ++s)
             {
-                const auto u = (i + RandomDouble()) / (image_width + 1);
-                const auto v = (j + RandomDouble()) / (image_height + 1);
+                const auto u = (pixel.u + RandomDouble()) / (image_width + 1);
+                const auto v = (pixel.v + RandomDouble()) / (image_height + 1);
                 const Ray r = cam.GetRay(u, v);
                 pixel_color += RayColor(r, world, max_depth);
             }
-            row.at(i) = WriteColor(pixel_color, samples_per_pixel);
+            pixel = WriteColor(pixel_color, samples_per_pixel);
         }
         std::cout << '\r' << std::flush
                   << "\rScanlines remaining: " << image_height - ++rows_rendered << "    "
@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     const auto start_time = std::chrono::system_clock::now();
     for (size_t j = 0; j < image_height; ++j)
     {
-        threads.at(j) = std::thread(std::bind(render_row, std::ref(image.at(j)), j));
+        threads.at(j) = std::thread(std::bind(render_row, std::ref(image.at(j))));
     }
 
     for (auto& thread : threads)

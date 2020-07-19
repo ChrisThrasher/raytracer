@@ -3,7 +3,7 @@
 struct Pixel
 {
     int r{0};
-    int g{0};
+    int g{255};
     int b{0};
 };
 

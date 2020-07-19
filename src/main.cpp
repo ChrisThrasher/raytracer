@@ -94,7 +94,7 @@ auto RandomScene()
 int main()
 {
     constexpr auto aspect_ratio = 16.0 / 9.0;
-    constexpr auto image_width = 120ull;
+    constexpr auto image_width = 384ull;
     constexpr auto image_height = static_cast<size_t>(image_width / aspect_ratio);
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;

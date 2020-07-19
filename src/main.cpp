@@ -8,6 +8,7 @@
 #include "Vec3.h"
 #include "WriteColor.h"
 
+#include <chrono>
 #include <iostream>
 #include <thread>
 
@@ -111,6 +112,7 @@ int main()
     std::array<std::thread, image_height> threads;
 
     const auto render_row = [cam, world](Row<image_width>& row, const int j) {
+        static std::atomic<size_t> rows_rendered = 0;
         for (size_t i = 0; i < image_width; ++i)
         {
             auto pixel_color = Color(0, 0, 0);
@@ -123,20 +125,27 @@ int main()
             }
             row.at(i) = WriteColor(pixel_color, samples_per_pixel);
         }
+        std::cerr << "\rScanlines remaining: " << image_height - ++rows_rendered << ' '
+                  << std::flush;
     };
 
+    const auto start_time = std::chrono::system_clock::now();
     for (size_t j = 0; j < image_height; ++j)
     {
         threads.at(j) = std::thread(std::bind(render_row, std::ref(image.at(j)), j));
     }
 
-    auto joined_threads = 0ull;
     for (auto& thread : threads)
     {
-        std::cerr << "\rScanlines remaining: " << image_height - ++joined_threads << ' ' << std::flush;
         thread.join();
     }
 
+    std::cerr << "\nFinished rendering in "
+              << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
+              << " seconds.\n";
+
     std::cout << image;
-    std::cerr << "\nDone.\n";
+    std::cerr << "\nDone. Total runtime = "
+              << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
+              << " seconds.\n";
 }

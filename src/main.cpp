@@ -111,6 +111,7 @@ int main()
     auto image = Image<image_width, image_height>();
     std::array<std::thread, image_height> threads;
 
+    std::cerr << "\rScanlines remaining: " << image_height << std::flush;
     const auto render_row = [cam, world](Row<image_width>& row, const int j) {
         static std::atomic<size_t> rows_rendered = 0;
         for (size_t i = 0; i < image_width; ++i)
@@ -125,8 +126,7 @@ int main()
             }
             row.at(i) = WriteColor(pixel_color, samples_per_pixel);
         }
-        std::cerr << "\rScanlines remaining: " << image_height - ++rows_rendered << ' '
-                  << std::flush;
+        std::cerr << "\rScanlines remaining: " << image_height - ++rows_rendered << std::flush;
     };
 
     const auto start_time = std::chrono::system_clock::now();

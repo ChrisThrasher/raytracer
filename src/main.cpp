@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
     const auto filename = argv[1];
     std::cout << "Writing " << image_height << "x" << image_width << " image to " << filename
               << ".\n";
-    std::cout << "Spun up " << threads.size() << " thread(s).\n";
+    std::cout << "Spawned " << threads.size() << " thread(s).\n";
     std::cout << "Rendering " << rows_per_thread << " rows per thread.\n";
     std::cout << "Scanlines remaining: " << image_height << std::flush;
 

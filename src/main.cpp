@@ -106,10 +106,6 @@ int main(int argc, char* argv[])
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;
 
-    const auto filename = argv[1];
-    std::cout << "Writing to " << filename << '\n';
-    std::cout << "Scanlines remaining: " << image_height << std::flush;
-
     const auto world = RandomScene();
 
     constexpr auto lookfrom = Point3(13, 2, 3);
@@ -145,6 +141,12 @@ int main(int argc, char* argv[])
     {
         threads.at(j) = std::thread(render_row, std::ref(image.at(j)));
     }
+
+    const auto filename = argv[1];
+    std::cout << "Writing " << image_height << "x" << image_width << " image to " << filename
+              << ".\n";
+    std::cout << "Spun up " << threads.size() << " threads.\n";
+    std::cout << "Scanlines remaining: " << image_height << std::flush;
 
     for (auto& thread : threads)
     {

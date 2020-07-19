@@ -101,12 +101,14 @@ int main(int argc, char* argv[])
     }
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
-    constexpr auto image_width = 384ull;
-    constexpr auto image_height = static_cast<size_t>(image_width / aspect_ratio);
+    constexpr auto image_height = 216ull;
+    constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;
-
-    const auto world = RandomScene();
+    constexpr auto num_threads = 12;
+    constexpr auto rows_per_thread = image_height / num_threads;
+    static_assert(image_height % num_threads == 0, "");
+    static_assert(num_threads < image_height, "");
 
     constexpr auto lookfrom = Point3(13, 2, 3);
     constexpr auto lookat = Point3(0, 0, 0);
@@ -115,37 +117,47 @@ int main(int argc, char* argv[])
     constexpr auto aperture = 0.1;
     const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
-    const auto render_row = [cam, world](Row<image_width>& row) {
+    const auto world = RandomScene();
+
+    const auto render_rows = [cam, world](const std::vector<Row<image_width>*>& rows) {
         static std::atomic<size_t> rows_rendered = 0;
-        for (auto& pixel : row)
+        for (const auto row : rows)
         {
-            auto pixel_color = Color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
+            for (auto& pixel : *row)
             {
-                const auto u = (pixel.u + RandomDouble()) / (image_width + 1);
-                const auto v = (pixel.v + RandomDouble()) / (image_height + 1);
-                const Ray r = cam.GetRay(u, v);
-                pixel_color += RayColor(r, world, max_depth);
+                auto pixel_color = Color(0, 0, 0);
+                for (int s = 0; s < samples_per_pixel; ++s)
+                {
+                    const auto u = (pixel.u + RandomDouble()) / (image_width + 1);
+                    const auto v = (pixel.v + RandomDouble()) / (image_height + 1);
+                    const Ray r = cam.GetRay(u, v);
+                    pixel_color += RayColor(r, world, max_depth);
+                }
+                pixel = WriteColor(pixel_color, samples_per_pixel);
             }
-            pixel = WriteColor(pixel_color, samples_per_pixel);
+            std::cout << "\rScanlines remaining: " << image_height - ++rows_rendered << "    "
+                      << std::flush;
         }
-        std::cout << '\r' << std::flush
-                  << "\rScanlines remaining: " << image_height - ++rows_rendered << "    "
-                  << std::flush;
     };
 
     auto image = Image<image_width, image_height>();
-    auto threads = std::array<std::thread, image_height>();
+    auto threads = std::array<std::thread, num_threads>();
     const auto start_time = std::chrono::system_clock::now();
-    for (size_t j = 0; j < image_height; ++j)
+    for (size_t i = 0; i < threads.size(); ++i)
     {
-        threads.at(j) = std::thread(render_row, std::ref(image.at(j)));
+        std::vector<Row<image_width>*> rows;
+        for (size_t j = 0; j < rows_per_thread; ++j)
+        {
+            rows.push_back(&image.at(i * rows_per_thread + j));
+        }
+        threads.at(i) = std::thread(render_rows, rows);
     }
 
     const auto filename = argv[1];
     std::cout << "Writing " << image_height << "x" << image_width << " image to " << filename
               << ".\n";
-    std::cout << "Spun up " << threads.size() << " threads.\n";
+    std::cout << "Spun up " << threads.size() << " thread(s).\n";
+    std::cout << "Rendering " << rows_per_thread << " rows per thread.\n";
     std::cout << "Scanlines remaining: " << image_height << std::flush;
 
     for (auto& thread : threads)

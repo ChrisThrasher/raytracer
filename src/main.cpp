@@ -9,6 +9,7 @@
 #include "WriteColor.h"
 
 #include <iostream>
+#include <thread>
 
 auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 {
@@ -107,10 +108,9 @@ int main()
     const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
     auto image = Image<image_width, image_height>();
-    for (size_t j = 0; j < image_height; ++j)
-    {
-        std::cerr << "\rScanlines remaining: " << image_height - j - 1 << ' ' << std::flush;
-        auto& row = image.at(j);
+    std::array<std::thread, image_height> threads;
+
+    const auto render_row = [cam, world](Row<image_width>& row, const int j) {
         for (size_t i = 0; i < image_width; ++i)
         {
             auto pixel_color = Color(0, 0, 0);
@@ -123,8 +123,20 @@ int main()
             }
             row.at(i) = WriteColor(pixel_color, samples_per_pixel);
         }
+    };
+
+    for (size_t j = 0; j < image_height; ++j)
+    {
+        threads.at(j) = std::thread(std::bind(render_row, std::ref(image.at(j)), j));
+    }
+
+    auto joined_threads = 0ull;
+    for (auto& thread : threads)
+    {
+        std::cerr << "\rScanlines remaining: " << image_height - ++joined_threads << ' ' << std::flush;
+        thread.join();
     }
 
     std::cout << image;
-    std::cerr << "\rDone.\n";
+    std::cerr << "\nDone.\n";
 }

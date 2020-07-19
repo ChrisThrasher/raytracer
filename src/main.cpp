@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     constexpr auto num_threads = 12;
     constexpr auto rows_per_thread = image_height / num_threads;
     static_assert(image_height % num_threads == 0, "");
-    static_assert(num_threads < image_height, "");
+    static_assert(num_threads <= image_height, "");
 
     constexpr auto lookfrom = Point3(13, 2, 3);
     constexpr auto lookat = Point3(0, 0, 0);

@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
     const auto start_time = std::chrono::system_clock::now();
     for (size_t j = 0; j < image_height; ++j)
     {
-        threads.at(j) = std::thread(std::bind(render_row, std::ref(image.at(j))));
+        threads.at(j) = std::thread(render_row, std::ref(image.at(j)));
     }
 
     for (auto& thread : threads)

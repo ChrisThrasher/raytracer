@@ -94,11 +94,21 @@ auto RandomScene()
 
 int main(int argc, char* argv[])
 {
+    if (argc < 2)
+    {
+        std::cerr << "Must specify filename.\n";
+        return -1;
+    }
+
     constexpr auto aspect_ratio = 16.0 / 9.0;
     constexpr auto image_width = 384ull;
     constexpr auto image_height = static_cast<size_t>(image_width / aspect_ratio);
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;
+
+    const auto filename = argv[1];
+    std::cout << "Writing to " << filename << '\n';
+    std::cout << "Scanlines remaining: " << image_height << std::flush;
 
     const auto world = RandomScene();
 
@@ -109,17 +119,6 @@ int main(int argc, char* argv[])
     constexpr auto aperture = 0.1;
     const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
-    auto image = Image<image_width, image_height>();
-    std::array<std::thread, image_height> threads;
-
-    if (argc < 2)
-    {
-        std::cerr << "Must specify filename.\n";
-        return -1;
-    }
-    const auto filename = argv[1];
-    std::cout << "Writing to " << filename << '\n';
-    std::cout << "Scanlines remaining: " << image_height << std::flush;
     const auto render_row = [cam, world](Row<image_width>& row) {
         static std::atomic<size_t> rows_rendered = 0;
         for (auto& pixel : row)
@@ -139,6 +138,8 @@ int main(int argc, char* argv[])
                   << std::flush;
     };
 
+    auto image = Image<image_width, image_height>();
+    auto threads = std::array<std::thread, image_height>();
     const auto start_time = std::chrono::system_clock::now();
     for (size_t j = 0; j < image_height; ++j)
     {

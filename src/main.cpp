@@ -1,13 +1,17 @@
 #include "Camera.h"
-#include "Color.h"
 #include "HittableList.h"
+#include "Image.h"
 #include "Material.h"
 #include "Ray.h"
 #include "Sphere.h"
 #include "Utilities.h"
 #include "Vec3.h"
+#include "WriteColor.h"
 
+#include <chrono>
+#include <fstream>
 #include <iostream>
+#include <thread>
 
 auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 {
@@ -31,6 +35,16 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 auto RandomScene()
 {
     auto world = HittableList();
+
+    /*
+    world.Add(std::make_shared<Sphere>(
+        Point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5))));
+    world.Add(std::make_shared<Sphere>(
+        Point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0))));
+    world.Add(std::make_shared<Sphere>(
+        Point3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.0)));
+    world.Add(std::make_shared<Sphere>(Point3(-1, 0, -1), -0.5, std::make_shared<Dielectric>(1.1)));
+    */
 
     const auto ground = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
     world.Add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, ground));
@@ -78,52 +92,86 @@ auto RandomScene()
     return world;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    if (argc < 2)
+    {
+        std::cerr << "Must specify filename.\n";
+        return -1;
+    }
+
     constexpr auto aspect_ratio = 16.0 / 9.0;
-    constexpr auto image_width = 1920;
-    constexpr auto image_height = static_cast<int>(image_width / aspect_ratio);
+    constexpr auto image_height = 216ull;
+    constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;
+    constexpr auto num_threads = 12;
+    constexpr auto rows_per_thread = image_height / num_threads;
+    static_assert(image_height % num_threads == 0, "");
+    static_assert(num_threads <= image_height, "");
 
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
-    /*
-    auto world = HittableList();
-    world.Add(std::make_shared<Sphere>(
-        Point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5))));
-    world.Add(std::make_shared<Sphere>(
-        Point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0))));
-    world.Add(std::make_shared<Sphere>(
-        Point3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.0)));
-    world.Add(std::make_shared<Sphere>(Point3(-1, 0, -1), -0.5, std::make_shared<Dielectric>(1.1)));
-    */
+    constexpr auto lookfrom = Point3(13, 2, 3);
+    constexpr auto lookat = Point3(0, 0, 0);
+    constexpr auto vup = Vec3(0, 1, 0);
+    constexpr auto focus_distance = 10;
+    constexpr auto aperture = 0.1;
+    const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
 
     const auto world = RandomScene();
 
-    const auto lookfrom = Point3(13, 2, 3);
-    const auto lookat = Point3(0, 0, 0);
-    const auto vup = Vec3(0, 1, 0);
-    const auto focus_distance = 10;
-    const auto aperture = 0.1;
-    const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
-
-    for (int j = image_height - 1; j >= 0; --j)
-    {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
-        for (int i = 0; i < image_width; ++i)
+    const auto render_rows = [cam, world](const std::vector<Row<image_width>*>& rows) {
+        static std::atomic<size_t> rows_rendered = 0;
+        for (const auto row : rows)
         {
-            auto pixel_color = Color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
+            for (auto& pixel : *row)
             {
-                auto u = (i + RandomDouble()) / (image_width + 1);
-                auto v = (j + RandomDouble()) / (image_height + 1);
-                Ray r = cam.GetRay(u, v);
-                pixel_color += RayColor(r, world, max_depth);
+                auto pixel_color = Color(0, 0, 0);
+                for (int s = 0; s < samples_per_pixel; ++s)
+                {
+                    const auto u = (pixel.u + RandomDouble()) / (image_width + 1);
+                    const auto v = (pixel.v + RandomDouble()) / (image_height + 1);
+                    const Ray r = cam.GetRay(u, v);
+                    pixel_color += RayColor(r, world, max_depth);
+                }
+                pixel = WriteColor(pixel_color, samples_per_pixel);
             }
-            WriteColor(std::cout, pixel_color, samples_per_pixel);
+            std::cout << "\rScanlines remaining: " << image_height - ++rows_rendered << "    "
+                      << std::flush;
         }
+    };
+
+    auto image = Image<image_width, image_height>();
+    auto threads = std::array<std::thread, num_threads>();
+    const auto start_time = std::chrono::system_clock::now();
+    for (size_t i = 0; i < threads.size(); ++i)
+    {
+        std::vector<Row<image_width>*> rows;
+        for (size_t j = 0; j < rows_per_thread; ++j)
+        {
+            rows.push_back(&image.at(i * rows_per_thread + j));
+        }
+        threads.at(i) = std::thread(render_rows, rows);
     }
 
-    std::cerr << "\nDone.\n";
+    const auto filename = argv[1];
+    std::cout << "Writing " << image_height << "x" << image_width << " image to " << filename
+              << ".\n";
+    std::cout << "Spawned " << threads.size() << " thread(s).\n";
+    std::cout << "Rendering " << rows_per_thread << " rows per thread.\n";
+    std::cout << "Scanlines remaining: " << image_height << std::flush;
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    std::cout << "\rFinished rendering in "
+              << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
+              << " seconds.\n";
+
+    std::ofstream output_file(filename);
+    output_file << image;
+    std::cout << "Done. Total runtime = "
+              << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
+              << " seconds.\n";
 }

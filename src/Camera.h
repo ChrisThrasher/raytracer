@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Random.h"
 #include "Ray.h"
 #include "Utilities.h"
 #include "Vec3.h"

@@ -134,7 +134,9 @@ int main(int argc, char* argv[])
             }
             row.at(i) = WriteColor(pixel_color, samples_per_pixel);
         }
-        std::cout << "\rScanlines remaining: " << image_height - ++rows_rendered << std::flush;
+        std::cout << '\r' << std::flush
+                  << "\rScanlines remaining: " << image_height - ++rows_rendered << "    "
+                  << std::flush;
     };
 
     const auto start_time = std::chrono::system_clock::now();
@@ -148,13 +150,13 @@ int main(int argc, char* argv[])
         thread.join();
     }
 
-    std::cout << "\nFinished rendering in "
+    std::cout << "\rFinished rendering in "
               << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
               << " seconds.\n";
 
     std::ofstream output_file(filename);
     output_file << image;
-    std::cout << "\nDone. Total runtime = "
+    std::cout << "Done. Total runtime = "
               << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
               << " seconds.\n";
 }

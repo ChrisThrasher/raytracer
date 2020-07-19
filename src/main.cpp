@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
     const auto filename = argv[1];
     std::cout << "Writing to " << filename << '\n';
     std::cout << "Scanlines remaining: " << image_height << std::flush;
-    const auto render_row = [cam, world](Row<image_width>& row, const int j) {
+    const auto render_row = [cam, world](Row<image_width>& row, const size_t j) {
         static std::atomic<size_t> rows_rendered = 0;
         for (size_t i = 0; i < image_width; ++i)
         {

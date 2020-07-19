@@ -9,6 +9,7 @@
 #include "WriteColor.h"
 
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <thread>
 
@@ -91,7 +92,7 @@ auto RandomScene()
     return world;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
     constexpr auto aspect_ratio = 16.0 / 9.0;
     constexpr auto image_width = 384ull;
@@ -111,7 +112,14 @@ int main()
     auto image = Image<image_width, image_height>();
     std::array<std::thread, image_height> threads;
 
-    std::cerr << "\rScanlines remaining: " << image_height << std::flush;
+    if (argc < 2)
+    {
+        std::cerr << "Must specify filename.\n";
+        return -1;
+    }
+    const auto filename = argv[1];
+    std::cout << "Writing to " << filename << '\n';
+    std::cout << "Scanlines remaining: " << image_height << std::flush;
     const auto render_row = [cam, world](Row<image_width>& row, const int j) {
         static std::atomic<size_t> rows_rendered = 0;
         for (size_t i = 0; i < image_width; ++i)
@@ -126,7 +134,7 @@ int main()
             }
             row.at(i) = WriteColor(pixel_color, samples_per_pixel);
         }
-        std::cerr << "\rScanlines remaining: " << image_height - ++rows_rendered << std::flush;
+        std::cout << "\rScanlines remaining: " << image_height - ++rows_rendered << std::flush;
     };
 
     const auto start_time = std::chrono::system_clock::now();
@@ -140,12 +148,13 @@ int main()
         thread.join();
     }
 
-    std::cerr << "\nFinished rendering in "
+    std::cout << "\nFinished rendering in "
               << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
               << " seconds.\n";
 
-    std::cout << image;
-    std::cerr << "\nDone. Total runtime = "
+    std::ofstream output_file(filename);
+    output_file << image;
+    std::cout << "\nDone. Total runtime = "
               << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
               << " seconds.\n";
 }

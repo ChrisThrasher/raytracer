@@ -1,6 +1,5 @@
 #pragma once
 
-#include "HittableList.h"
 #include "Row.h"
 
 template <size_t width, size_t height>

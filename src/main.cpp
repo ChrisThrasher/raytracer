@@ -1,11 +1,11 @@
 #include "Camera.h"
-#include "HittableList.h"
 #include "Image.h"
 #include "Material.h"
 #include "Ray.h"
 #include "Sphere.h"
 #include "Utilities.h"
 #include "Vec3.h"
+#include "World.h"
 #include "WriteColor.h"
 
 #include <chrono>

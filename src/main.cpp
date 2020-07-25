@@ -34,7 +34,7 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 
 auto RandomScene()
 {
-    auto world = HittableList();
+    auto world = World();
 
     /*
     world.Add(std::make_shared<Sphere>(

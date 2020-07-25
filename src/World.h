@@ -5,13 +5,13 @@
 #include <memory>
 #include <vector>
 
-class HittableList : public Hittable
+class World : public Hittable
 {
     std::vector<std::shared_ptr<Hittable>> m_objects;
 
 public:
-    HittableList() = default;
-    HittableList(const std::shared_ptr<Hittable>& object) { Add(object); }
+    World() = default;
+    World(const std::shared_ptr<Hittable>& object) { Add(object); }
 
     void Clear() { m_objects.clear(); }
     void Add(const std::shared_ptr<Hittable>& object) { m_objects.push_back(object); }
@@ -19,7 +19,7 @@ public:
     virtual bool Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const;
 };
 
-bool HittableList::Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const
+bool World::Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const
 {
     auto temp_rec = HitRecord();
     bool hit_anything = false;

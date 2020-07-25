@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
         std::vector<Row<image_width>*> rows;
         for (size_t j = 0; j < rows_per_thread; ++j)
         {
-            rows.push_back(&image.at(i * rows_per_thread + j));
+            rows.push_back(&image.At(i * rows_per_thread + j));
         }
         threads.at(i) = std::thread(render_rows, rows);
     }

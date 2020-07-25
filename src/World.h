@@ -13,7 +13,6 @@ public:
     World() = default;
     World(const std::shared_ptr<Hittable>& object) { Add(object); }
 
-    void Clear() { m_objects.clear(); }
     void Add(const std::shared_ptr<Hittable>& object) { m_objects.push_back(object); }
 
     virtual bool Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const;

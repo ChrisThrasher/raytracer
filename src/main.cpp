@@ -110,16 +110,18 @@ int main(int argc, char* argv[])
     static_assert(image_height % num_threads == 0, "");
     static_assert(num_threads <= image_height, "");
 
-    constexpr auto lookfrom = Point3(13, 2, 3);
-    constexpr auto lookat = Point3(0, 0, 0);
-    constexpr auto vup = Vec3(0, 1, 0);
-    constexpr auto focus_distance = 10;
-    constexpr auto aperture = 0.1;
-    const auto cam = Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
+    const auto camera = []() {
+        constexpr auto lookfrom = Point3(13, 2, 3);
+        constexpr auto lookat = Point3(0, 0, 0);
+        constexpr auto vup = Vec3(0, 1, 0);
+        constexpr auto focus_distance = 10;
+        constexpr auto aperture = 0.1;
+        return Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
+    }();
 
     const auto world = RandomScene();
 
-    const auto render_rows = [cam, world](const std::vector<Row<image_width>*>& rows) {
+    const auto render_rows = [camera, world](const std::vector<Row<image_width>*>& rows) {
         static std::atomic<size_t> rows_rendered = 0;
         for (const auto row : rows)
         {
@@ -130,7 +132,7 @@ int main(int argc, char* argv[])
                 {
                     const auto u = (pixel.u + RandomDouble()) / (image_width + 1);
                     const auto v = (pixel.v + RandomDouble()) / (image_height + 1);
-                    const Ray r = cam.GetRay(u, v);
+                    const Ray r = camera.GetRay(u, v);
                     pixel_color += RayColor(r, world, max_depth);
                 }
                 pixel = WriteColor(pixel_color, samples_per_pixel);

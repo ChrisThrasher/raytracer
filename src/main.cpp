@@ -157,6 +157,7 @@ int main(int argc, char* argv[])
     std::cout << "Writing " << image_height << "x" << image_width << " image to " << filename
               << ".\n";
     std::cout << "Spawned " << threads.size() << " thread(s).\n";
+    std::cout << "Hardware supports " << std::thread::hardware_concurrency() << " threads.\n";
     std::cout << "Rendering " << rows_per_thread << " rows per thread.\n";
     std::cout << "Scanlines remaining: " << image_height << std::flush;
 

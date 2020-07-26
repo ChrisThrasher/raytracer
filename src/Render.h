@@ -24,7 +24,7 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 }
 
 template <size_t image_width, size_t image_height>
-auto RenderRows(const Camera& camera,
+void RenderRows(const Camera& camera,
                 const World& world,
                 const std::vector<Row<image_width>*>& rows)
 {

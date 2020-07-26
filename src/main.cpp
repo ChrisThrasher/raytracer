@@ -103,8 +103,6 @@ int main(int argc, char* argv[])
     constexpr auto aspect_ratio = 16.0 / 9.0;
     constexpr auto image_height = 216ull;
     constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
-    constexpr auto samples_per_pixel = 50;
-    constexpr auto max_depth = 50;
     constexpr auto num_threads = 8;
     constexpr auto rows_per_thread = image_height / num_threads;
     static_assert(image_height % num_threads == 0, "");
@@ -123,6 +121,8 @@ int main(int argc, char* argv[])
 
     const auto render_rows = [camera, world](const std::vector<Row<image_width>*>& rows) {
         static std::atomic<size_t> rows_rendered = 0;
+        static constexpr auto samples_per_pixel = 50;
+        static constexpr auto max_depth = 50;
         for (const auto row : rows)
         {
             for (auto& pixel : *row)

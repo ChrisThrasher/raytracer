@@ -86,7 +86,8 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     }
 
     std::cout << "\rFinished rendering in "
-              << static_cast<double>((std::chrono::system_clock::now() - start_time).count()) / 1'000'000.0
+              << static_cast<double>((std::chrono::system_clock::now() - start_time).count()) /
+                     1'000'000.0
               << " seconds.\n";
 
     return image;

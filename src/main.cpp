@@ -9,7 +9,6 @@
 #include "World.h"
 #include "WriteColor.h"
 
-#include <fstream>
 #include <iostream>
 
 int main(int argc, char* argv[])
@@ -19,6 +18,7 @@ int main(int argc, char* argv[])
         std::cerr << "Must specify filename.\n";
         return -1;
     }
+    const auto filename = argv[1];
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
     constexpr auto image_height = 216ull;
@@ -37,8 +37,5 @@ int main(int argc, char* argv[])
 
     const auto image = RenderImage<image_width, image_height>(camera, world);
 
-    const auto filename = argv[1];
-    std::ofstream output_file(filename);
-    output_file << image;
-    std::cout << "Wrote image to " << filename << ".\n";
+    image.Write(filename);
 }

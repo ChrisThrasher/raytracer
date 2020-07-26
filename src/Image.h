@@ -2,6 +2,8 @@
 
 #include "Row.h"
 
+#include <fstream>
+
 template <size_t width, size_t height>
 class Image
 {
@@ -19,16 +21,17 @@ public:
 
     auto& At(const size_t index) { return m_rows.at(index); }
 
-    friend std::ostream& operator<<(std::ostream& out, const Image<width, height>& image)
+    void Write(const std::string& filename) const
     {
-        out << "P3\n" << width << ' ' << height << "\n255\n";
-        for (auto it = std::cend(image.m_rows) - 1; it >= cbegin(image.m_rows); --it)
+        std::ofstream output_file(filename);
+        output_file << "P3\n" << width << ' ' << height << "\n255\n";
+        for (auto it = std::cend(m_rows) - 1; it >= cbegin(m_rows); --it)
         {
             for (const auto& pixel : *it)
             {
-                out << pixel;
+                output_file << pixel;
             }
         }
-        return out;
+        std::cout << "Wrote image to " << filename << ".\n";
     }
 };

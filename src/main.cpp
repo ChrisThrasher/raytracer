@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
     constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
     constexpr auto samples_per_pixel = 50;
     constexpr auto max_depth = 50;
-    constexpr auto num_threads = 12;
+    constexpr auto num_threads = 8;
     constexpr auto rows_per_thread = image_height / num_threads;
     static_assert(image_height % num_threads == 0, "");
     static_assert(num_threads <= image_height, "");

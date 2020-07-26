@@ -4,6 +4,9 @@
 #include "World.h"
 #include "WriteColor.h"
 
+#include <chrono>
+#include <thread>
+
 auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 {
     if (depth <= 0)
@@ -49,3 +52,42 @@ void RenderRows(const Camera& camera,
                   << std::flush;
     }
 };
+
+template <size_t image_width, size_t image_height>
+auto RenderImage(const Camera& camera, const World& world) -> Image<image_width, image_height>
+{
+    static constexpr auto num_threads = 8;
+    static constexpr auto rows_per_thread = image_height / num_threads;
+    static_assert(image_height % num_threads == 0, "");
+    static_assert(num_threads <= image_height, "");
+
+    auto image = Image<image_width, image_height>();
+    auto threads = std::array<std::thread, num_threads>();
+    const auto start_time = std::chrono::system_clock::now();
+    for (size_t i = 0; i < threads.size(); ++i)
+    {
+        std::vector<Row<image_width>*> rows;
+        for (size_t j = 0; j < rows_per_thread; ++j)
+        {
+            rows.push_back(&image.At(i * rows_per_thread + j));
+        }
+        threads.at(i) = std::thread(RenderRows<image_width, image_height>, camera, world, rows);
+    }
+
+    std::cout << "Rendering " << image_height << "x" << image_width << " image.\n";
+    std::cout << "Spawned " << threads.size() << " thread(s).\n";
+    std::cout << "Hardware supports " << std::thread::hardware_concurrency() << " threads.\n";
+    std::cout << "Rendering " << rows_per_thread << " rows per thread.\n";
+    std::cout << "Scanlines remaining: " << image_height << std::flush;
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    std::cout << "\rFinished rendering in "
+              << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
+              << " seconds.\n";
+
+    return image;
+}

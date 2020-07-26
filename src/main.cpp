@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-int main(int argc, char* argv[])
+int main(int argc, char* argv[]) try
 {
     if (argc < 2)
     {
@@ -38,4 +38,8 @@ int main(int argc, char* argv[])
     const auto image = RenderImage<image_width, image_height>(camera, world);
 
     image.Write(filename);
+}
+catch (...)
+{
+    std::cerr << "\nCaught unhandled exception";
 }

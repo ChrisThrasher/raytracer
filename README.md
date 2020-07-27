@@ -10,12 +10,15 @@ Requires CMake 3.17 and a C++17-compliant compiler
 
 ## Running the Ray Tracer
 `./build/main image.ppm`
+
 The executable requires one argument that specifies the filename. The only supported filetype is PPM (Portable Pixelmap Format).
 
 ## Autoformatting
 `./format.sh`
+
 Automatting using lang-format. See `.clang-format` for the specific formatting options used.
 
 ## Static Analysis
-1. `./analyze.sh`
+`./analyze.sh`
+
 Static analysis is performed by clang-tidy. See `.clang-tidy` for the specific clang-tidy options used.

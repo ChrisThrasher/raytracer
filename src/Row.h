@@ -7,9 +7,9 @@ class Row : public std::array<Pixel, width>
 {
 public:
     Row() = default;
-    Row(const size_t row_number)
+    Row(const uint16_t row_number)
     {
-        size_t col_number = 0;
+        uint16_t col_number = 0;
         for (auto& pixel : *this)
         {
             pixel.u = col_number++;

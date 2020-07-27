@@ -16,7 +16,7 @@ The executable requires one argument that specifies the filename. The only suppo
 ## Autoformatting
 `./format.sh`
 
-Automatting using lang-format. See `.clang-format` for the specific formatting options used.
+Automatting is performed by clang-format. See `.clang-format` for the specific formatting options used.
 
 ## Static Analysis
 `./analyze.sh`

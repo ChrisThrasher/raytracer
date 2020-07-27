@@ -8,7 +8,7 @@ The purpose of this project is not to provide a useful ray tracer but rather to 
 Requires CMake 3.17 and a C++17-compliant compiler
 1. Clone repository
 1. `mkdir build`
-1. `./compile.sh`
+1. [`./compile.sh`](compile.sh)
 
 ## Running the Ray Tracer
 `./build/main image.ppm`
@@ -18,12 +18,12 @@ The executable requires one argument that specifies the filename. The only suppo
 ## Autoformatting
 `./format.sh`
 
-Automatting is performed by clang-format. See `.clang-format` for the specific formatting options used.
+Automatting is performed by clang-format. See [`.clang-format`](.clang-format) for the specific formatting options used.
 
 ## Static Analysis
 `./analyze.sh`
 
-Static analysis is performed by clang-tidy. See `.clang-tidy` for the specific clang-tidy options used.
+Static analysis is performed by clang-tidy. See [`.clang-tidy`](.clang-tidy) for the specific clang-tidy options used.
 
 ## Supported Systems
 All development was done in macOS Catelina using Apple Clang version 11.0. Not yet tested with any other compilers or operating systems.

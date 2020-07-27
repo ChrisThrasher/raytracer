@@ -22,3 +22,6 @@ Automatting is performed by clang-format. See `.clang-format` for the specific f
 `./analyze.sh`
 
 Static analysis is performed by clang-tidy. See `.clang-tidy` for the specific clang-tidy options used.
+
+## Supported Systems
+All development was done in macOS Catelina using Apple Clang version 11.0. Not yet tested with any other compilers or operating systems.

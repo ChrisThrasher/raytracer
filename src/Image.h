@@ -12,7 +12,7 @@ class Image
 public:
     Image()
     {
-        size_t row_number = 0;
+        uint16_t row_number = 0;
         for (auto& row : m_rows)
         {
             row = Row<width>(row_number++);

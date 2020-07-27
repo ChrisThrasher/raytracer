@@ -32,7 +32,7 @@ void RenderRows(const Camera& camera,
                 const std::vector<Row<image_width>*>& rows)
 {
     static std::atomic<size_t> rows_rendered = 0;
-    static constexpr auto samples_per_pixel = 25;
+    static constexpr auto samples_per_pixel = 15;
     static constexpr auto max_depth = 5;
     for (const auto row : rows)
     {

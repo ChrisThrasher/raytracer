@@ -85,10 +85,11 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
         thread.join();
     }
 
-    std::cout << "\rFinished rendering in "
-              << static_cast<double>((std::chrono::system_clock::now() - start_time).count()) /
-                     1'000'000.0
-              << " seconds.\n";
+    const auto runtime =
+        static_cast<double>((std::chrono::system_clock::now() - start_time).count()) / 1'000'000.0;
+    std::cout << "\rFinished rendering in " << runtime << " seconds.\n";
+    std::cout << "Rendered " << static_cast<int>(image_width * image_height / runtime)
+              << " pixels per second.\n";
 
     return image;
 }

@@ -2,9 +2,9 @@
 
 struct Pixel
 {
-    int r{0};
-    int g{255};
-    int b{0};
+    uint8_t r{0};
+    uint8_t g{255};
+    uint8_t b{0};
     size_t u{0};
     size_t v{0};
 };

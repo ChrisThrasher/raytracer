@@ -62,6 +62,7 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     static_assert(num_threads <= image_height, "");
 
     auto image = Image<image_width, image_height>();
+    std::cout << "Image is " << sizeof(image) << " bytes.\n";
     auto threads = std::array<std::thread, num_threads>();
     const auto start_time = std::chrono::system_clock::now();
     for (size_t i = 0; i < threads.size(); ++i)

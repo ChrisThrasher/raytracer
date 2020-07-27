@@ -41,8 +41,8 @@ void RenderRows(const Camera& camera,
             auto pixel_color = Color(0, 0, 0);
             for (int s = 0; s < samples_per_pixel; ++s)
             {
-                const auto u = (pixel.u + RandomDouble()) / (image_width + 1);
-                const auto v = (pixel.v + RandomDouble()) / (image_height + 1);
+                const auto u = (static_cast<double>(pixel.u) + RandomDouble()) / (image_width + 1);
+                const auto v = (static_cast<double>(pixel.v) + RandomDouble()) / (image_height + 1);
                 const Ray r = camera.GetRay(u, v);
                 pixel_color += RayColor(r, world, max_depth);
             }
@@ -86,7 +86,8 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     }
 
     std::cout << "\rFinished rendering in "
-              << (std::chrono::system_clock::now() - start_time).count() / 1'000'000.0
+              << static_cast<double>((std::chrono::system_clock::now() - start_time).count()) /
+                     1'000'000.0
               << " seconds.\n";
 
     return image;

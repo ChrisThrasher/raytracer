@@ -74,10 +74,9 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
         threads.at(i) = std::thread(RenderRows<image_width, image_height>, camera, world, rows);
     }
 
-    std::cout << "Rendering " << image_height << "x" << image_width << " image.\n";
-    std::cout << "Spawned " << threads.size() << " thread(s).\n";
-    std::cout << "Hardware supports " << std::thread::hardware_concurrency() << " threads.\n";
-    std::cout << "Rendering " << rows_per_thread << " rows per thread.\n";
+    std::cout << "Spawned " << threads.size() << " threads. (Hardware supports "
+              << std::thread::hardware_concurrency() << " concurrent threads)\n";
+    std::cout << "Rendering " << image_height << "x" << image_width << " image...\n";
     std::cout << "Scanlines remaining: " << image_height << std::flush;
 
     for (auto& thread : threads)
@@ -87,9 +86,8 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
 
     const auto runtime =
         static_cast<double>((std::chrono::system_clock::now() - start_time).count()) / 1'000'000.0;
-    std::cout << "\rFinished rendering in " << runtime << " seconds.\n";
-    std::cout << "Rendered " << static_cast<int>(image_width * image_height / runtime)
-              << " pixels per second.\n";
+    std::cout << "\rFinished rendering in " << runtime << " seconds. ("
+              << static_cast<int>(image_width * image_height / runtime) << " pixels per second)\n";
 
     return image;
 }

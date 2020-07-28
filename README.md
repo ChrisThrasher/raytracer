@@ -13,7 +13,7 @@ Requires CMake 3.17 and a C++17-compliant compiler
 ## Running the Ray Tracer
 `./build/main image.ppm`
 
-The executable requires one argument that specifies the filename. The only supported filetype is PPM (Portable Pixelmap Format).
+The executable requires one argument that specifies the filename. The only supported filetype is [PPM (Portable Pixelmap Format)](http://netpbm.sourceforge.net/doc/ppm.html).
 
 ## Autoformatting
 [`./format.sh`](format.sh)

@@ -18,3 +18,5 @@ add_compile_options(
 )
 
 add_executable(main src/main.cpp)
+
+add_subdirectory(googletest)

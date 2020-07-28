@@ -20,3 +20,10 @@ add_compile_options(
 add_executable(main src/main.cpp)
 
 add_subdirectory(googletest)
+
+enable_testing()
+add_executable(image_tests test/ImageTests.cpp)
+target_include_directories(image_tests PRIVATE src)
+target_include_directories(image_tests SYSTEM PRIVATE ${gtest_SOURCE_DIR}/include)
+target_link_libraries(image_tests PRIVATE gtest)
+add_test(NAME image_tests COMMAND image_tests)

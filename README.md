@@ -4,8 +4,6 @@ Implementation of Peter Shirley's [Ray Tracing In One Weekend](https://raytracin
 
 The purpose of this project is not to provide a useful ray tracer but rather to be a proving ground for C++ best practices and various language concepts. If the end product happens to be a usable ray tracer then that's good too. Do not take this project as a starting point for writing your own ray tracer. Much of the core ray tracing logic was directly copied from Peter Shirley's example code and I cannot guarantee its quality.
 
-![Sample image](docs/sample.ppm)
-
 ## Building the Code
 Requires CMake 3.17 and a C++17-compliant compiler
 1. Clone repository

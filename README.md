@@ -15,6 +15,11 @@ Requires CMake 3.17 and a C++17-compliant compiler
 
 The executable requires one argument that specifies the filename. The only supported filetype is [PPM (Portable Pixelmap Format)](http://netpbm.sourceforge.net/doc/ppm.html).
 
+## Running Automated Tests
+[`./compile.sh test`](compile.sh)
+
+This will build and run all automated tests. See [test](test) directory for all test-related code.
+
 ## Autoformatting
 [`./format.sh`](format.sh)
 

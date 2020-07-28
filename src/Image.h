@@ -3,6 +3,7 @@
 #include "Row.h"
 
 #include <fstream>
+#include <iostream>
 
 template <size_t width, size_t height>
 class Image

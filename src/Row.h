@@ -2,6 +2,8 @@
 
 #include "Pixel.h"
 
+#include <cstddef>
+
 template <size_t width>
 class Row : public std::array<Pixel, width>
 {

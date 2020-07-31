@@ -85,7 +85,6 @@ template <size_t image_width, size_t image_height>
 auto RenderImage(const Camera& camera, const World& world) -> Image<image_width, image_height>
 {
     static constexpr auto num_threads = 8;
-    static_assert(image_height % num_threads == 0, "");
     static_assert(num_threads <= image_height, "");
 
     auto image = Image<image_width, image_height>();

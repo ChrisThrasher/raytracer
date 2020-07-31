@@ -18,3 +18,12 @@ add_compile_options(
 )
 
 add_executable(main src/main.cpp)
+
+add_subdirectory(googletest)
+
+enable_testing()
+add_executable(unit_tests test/UnitTests.cpp)
+target_include_directories(unit_tests PRIVATE src)
+target_include_directories(unit_tests SYSTEM PRIVATE ${gtest_SOURCE_DIR}/include)
+target_link_libraries(unit_tests PRIVATE gtest)
+add_test(NAME unit_tests COMMAND unit_tests)

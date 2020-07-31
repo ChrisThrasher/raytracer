@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <ostream>
+
 struct Pixel
 {
     uint8_t r{0};

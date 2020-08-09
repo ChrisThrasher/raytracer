@@ -17,7 +17,7 @@ add_compile_options(
     -Wold-style-cast
 )
 
-add_executable(main src/main.cpp)
+add_executable(main src/Main.cpp)
 
 add_subdirectory(googletest)
 

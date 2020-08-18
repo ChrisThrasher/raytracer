@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 project(raytracer)
+
+include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -19,7 +21,12 @@ add_compile_options(
 
 add_executable(main src/Main.cpp)
 
-add_subdirectory(googletest)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY "https://github.com/google/googletest.git"
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 add_executable(unit_tests test/UnitTests.cpp)

@@ -76,8 +76,8 @@ void RenderRows(const Camera& camera,
             }
             pixel = WriteColor(pixel_color, samples_per_pixel);
         }
-        std::cout << "\rScanlines remaining: " << image_height - ++rows_rendered << "    "
-                  << std::flush;
+        std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4)
+                  << image_height - ++rows_rendered << std::flush;
         row = queue->Pop();
     }
 }
@@ -100,7 +100,8 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     std::cout << "Spawned " << threads.size() << " threads. (Hardware supports "
               << std::thread::hardware_concurrency() << " concurrent threads)\n";
     std::cout << "Rendering " << image_height << "x" << image_width << " image...\n";
-    std::cout << "Scanlines remaining: " << image_height << std::flush;
+    std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4)
+              << image_height;
 
     for (auto& thread : threads)
     {

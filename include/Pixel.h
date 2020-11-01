@@ -14,6 +14,6 @@ struct Pixel
 
 void operator<<(std::ostream& ostream, const Pixel& pixel)
 {
-    ostream << static_cast<int>(pixel.r) << ' ' << static_cast<int>(pixel.g) << ' '
-            << static_cast<int>(pixel.b) << '\n';
+    ostream << static_cast<int>(pixel.r) << ' ' << static_cast<int>(pixel.g) << ' ' << static_cast<int>(pixel.b)
+            << '\n';
 }

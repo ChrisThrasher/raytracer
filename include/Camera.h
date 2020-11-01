@@ -44,7 +44,6 @@ public:
     {
         const auto rd = m_lens_radius * RandomInUnitDisk();
         const auto offset = m_u * rd.X() + m_v * rd.Y();
-        return Ray(m_origin + offset,
-                   m_lower_left_corner + s * m_horizontal + t * m_vertical - m_origin - offset);
+        return Ray(m_origin + offset, m_lower_left_corner + s * m_horizontal + t * m_vertical - m_origin - offset);
     }
 };

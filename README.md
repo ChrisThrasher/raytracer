@@ -4,17 +4,7 @@ Implementation of Peter Shirley's [Ray Tracing In One Weekend](https://raytracin
 
 The purpose of this project is not to provide a useful ray tracer but rather to be a proving ground for C++ best practices and various language concepts. If the end product happens to be a usable ray tracer then that's good too. Do not take this project as a starting point for writing your own ray tracer. Much of the core ray tracing logic was directly copied from Peter Shirley's example code and I cannot guarantee its quality.
 
-## Running the Ray Tracer
+# Usage
 `./build/main image.ppm`
 
 The executable requires one argument that specifies the filename. The only supported filetype is [PPM (Portable Pixelmap Format)](http://netpbm.sourceforge.net/doc/ppm.html).
-
-## Autoformatting
-[`./format.sh`](format.sh)
-
-Automatting is performed by clang-format. See [`.clang-format`](.clang-format) for the specific formatting options used.
-
-## Static Analysis
-[`./analyze.sh`](analyze.sh)
-
-Static analysis is performed by clang-tidy. See [`.clang-tidy`](.clang-tidy) for the specific clang-tidy options used.

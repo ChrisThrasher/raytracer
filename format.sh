@@ -1,3 +1,3 @@
 #!/bin/bash
 
-clang-format -i `find src -name *.cpp` `find src -name *.h` `find test -name *.cpp`
+clang-format -i `find src -name *.cpp` `find include -name *.h` `find test -name *.cpp`

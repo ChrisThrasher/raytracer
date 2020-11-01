@@ -17,7 +17,7 @@ add_compile_options(
     -Wold-style-cast
 )
 
-add_executable(raytracer src/Main.cpp)
+add_executable(raytracer src/Raytracer.cpp)
 target_include_directories(raytracer PRIVATE include)
 
 include(FetchContent)

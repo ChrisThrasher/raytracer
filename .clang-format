@@ -1,5 +1,5 @@
 Language: Cpp
-ColumnLimit: 100
+ColumnLimit: 120
 IndentWidth: 4
 
 AccessModifierOffset: -4
@@ -10,5 +10,6 @@ BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Allman
 BreakConstructorInitializers: BeforeComma
+MaxEmptyLinesToKeep: 1
 PointerAlignment: Left
 PenaltyReturnTypeOnItsOwnLine: 1000

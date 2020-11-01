@@ -55,9 +55,7 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 }
 
 template <size_t image_width, size_t image_height>
-void RenderRows(const Camera& camera,
-                const World& world,
-                RenderQueue<image_width, image_height>* queue)
+void RenderRows(const Camera& camera, const World& world, RenderQueue<image_width, image_height>* queue)
 {
     static std::atomic<size_t> rows_rendered = 0;
     static constexpr auto samples_per_pixel = 15;
@@ -98,19 +96,17 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
         thread = std::thread(RenderRows<image_width, image_height>, camera, world, &queue);
     }
 
-    std::cout << "Spawned " << threads.size() << " threads. (Hardware supports "
-              << std::thread::hardware_concurrency() << " concurrent threads)\n";
+    std::cout << "Spawned " << threads.size() << " threads. (Hardware supports " << std::thread::hardware_concurrency()
+              << " concurrent threads)\n";
     std::cout << "Rendering " << image_height << "x" << image_width << " image...\n";
-    std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4)
-              << image_height;
+    std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4) << image_height;
 
     for (auto& thread : threads)
     {
         thread.join();
     }
 
-    const auto runtime =
-        static_cast<double>((std::chrono::system_clock::now() - start_time).count()) / 1'000'000.0;
+    const auto runtime = static_cast<double>((std::chrono::system_clock::now() - start_time).count()) / 1'000'000.0;
     std::cout << "\rFinished rendering in " << runtime << " seconds. ("
               << static_cast<int>(image_width * image_height / runtime) << " pixels per second)\n";
 

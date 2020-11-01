@@ -15,10 +15,7 @@ auto Schlick(const double cosine, const double ref_idx)
 class Material
 {
 public:
-    virtual bool Scatter(const Ray& r_in,
-                         const HitRecord& rec,
-                         Color& attenuation,
-                         Ray& scattered) const = 0;
+    virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) const = 0;
 };
 
 class Lambertian final : public Material
@@ -52,10 +49,7 @@ public:
     {
     }
 
-    virtual bool Scatter(const Ray& r_in,
-                         const HitRecord& rec,
-                         Color& attenuation,
-                         Ray& scattered) const
+    virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) const
     {
         auto reflected = Reflect(UnitVector(r_in.Direction()), rec.normal);
         scattered = Ray(rec.p, reflected + m_fuzz * RandomInUnitSphere());
@@ -74,10 +68,7 @@ public:
     {
     }
 
-    virtual bool Scatter(const Ray& r_in,
-                         const HitRecord& rec,
-                         Color& attenuation,
-                         Ray& scattered) const
+    virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) const
     {
         attenuation = Color(1.0, 1.0, 1.0);
         double etai_over_etat = (rec.front_face) ? (1.0 / m_ref_idx) : m_ref_idx;

@@ -58,10 +58,7 @@ public:
 using Point3 = Vec3;
 using Color = Vec3;
 
-inline auto& operator<<(std::ostream& out, const Vec3& v)
-{
-    return out << v.X() << ' ' << v.Y() << ' ' << v.Z();
-}
+inline auto& operator<<(std::ostream& out, const Vec3& v) { return out << v.X() << ' ' << v.Y() << ' ' << v.Z(); }
 
 constexpr inline auto operator+(const Vec3& lhs, const Vec3& rhs)
 {
@@ -80,10 +77,7 @@ constexpr inline auto operator*(const Vec3& lhs, const Vec3& rhs)
     return Vec3(lhs.X() * rhs.X(), lhs.Y() * rhs.Y(), lhs.Z() * rhs.Z());
 }
 
-constexpr inline auto operator*(const double t, const Vec3& v)
-{
-    return Vec3(t * v.X(), t * v.Y(), t * v.Z());
-}
+constexpr inline auto operator*(const double t, const Vec3& v) { return Vec3(t * v.X(), t * v.Y(), t * v.Z()); }
 
 constexpr inline auto operator*(const Vec3& v, const double t) { return t * v; }
 

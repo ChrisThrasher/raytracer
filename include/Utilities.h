@@ -16,7 +16,4 @@ inline auto RandomDouble()
     return distribution(generator);
 }
 
-inline auto RandomDouble(const double min, const double max)
-{
-    return std::clamp(RandomDouble(), min, max);
-}
+inline auto RandomDouble(const double min, const double max) { return std::clamp(RandomDouble(), min, max); }

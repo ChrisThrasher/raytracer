@@ -18,6 +18,7 @@ add_compile_options(
 )
 
 add_executable(raytracer src/Main.cpp)
+target_include_directories(raytracer PRIVATE include)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -31,7 +32,7 @@ add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 enable_testing()
 add_executable(unit_tests test/UnitTests.cpp)
-target_include_directories(unit_tests PRIVATE src)
+target_include_directories(unit_tests PRIVATE include)
 target_include_directories(unit_tests SYSTEM PRIVATE ${gtest_SOURCE_DIR}/include)
 target_link_libraries(unit_tests PRIVATE gtest)
 add_test(NAME unit_tests COMMAND unit_tests)

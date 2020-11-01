@@ -8,7 +8,9 @@ The purpose of this project is not to provide a useful ray tracer but rather to 
 Requires CMake 3.17 and a C++17-compliant compiler
 1. Clone repository
 1. `mkdir build`
-1. [`./compile.sh`](compile.sh)
+1. `cd build`
+1. `cmake ..`
+1. `make`
 
 ## Running the Ray Tracer
 `./build/main image.ppm`

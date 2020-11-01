@@ -19,6 +19,7 @@ add_compile_options(
 
 add_executable(raytracer src/Raytracer.cpp)
 target_include_directories(raytracer PRIVATE include)
+target_link_libraries(raytracer PRIVATE pthread)
 
 include(FetchContent)
 FetchContent_Declare(

@@ -2,6 +2,7 @@
 
 #include "Pixel.h"
 
+#include <array>
 #include <cstddef>
 
 template <size_t width>

@@ -2,6 +2,8 @@
 
 #include "Ray.h"
 
+#include <memory>
+
 class Material;
 
 struct HitRecord

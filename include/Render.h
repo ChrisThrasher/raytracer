@@ -4,6 +4,7 @@
 #include "World.h"
 #include "WriteColor.h"
 
+#include <atomic>
 #include <chrono>
 #include <optional>
 #include <thread>

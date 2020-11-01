@@ -80,7 +80,7 @@ void RenderRows(const Camera& camera,
                   << std::flush;
         row = queue->Pop();
     }
-};
+}
 
 template <size_t image_width, size_t image_height>
 auto RenderImage(const Camera& camera, const World& world) -> Image<image_width, image_height>

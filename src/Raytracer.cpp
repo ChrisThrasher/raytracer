@@ -40,7 +40,7 @@ try
 
     image.Write(filename);
 }
-catch (...)
+catch (const std::exception& ex)
 {
-    std::cerr << "\nCaught unhandled exception";
+    std::cerr << "\nCaught unhandled exception: " << ex.what();
 }

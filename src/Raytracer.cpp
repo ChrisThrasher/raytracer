@@ -20,15 +20,7 @@ try
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
 
-    const auto camera = []() {
-        constexpr auto lookfrom = Point3(13, 2, 3);
-        constexpr auto lookat = Point3(0, 0, 0);
-        constexpr auto vup = Vec3(0, 1, 0);
-        constexpr auto focus_distance = 10;
-        constexpr auto aperture = 0.1;
-        return Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, focus_distance);
-    }();
-
+    const auto camera = Camera(Point3(13, 2, 3), Point3(0, 0, 0), Vec3(0, 1, 0), 20, aspect_ratio, 0.1, 10);
     const auto world = World::RandomScene();
 
     constexpr auto image_height = 216ull;

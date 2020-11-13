@@ -25,9 +25,8 @@ try
 
     constexpr auto image_height = 216ull;
     constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
-    const auto image = RenderImage<image_width, image_height>(camera, world);
 
-    image.Write(filename);
+    RenderImage<image_width, image_height>(camera, world).Write(filename);
 }
 catch (const std::exception& ex)
 {

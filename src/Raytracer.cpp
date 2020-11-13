@@ -15,10 +15,7 @@ int main(int argc, char* argv[])
 try
 {
     if (argc < 2)
-    {
-        std::cerr << "Must specify filename.\n";
-        return -1;
-    }
+        throw std::invalid_argument("Must specify filename");
     const auto filename = argv[1];
 
     constexpr auto aspect_ratio = 16.0 / 9.0;

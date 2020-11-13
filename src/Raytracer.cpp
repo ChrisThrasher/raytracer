@@ -43,4 +43,5 @@ try
 catch (const std::exception& ex)
 {
     std::cerr << "\nCaught unhandled exception: " << ex.what();
+    return -1;
 }

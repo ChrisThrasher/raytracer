@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.11)
 project(raytracer)
 
+include(FetchContent)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_BUILD_TYPE Release)
@@ -17,11 +19,19 @@ add_compile_options(
     -Wold-style-cast
 )
 
+FetchContent_Declare(
+    options
+    GIT_REPOSITORY "https://github.com/ChrisThrasher/options.git"
+    GIT_TAG v0.1.2
+)
+FetchContent_GetProperties(options)
+FetchContent_Populate(options)
+add_subdirectory(${options_SOURCE_DIR} ${options_BINARY_DIR} EXCLUDE_FROM_ALL)
+
 add_executable(raytracer src/Raytracer.cpp)
-target_include_directories(raytracer PRIVATE include)
+target_include_directories(raytracer PRIVATE include ${options_SOURCE_DIR}/include)
 target_link_libraries(raytracer PRIVATE pthread)
 
-include(FetchContent)
 FetchContent_Declare(
     gtest
     GIT_REPOSITORY "https://github.com/google/googletest.git"

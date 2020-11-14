@@ -9,14 +9,15 @@
 #include "World.h"
 #include "WriteColor.h"
 
+#include <Options.h>
+
 #include <iostream>
 
 int main(int argc, char* argv[])
 try
 {
-    if (argc < 2)
-        throw std::invalid_argument("Must specify filename");
-    const auto filename = argv[1];
+    Options options(argc, argv);
+    const auto filename = options.At(1);
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
 

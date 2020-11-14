@@ -31,6 +31,6 @@ try
 }
 catch (const std::exception& ex)
 {
-    std::cerr << "\nCaught unhandled exception: " << ex.what();
+    std::cerr << "Caught unhandled exception: " << ex.what() << '\n';
     return -1;
 }

@@ -22,7 +22,7 @@ add_compile_options(
 FetchContent_Declare(
     options
     GIT_REPOSITORY "https://github.com/ChrisThrasher/options.git"
-    GIT_TAG v0.1.1
+    GIT_TAG v0.1.2-dev
 )
 FetchContent_GetProperties(options)
 FetchContent_Populate(options)

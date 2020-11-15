@@ -9,7 +9,7 @@
 #include "World.h"
 #include "WriteColor.h"
 
-#include <Options.h>
+#include <Options/Options.h>
 
 #include <iostream>
 

@@ -9,14 +9,14 @@
 #include "World.h"
 #include "WriteColor.h"
 
-#include <Options.h>
+#include <Options/Options.h>
 
 #include <iostream>
 
 int main(int argc, char* argv[])
 try
 {
-    Options options(argc, argv);
+    const Options options(argc, argv);
     const auto filename = options.At(1, "filename");
 
     constexpr auto aspect_ratio = 16.0 / 9.0;

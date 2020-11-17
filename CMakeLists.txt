@@ -22,15 +22,15 @@ add_compile_options(
 FetchContent_Declare(
     options
     GIT_REPOSITORY "https://github.com/ChrisThrasher/options.git"
-    GIT_TAG v0.3.0
+    GIT_TAG v0.3.1
 )
 FetchContent_GetProperties(options)
 FetchContent_Populate(options)
 add_subdirectory(${options_SOURCE_DIR} ${options_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 add_executable(raytracer src/Raytracer.cpp)
-target_include_directories(raytracer PRIVATE include ${options_SOURCE_DIR}/include)
-target_link_libraries(raytracer PRIVATE pthread)
+target_include_directories(raytracer PRIVATE include)
+target_link_libraries(raytracer PRIVATE options pthread)
 
 FetchContent_Declare(
     gtest

@@ -17,7 +17,7 @@ try
     std::string filename = "image.ppm";
 
     opts::Parser parser(argc, argv, "Usage\n  raytracer [options]");
-    parser.Add("o,output_file", "Output file name", opts::String(filename));
+    parser.Add("o,output_file", "Output file name", opts::Get(filename));
     parser.Parse();
 
     constexpr auto aspect_ratio = 16.0 / 9.0;

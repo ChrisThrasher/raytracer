@@ -9,15 +9,16 @@
 #include "World.h"
 #include "WriteColor.h"
 
-#include <Options/Options.h>
-
-#include <iostream>
+#include <Options/Parser.h>
 
 int main(int argc, char* argv[])
 try
 {
-    const Options options(argc, argv);
-    const auto filename = options.At(1, "filename");
+    std::string filename = "image.ppm";
+
+    opts::Parser parser(argc, argv, "Usage\n  raytracer [options]");
+    parser.Add("o,output_file", "Output file name", opts::Get(filename));
+    parser.Parse();
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
 

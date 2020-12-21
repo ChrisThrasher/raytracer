@@ -8,11 +8,13 @@ The purpose of this project is not to provide a useful ray tracer but rather to 
 ```
 $ ./build/raytracer --help
 Usage
-  raytracer [options]
+  raytracer <output_filename>
+
+Positions
+  output_filename Output file name
 
 Options
   -h, --help      Show this help text
-  -o, --output_file Output file name
 ```
 
-The executable requires one argument that specifies the filename. The only supported filetype is [PPM (Portable Pixelmap Format)](http://netpbm.sourceforge.net/doc/ppm.html).
+The only supported filetype is [PPM (Portable Pixelmap Format)](http://netpbm.sourceforge.net/doc/ppm.html).

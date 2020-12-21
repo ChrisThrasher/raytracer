@@ -9,16 +9,20 @@
 #include "World.h"
 #include "WriteColor.h"
 
-#include <Options/Parser.h>
+#include <argon/Parser.h>
+
+constexpr auto help = R"(Usage
+  raytracer <output_filename>)";
 
 int main(int argc, char* argv[])
 try
 {
-    std::string filename = "image.ppm";
-
-    opts::Parser parser(argc, argv, "Usage\n  raytracer [options]");
-    parser.Add("o,output_file", "Output file name", opts::Get(filename));
+    argon::Parser parser(argc, argv);
+    parser.AddOption("h,help", "Show this help text", argon::Usage(help));
+    parser.AddPosition("output_filename", "Output file name");
     parser.Parse();
+
+    const auto filename = parser.GetPosition(0);
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
 
@@ -32,6 +36,6 @@ try
 }
 catch (const std::exception& ex)
 {
-    std::cerr << "Caught unhandled exception: " << ex.what() << '\n';
+    std::cerr << ex.what() << '\n';
     return -1;
 }

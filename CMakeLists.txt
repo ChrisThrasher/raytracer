@@ -22,7 +22,7 @@ add_compile_options(
 FetchContent_Declare(
     argon
     GIT_REPOSITORY "https://github.com/ChrisThrasher/argon.git"
-    GIT_TAG v0.6.0
+    GIT_TAG v0.7.0
 )
 FetchContent_GetProperties(argon)
 FetchContent_Populate(argon)

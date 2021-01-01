@@ -11,14 +11,11 @@
 
 #include <argon/Parser.h>
 
-constexpr auto help = R"(Usage
-  raytracer <output_filename>)";
-
 int main(int argc, char* argv[])
 try
 {
     argon::Parser parser(argc, argv);
-    parser.AddOption("h,help", "Show this help text", argon::Usage(help));
+    parser.AddOption("h,help", "Show this help text", argon::USAGE, "");
     parser.AddPosition("output_filename", "Output file name");
     parser.Parse();
 

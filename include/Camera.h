@@ -5,16 +5,15 @@
 #include "Utilities.h"
 #include "Vec3.h"
 
-class Camera
-{
-    const Point3 m_origin{};
-    Point3 m_lower_left_corner{};
-    Vec3 m_horizontal{};
-    Vec3 m_vertical{};
-    const Vec3 m_w{};
-    const Vec3 m_u{};
-    const Vec3 m_v{};
-    const double m_lens_radius{0.0};
+class Camera {
+    const Point3 m_origin {};
+    Point3 m_lower_left_corner {};
+    Vec3 m_horizontal {};
+    Vec3 m_vertical {};
+    const Vec3 m_w {};
+    const Vec3 m_u {};
+    const Vec3 m_v {};
+    const double m_lens_radius { 0.0 };
 
 public:
     Camera(const Point3& lookfrom,

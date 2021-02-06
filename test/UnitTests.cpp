@@ -41,22 +41,22 @@ TEST(Pixel, OutputStreamOperator)
 {
     {
         std::stringstream out;
-        out << Pixel{0, 0, 0, 0, 0};
+        out << Pixel { 0, 0, 0, 0, 0 };
         EXPECT_EQ("0 0 0\n", out.str());
     }
     {
         std::stringstream out;
-        out << Pixel{0, 0, 0, 1, 1};
+        out << Pixel { 0, 0, 0, 1, 1 };
         EXPECT_EQ("0 0 0\n", out.str());
     }
     {
         std::stringstream out;
-        out << Pixel{1, 2, 3, 0, 0};
+        out << Pixel { 1, 2, 3, 0, 0 };
         EXPECT_EQ("1 2 3\n", out.str());
     }
     {
         std::stringstream out;
-        out << Pixel{253, 254, 255, 0, 0};
+        out << Pixel { 253, 254, 255, 0, 0 };
         EXPECT_EQ("253 254 255\n", out.str());
     }
 }

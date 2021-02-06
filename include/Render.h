@@ -11,10 +11,9 @@
 #include <thread>
 
 template <size_t image_width, size_t image_height>
-class RenderQueue
-{
+class RenderQueue {
     Image<image_width, image_height>* const m_image;
-    std::atomic<uint16_t> m_allocated_rows{0};
+    std::atomic<uint16_t> m_allocated_rows { 0 };
 
 public:
     RenderQueue(Image<image_width, image_height>* const image)
@@ -24,12 +23,9 @@ public:
 
     Row<image_width>* Pop()
     {
-        if (m_allocated_rows < image_height)
-        {
+        if (m_allocated_rows < image_height) {
             return &m_image->At(m_allocated_rows++);
-        }
-        else
-        {
+        } else {
             return nullptr;
         }
     }
@@ -41,8 +37,7 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
         return Color(0, 0, 0);
 
     auto rec = HitRecord();
-    if (world.Hit(r, 0.001, infinity, rec))
-    {
+    if (world.Hit(r, 0.001, infinity, rec)) {
         auto scattered = Ray();
         auto attenuation = Color();
         if (rec.mat_ptr->Scatter(r, rec, attenuation, scattered))
@@ -61,13 +56,10 @@ void RenderRows(const Camera& camera, const World& world, RenderQueue<image_widt
     static constexpr auto samples_per_pixel = 15;
     static constexpr auto max_depth = 5;
     auto* row = queue->Pop();
-    while (row != nullptr)
-    {
-        for (auto& pixel : *row)
-        {
+    while (row != nullptr) {
+        for (auto& pixel : *row) {
             auto pixel_color = Color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
-            {
+            for (int s = 0; s < samples_per_pixel; ++s) {
                 const auto u = (static_cast<double>(pixel.u) + RandomDouble()) / (image_width + 1);
                 const auto v = (static_cast<double>(pixel.v) + RandomDouble()) / (image_height + 1);
                 const Ray r = camera.GetRay(u, v);
@@ -91,8 +83,7 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     auto threads = std::array<std::thread, num_threads>();
     auto queue = RenderQueue<image_width, image_height>(&image);
     const auto start_time = std::chrono::system_clock::now();
-    for (auto& thread : threads)
-    {
+    for (auto& thread : threads) {
         thread = std::thread(RenderRows<image_width, image_height>, camera, world, &queue);
     }
 
@@ -101,8 +92,7 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     std::cout << "Rendering " << image_height << "x" << image_width << " image...\n";
     std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4) << image_height;
 
-    for (auto& thread : threads)
-    {
+    for (auto& thread : threads) {
         thread.join();
     }
 

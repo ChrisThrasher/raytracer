@@ -2,10 +2,9 @@
 
 #include "Vec3.h"
 
-class Ray
-{
-    Point3 m_origin{};
-    Vec3 m_direction{};
+class Ray {
+    Point3 m_origin {};
+    Vec3 m_direction {};
 
 public:
     constexpr Ray() = default;

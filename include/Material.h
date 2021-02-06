@@ -12,15 +12,13 @@ auto Schlick(const double cosine, const double ref_idx)
     return r0 + (1 - r0) * std::pow((1 - cosine), 5);
 }
 
-class Material
-{
+class Material {
 public:
     virtual bool Scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) const = 0;
 };
 
-class Lambertian final : public Material
-{
-    Color m_albedo{};
+class Lambertian final : public Material {
+    Color m_albedo {};
 
 public:
     Lambertian(const Color& a)
@@ -37,10 +35,9 @@ public:
     }
 };
 
-class Metal final : public Material
-{
-    Color m_albedo{};
-    double m_fuzz{0.0};
+class Metal final : public Material {
+    Color m_albedo {};
+    double m_fuzz { 0.0 };
 
 public:
     Metal(const Color& a, const double f)
@@ -58,9 +55,8 @@ public:
     }
 };
 
-class Dielectric final : public Material
-{
-    double m_ref_idx{0.0};
+class Dielectric final : public Material {
+    double m_ref_idx { 0.0 };
 
 public:
     Dielectric(const double ref_idx)
@@ -75,15 +71,13 @@ public:
         auto unit_direction = UnitVector(r_in.Direction());
         double cos_theta = std::fmin(Dot(-unit_direction, rec.normal), 1.0);
         double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
-        if (etai_over_etat * sin_theta > 1.0)
-        {
+        if (etai_over_etat * sin_theta > 1.0) {
             auto reflected = Reflect(unit_direction, rec.normal);
             scattered = Ray(rec.p, reflected);
             return true;
         }
         double reflect_prob = Schlick(cos_theta, etai_over_etat);
-        if (RandomDouble() < reflect_prob)
-        {
+        if (RandomDouble() < reflect_prob) {
             auto reflected = Reflect(unit_direction, rec.normal);
             scattered = Ray(rec.p, reflected);
             return true;

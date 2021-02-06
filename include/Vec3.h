@@ -6,14 +6,13 @@
 #include <cmath>
 #include <iostream>
 
-class Vec3
-{
-    std::array<double, 3> m_e{};
+class Vec3 {
+    std::array<double, 3> m_e {};
 
 public:
     constexpr Vec3() = default;
     constexpr Vec3(const double e1, const double e2, const double e3)
-        : m_e{e1, e2, e3}
+        : m_e { e1, e2, e3 }
     {
     }
 

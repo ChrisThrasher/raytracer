@@ -3,11 +3,10 @@
 #include "Hittable.h"
 #include "Vec3.h"
 
-class Sphere final : public Hittable
-{
-    Point3 m_center{};
+class Sphere final : public Hittable {
+    Point3 m_center {};
     double m_radius;
-    std::shared_ptr<Material> m_material{};
+    std::shared_ptr<Material> m_material {};
 
 public:
     Sphere(const Point3 center, const double radius, const std::shared_ptr<Material>& material)
@@ -28,12 +27,10 @@ bool Sphere::Hit(const Ray& r, const double t_min, const double t_max, HitRecord
     const auto c = oc.Length2() - m_radius * m_radius;
     const auto discriminant = half_b * half_b - a * c;
 
-    if (discriminant > 0)
-    {
+    if (discriminant > 0) {
         const auto root = std::sqrt(discriminant);
         auto temp = (-half_b - root) / a;
-        if (temp < t_max && temp > t_min)
-        {
+        if (temp < t_max && temp > t_min) {
             rec.t = temp;
             rec.p = r.At(rec.t);
             const auto outward_normal = (rec.p - m_center) / m_radius;
@@ -42,8 +39,7 @@ bool Sphere::Hit(const Ray& r, const double t_min, const double t_max, HitRecord
             return true;
         }
         temp = (-half_b + root) / a;
-        if (temp < t_max && temp > t_min)
-        {
+        if (temp < t_max && temp > t_min) {
             rec.t = temp;
             rec.p = r.At(rec.t);
             const auto outward_normal = (rec.p - m_center) / m_radius;

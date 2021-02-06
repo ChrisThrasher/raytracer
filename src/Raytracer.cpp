@@ -12,8 +12,7 @@
 #include <argon/Parser.h>
 
 int main(int argc, char* argv[])
-try
-{
+try {
     argon::Parser parser(argc, argv);
     parser.AddOption("h,help", "Show this help text", argon::USAGE, "");
     parser.AddPosition("output_filename", "Output file name");
@@ -30,9 +29,7 @@ try
     constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
 
     RenderImage<image_width, image_height>(camera, world).Write(filename);
-}
-catch (const std::exception& ex)
-{
+} catch (const std::exception& ex) {
     std::cerr << ex.what() << '\n';
     return -1;
 }

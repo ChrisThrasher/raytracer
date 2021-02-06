@@ -6,13 +6,12 @@
 
 class Material;
 
-struct HitRecord
-{
-    Point3 p{};
-    Vec3 normal{};
-    std::shared_ptr<Material> mat_ptr{};
-    double t{0.0};
-    bool front_face{false};
+struct HitRecord {
+    Point3 p {};
+    Vec3 normal {};
+    std::shared_ptr<Material> mat_ptr {};
+    double t { 0.0 };
+    bool front_face { false };
 
     inline void SetFaceNormal(const Ray& r, const Vec3& outward_normal)
     {
@@ -21,8 +20,7 @@ struct HitRecord
     }
 };
 
-class Hittable
-{
+class Hittable {
 public:
     virtual bool Hit(const Ray& r, const double t_min, const double t_max, HitRecord& rec) const = 0;
 };

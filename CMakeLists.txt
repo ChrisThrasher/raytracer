@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 project(raytracer)
 
 include(FetchContent)
@@ -23,24 +23,21 @@ add_compile_options(
 FetchContent_Declare(
     argon
     GIT_REPOSITORY "https://github.com/ChrisThrasher/argon.git"
-    GIT_TAG v0.7.1
+    GIT_TAG v0.7.2
 )
-FetchContent_GetProperties(argon)
-FetchContent_Populate(argon)
-add_subdirectory(${argon_SOURCE_DIR} ${argon_BINARY_DIR} EXCLUDE_FROM_ALL)
+FetchContent_MakeAvailable(argon)
 
 add_executable(raytracer src/Raytracer.cpp)
 target_include_directories(raytracer PRIVATE include)
-target_link_libraries(raytracer PRIVATE argon pthread)
+target_link_libraries(raytracer PRIVATE argon::argon pthread)
 
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
     gtest
     GIT_REPOSITORY "https://github.com/google/googletest.git"
     GIT_TAG master
 )
-FetchContent_GetProperties(gtest)
-FetchContent_Populate(gtest)
-add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR} EXCLUDE_FROM_ALL)
+FetchContent_MakeAvailable(gtest)
 
 enable_testing()
 add_executable(unit_tests test/UnitTests.cpp)

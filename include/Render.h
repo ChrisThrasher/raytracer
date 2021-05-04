@@ -84,16 +84,16 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     for (auto& thread : threads)
         thread = std::thread(RenderRows<image_width, image_height>, camera, world, &queue);
 
-    std::cout << "Spawned " << threads.size() << " threads. (Hardware supports " << std::thread::hardware_concurrency()
+    std::cout << "Spawned " << threads.size() << " threads (hardware supports " << std::thread::hardware_concurrency()
               << " concurrent threads)\n";
-    std::cout << "Rendering " << image_height << "x" << image_width << " image...\n";
+    std::cout << "Rendering " << image_height << " x " << image_width << " image...\n";
 
     for (auto& thread : threads)
         thread.join();
 
     const auto duration = std::chrono::system_clock::now() - start_time;
     const auto seconds = std::chrono::duration<double>(duration).count();
-    std::cout << "Finished rendering in " << std::setprecision(3) << seconds << " seconds. ("
+    std::cout << "Finished rendering in " << std::setprecision(3) << seconds << " seconds ("
               << static_cast<int>(image_width * image_height / seconds) << " pixels per second)\n";
 
     return image;

@@ -93,7 +93,7 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
 
     const auto duration = std::chrono::system_clock::now() - start_time;
     const auto seconds = std::chrono::duration<double>(duration).count();
-    std::cout << "Finished rendering in " << seconds << " seconds. ("
+    std::cout << "Finished rendering in " << std::setprecision(3) << seconds << " seconds. ("
               << static_cast<int>(image_width * image_height / seconds) << " pixels per second)\n";
 
     return image;

@@ -11,7 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 FetchContent_Declare(argon
     GIT_REPOSITORY "https://github.com/ChrisThrasher/argon.git"
-    GIT_TAG v0.7.2)
+    GIT_TAG v0.7.3)
 FetchContent_MakeAvailable(argon)
 
 add_compile_options(

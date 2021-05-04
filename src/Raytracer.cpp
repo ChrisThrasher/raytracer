@@ -14,11 +14,11 @@
 int main(int argc, char* argv[])
 try {
     argon::Parser parser(argc, argv);
-    parser.AddOption("h,help", "Show this help text", argon::USAGE, "");
-    parser.AddPosition("output_filename", "Output file name");
-    parser.Parse();
+    parser.add_option("h,help", "Show this help text", argon::USAGE, "");
+    parser.add_position("output_filename", "Output file name");
+    parser.parse();
 
-    const auto filename = parser.GetPosition(0);
+    const auto filename = parser.get_position(0);
 
     constexpr auto aspect_ratio = 16.0 / 9.0;
 

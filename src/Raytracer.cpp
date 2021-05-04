@@ -1,13 +1,7 @@
-#include "Camera.h"
-#include "Image.h"
-#include "Material.h"
-#include "Ray.h"
-#include "Render.h"
-#include "Sphere.h"
-#include "Utilities.h"
-#include "Vec3.h"
-#include "World.h"
-#include "WriteColor.h"
+#include <Camera.h>
+#include <Image.h>
+#include <Render.h>
+#include <World.h>
 
 #include <argon/Parser.h>
 

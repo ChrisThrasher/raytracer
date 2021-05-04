@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hittable.h"
+#include "Material.h"
 #include "Sphere.h"
 
 #include <memory>

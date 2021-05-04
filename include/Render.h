@@ -52,7 +52,7 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 template <size_t image_width, size_t image_height>
 void RenderRows(const Camera& camera, const World& world, RenderQueue<image_width, image_height>* queue)
 {
-    static constexpr auto samples_per_pixel = 15;
+    static constexpr auto samples_per_pixel = 20;
     static constexpr auto max_depth = 5;
     auto* row = queue->Pop();
     while (row != nullptr) {

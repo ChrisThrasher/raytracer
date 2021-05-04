@@ -19,7 +19,7 @@ try {
     const auto camera = Camera(Point3(13, 2, 3), Point3(0, 0, 0), Vec3(0, 1, 0), 20, aspect_ratio, 0.1, 10);
     const auto world = World::RandomScene();
 
-    constexpr auto image_height = 216ull;
+    constexpr auto image_height = 720ull;
     constexpr auto image_width = static_cast<size_t>(image_height * aspect_ratio);
 
     RenderImage<image_width, image_height>(camera, world).Write(filename);

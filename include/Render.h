@@ -83,9 +83,8 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     auto threads = std::array<std::thread, num_threads>();
     auto queue = RenderQueue<image_width, image_height>(&image);
     const auto start_time = std::chrono::system_clock::now();
-    for (auto& thread : threads) {
+    for (auto& thread : threads)
         thread = std::thread(RenderRows<image_width, image_height>, camera, world, &queue);
-    }
 
     std::cout << "Spawned " << threads.size() << " threads. (Hardware supports " << std::thread::hardware_concurrency()
               << " concurrent threads)\n";

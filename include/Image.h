@@ -13,9 +13,8 @@ public:
     Image()
     {
         uint16_t row_number = 0;
-        for (auto& row : m_rows) {
+        for (auto& row : m_rows)
             row = Row<width>(row_number++);
-        }
     }
 
     auto& At(const size_t index) { return m_rows.at(index); }
@@ -24,11 +23,9 @@ public:
     {
         std::ofstream output_file(filename);
         output_file << "P3\n" << width << ' ' << height << "\n255\n";
-        for (auto it = std::cend(m_rows) - 1; it >= cbegin(m_rows); --it) {
-            for (const auto& pixel : *it) {
+        for (auto it = std::cend(m_rows) - 1; it >= cbegin(m_rows); --it)
+            for (const auto& pixel : *it)
                 output_file << pixel;
-            }
-        }
         std::cout << "Wrote image to " << filename << ".\n";
     }
 };

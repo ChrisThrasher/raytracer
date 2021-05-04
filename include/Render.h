@@ -52,7 +52,6 @@ auto RayColor(const Ray& r, const Hittable& world, const int depth) -> Color
 template <size_t image_width, size_t image_height>
 void RenderRows(const Camera& camera, const World& world, RenderQueue<image_width, image_height>* queue)
 {
-    static std::atomic<size_t> rows_rendered = 0;
     static constexpr auto samples_per_pixel = 15;
     static constexpr auto max_depth = 5;
     auto* row = queue->Pop();
@@ -67,8 +66,6 @@ void RenderRows(const Camera& camera, const World& world, RenderQueue<image_widt
             }
             pixel = WriteColor(pixel_color, samples_per_pixel);
         }
-        std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4)
-                  << image_height - ++rows_rendered << std::flush;
         row = queue->Pop();
     }
 }
@@ -83,21 +80,20 @@ auto RenderImage(const Camera& camera, const World& world) -> Image<image_width,
     auto threads = std::array<std::thread, num_threads>();
     auto queue = RenderQueue<image_width, image_height>(&image);
     const auto start_time = std::chrono::system_clock::now();
+
     for (auto& thread : threads)
         thread = std::thread(RenderRows<image_width, image_height>, camera, world, &queue);
 
     std::cout << "Spawned " << threads.size() << " threads. (Hardware supports " << std::thread::hardware_concurrency()
               << " concurrent threads)\n";
     std::cout << "Rendering " << image_height << "x" << image_width << " image...\n";
-    std::cout << "\rScanlines remaining: " << std::setfill(' ') << std::right << std::setw(4) << image_height;
 
-    for (auto& thread : threads) {
+    for (auto& thread : threads)
         thread.join();
-    }
 
     const auto duration = std::chrono::system_clock::now() - start_time;
     const auto seconds = std::chrono::duration<double>(duration).count();
-    std::cout << "\rFinished rendering in " << seconds << " seconds. ("
+    std::cout << "Finished rendering in " << seconds << " seconds. ("
               << static_cast<int>(image_width * image_height / seconds) << " pixels per second)\n";
 
     return image;

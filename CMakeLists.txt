@@ -30,7 +30,7 @@ target_include_directories(raytracer PRIVATE include)
 target_link_libraries(raytracer PRIVATE argon::argon pthread)
 
 enable_testing()
-add_subdirectory(test)
+add_subdirectory(tests)
 
 add_custom_target(format
     COMMAND clang-format -i `git ls-files *.h *.cpp`

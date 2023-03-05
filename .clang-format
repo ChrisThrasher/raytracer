@@ -1,0 +1,9 @@
+Language: Cpp
+BasedOnStyle: WebKit
+
+AlignAfterOpenBracket: Align
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+ColumnLimit: 120
+QualifierAlignment: Left

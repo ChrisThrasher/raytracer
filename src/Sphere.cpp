@@ -27,5 +27,10 @@ auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const -> 
             return {};
     }
 
-    return HitRecord { ray.at(root), ray.at(root), root };
+    HitRecord hit_record;
+    hit_record.t = root;
+    hit_record.point = ray.at(root);
+    const auto outward_normal = (hit_record.point - m_center) / m_radius;
+    set_face_normal(hit_record, ray, outward_normal);
+    return hit_record;
 }

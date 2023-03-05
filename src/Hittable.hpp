@@ -8,7 +8,14 @@ struct HitRecord {
     sf::Vector3f point;
     sf::Vector3f normal;
     float t {};
+    bool front_face {};
 };
+
+inline void set_face_normal(HitRecord& hit_record, const Ray& ray, const sf::Vector3f& outward_normal)
+{
+    hit_record.front_face = ray.direction().dot(outward_normal) < 0;
+    hit_record.normal = hit_record.front_face ? outward_normal : -outward_normal;
+}
 
 class Hittable {
 public:

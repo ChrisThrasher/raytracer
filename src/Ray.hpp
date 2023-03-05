@@ -7,7 +7,6 @@ class Ray {
     sf::Vector3f m_direction;
 
 public:
-    constexpr Ray() = default;
     constexpr Ray(const sf::Vector3f& origin, const sf::Vector3f& direction)
         : m_origin(origin)
         , m_direction(direction)

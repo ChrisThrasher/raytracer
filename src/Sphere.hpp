@@ -7,7 +7,6 @@ class Sphere : public Hittable {
     float m_radius {};
 
 public:
-    Sphere() = default;
     Sphere(const sf::Vector3f& center, float radius);
 
     [[nodiscard]] auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> override;

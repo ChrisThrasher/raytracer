@@ -13,6 +13,7 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(raytracer
     src/HittableList.cpp
+    src/Random.cpp
     src/Raytracer.cpp
     src/Sphere.cpp
 )

@@ -8,14 +8,17 @@
 #include <memory>
 
 namespace {
-constexpr auto hit_sphere(const sf::Vector3f& center, float radius, const Ray& ray)
+constexpr float hit_sphere(const sf::Vector3f& center, float radius, const Ray& ray)
 {
     const auto oc = ray.origin() - center;
     const auto a = ray.direction().lengthSq();
     const auto b = 2.f * oc.dot(ray.direction());
     const auto c = oc.lengthSq() - radius * radius;
     const auto discriminant = b * b - 4 * a * c;
-    return discriminant > 0;
+    if (discriminant < 0)
+        return -1;
+    else
+        return (-b - std::sqrtf(discriminant)) / (2 * a);
 }
 
 constexpr auto to_color(const sf::Vector3f& vector)
@@ -25,10 +28,13 @@ constexpr auto to_color(const sf::Vector3f& vector)
 
 constexpr auto ray_color(const Ray& ray)
 {
-    if (hit_sphere({ 0, 0, -1 }, 0.5f, ray))
-        return sf::Color::Red;
+    auto t = hit_sphere({ 0, 0, -1 }, 0.5f, ray);
+    if (t > 0) {
+        const auto n = (ray.at(t) - sf::Vector3f(0, 0, -1)).normalized();
+        return to_color(0.5f * sf::Vector3f(n.x + 1, n.y + 1, n.z + 1));
+    }
     const auto unit_direction = ray.direction().normalized();
-    const auto t = 0.5f * (unit_direction.y + 1);
+    t = 0.5f * (unit_direction.y + 1);
     return to_color((1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f));
 }
 }

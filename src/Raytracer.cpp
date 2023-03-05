@@ -76,7 +76,7 @@ int main()
     auto texture = sf::Texture();
     if (!texture.loadFromImage(image))
         throw std::runtime_error("Failed to load texture");
-    auto sprite = sf::Sprite(texture);
+    const auto sprite = sf::Sprite(texture);
 
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {

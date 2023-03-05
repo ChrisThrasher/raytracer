@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <array>
+#include <chrono>
+#include <iostream>
 #include <memory>
 
 namespace {
@@ -41,6 +43,8 @@ int main()
     const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
     auto& pixels = *pixels_allocation;
 
+    const auto start_of_rendering = std::chrono::steady_clock::now();
+
     for (size_t i = 0; i < image_height; ++i) {
         for (size_t j = 0; j < image_width; ++j) {
             const auto u = float(j) / (image_width - 1);
@@ -50,6 +54,10 @@ int main()
             pixels[i][j] = ray_color(ray);
         }
     }
+
+    const auto rendering_time
+        = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_of_rendering);
+    std::cout << "Rendered in " << rendering_time.count() << " ms" << std::endl;
 
     auto image = sf::Image();
     image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));

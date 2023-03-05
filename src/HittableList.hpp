@@ -5,8 +5,7 @@
 #include <memory>
 #include <vector>
 
-class HittableList : public Hittable
-{
+class HittableList : public Hittable {
     std::vector<std::shared_ptr<Hittable>> m_objects;
 
 public:

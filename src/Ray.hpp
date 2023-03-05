@@ -7,10 +7,14 @@ class Ray {
     sf::Vector3f m_direction;
 
 public:
-    Ray() = default;
-    Ray(const sf::Vector3f& origin, const sf::Vector3f& direction);
+    constexpr Ray() = default;
+    constexpr Ray(const sf::Vector3f& origin, const sf::Vector3f& direction)
+        : m_origin(origin)
+        , m_direction(direction)
+    {
+    }
 
-    [[nodiscard]] auto origin() const { return m_origin; }
-    [[nodiscard]] auto direction() const { return m_direction; }
-    [[nodiscard]] auto at(float t) const { return m_origin + t * m_direction; }
+    [[nodiscard]] constexpr auto origin() const { return m_origin; }
+    [[nodiscard]] constexpr auto direction() const { return m_direction; }
+    [[nodiscard]] constexpr auto at(float t) const { return m_origin + t * m_direction; }
 };

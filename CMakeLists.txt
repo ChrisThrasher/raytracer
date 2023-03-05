@@ -11,7 +11,7 @@ include(FetchContent)
 FetchContent_Declare(SFML GIT_REPOSITORY https://github.com/SFML/SFML.git)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(raytracer src/Raytracer.cpp src/Ray.cpp)
+add_executable(raytracer src/Raytracer.cpp)
 target_link_libraries(raytracer PRIVATE SFML::Graphics)
 
 add_custom_target(format

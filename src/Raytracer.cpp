@@ -8,7 +8,7 @@
 #include <memory>
 
 namespace {
-constexpr float hit_sphere(const sf::Vector3f& center, float radius, const Ray& ray)
+auto hit_sphere(const sf::Vector3f& center, float radius, const Ray& ray)
 {
     const auto oc = ray.origin() - center;
     const auto a = ray.direction().lengthSq();
@@ -16,7 +16,7 @@ constexpr float hit_sphere(const sf::Vector3f& center, float radius, const Ray& 
     const auto c = oc.lengthSq() - radius * radius;
     const auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0)
-        return -1;
+        return -1.f;
     return (-half_b - std::sqrtf(discriminant)) / a;
 }
 
@@ -25,7 +25,7 @@ constexpr auto to_color(const sf::Vector3f& vector)
     return sf::Color(uint8_t(255 * vector.x), uint8_t(255 * vector.y), uint8_t(255 * vector.z));
 }
 
-constexpr auto ray_color(const Ray& ray)
+auto ray_color(const Ray& ray)
 {
     auto t = hit_sphere({ 0, 0, -1 }, 0.5f, ray);
     if (t > 0) {

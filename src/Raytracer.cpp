@@ -12,13 +12,12 @@ constexpr float hit_sphere(const sf::Vector3f& center, float radius, const Ray& 
 {
     const auto oc = ray.origin() - center;
     const auto a = ray.direction().lengthSq();
-    const auto b = 2.f * oc.dot(ray.direction());
+    const auto half_b = oc.dot(ray.direction());
     const auto c = oc.lengthSq() - radius * radius;
-    const auto discriminant = b * b - 4 * a * c;
+    const auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0)
         return -1;
-    else
-        return (-b - std::sqrtf(discriminant)) / (2 * a);
+    return (-half_b - std::sqrtf(discriminant)) / a;
 }
 
 constexpr auto to_color(const sf::Vector3f& vector)

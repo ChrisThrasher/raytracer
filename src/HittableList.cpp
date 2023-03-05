@@ -6,7 +6,7 @@ void HittableList::clear() { m_objects.clear(); }
 
 void HittableList::add(const std::shared_ptr<Hittable>& object) { m_objects.push_back(object); }
 
-auto HittableList::hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord>
+auto HittableList::hit(const Ray& ray, const float t_min, const float t_max) const -> std::optional<HitRecord>
 {
     auto hit_record = HitRecord();
     auto hit_something = false;

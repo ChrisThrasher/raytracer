@@ -19,6 +19,7 @@ add_executable(raytracer
     src/Sphere.cpp
 )
 target_link_libraries(raytracer PRIVATE SFML::Graphics)
+target_compile_definitions(raytracer PRIVATE FONT_PATH="${CMAKE_SOURCE_DIR}/data")
 
 add_custom_target(format
     COMMAND clang-format -i `git ls-files *.hpp *.cpp`

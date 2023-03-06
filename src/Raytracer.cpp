@@ -9,7 +9,6 @@
 
 #include <array>
 #include <chrono>
-#include <iostream>
 #include <memory>
 
 namespace {
@@ -44,6 +43,10 @@ int main()
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
     window.setFramerateLimit(30);
 
+    auto font = sf::Font();
+    if (!font.loadFromFile(FONT_PATH / std::filesystem::path("font.ttf")))
+        throw std::runtime_error("Failed to load font");
+
     // Heap allocate to accomodate systems with small (<1MB) stack sizes
     const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
     auto& pixels = *pixels_allocation;
@@ -66,7 +69,6 @@ int main()
 
     const auto rendering_time
         = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_of_rendering);
-    std::cout << "Rendered in " << rendering_time.count() << " ms" << std::endl;
 
     auto image = sf::Image();
     image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));
@@ -74,6 +76,10 @@ int main()
     if (!texture.loadFromImage(image))
         throw std::runtime_error("Failed to load texture");
     const auto sprite = sf::Sprite(texture);
+
+    auto text = sf::Text(std::to_string(rendering_time.count()) + " ms", font, 28);
+    text.setPosition({ 5, 0 });
+    text.setOutlineThickness(2.f);
 
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {
@@ -88,6 +94,7 @@ int main()
 
         window.clear();
         window.draw(sprite);
+        window.draw(text);
         window.display();
     }
 }

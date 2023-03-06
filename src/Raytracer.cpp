@@ -51,8 +51,8 @@ int main()
     constexpr auto max_depth = 50;
 
     auto world = HittableList();
-    world.add(std::make_shared<Sphere>(sf::Vector3f(0, 0, -1), 0.5f));
-    world.add(std::make_shared<Sphere>(sf::Vector3f(0, -100.5, -1), 100));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0, 0, -1), 0.5f));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0, -100.5, -1), 100));
 
     auto camera = Camera();
 

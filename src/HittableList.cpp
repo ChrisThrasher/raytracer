@@ -1,10 +1,10 @@
 #include "HittableList.hpp"
 
-HittableList::HittableList(const std::shared_ptr<Hittable>& object) { add(object); }
+HittableList::HittableList(std::unique_ptr<Hittable> object) { add(std::move(object)); }
 
 void HittableList::clear() { m_objects.clear(); }
 
-void HittableList::add(const std::shared_ptr<Hittable>& object) { m_objects.push_back(object); }
+void HittableList::add(std::unique_ptr<Hittable> object) { m_objects.emplace_back(std::move(object)); }
 
 auto HittableList::hit(const Ray& ray, const float t_min, const float t_max) const -> std::optional<HitRecord>
 {

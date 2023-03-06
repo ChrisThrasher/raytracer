@@ -14,21 +14,13 @@ auto rng() -> std::mt19937&
     return generator;
 }
 
-auto random_float() -> float { return random_float(0, 1); }
-
 auto random_float(const float min, const float max) -> float { return std::uniform_real_distribution(min, max)(rng()); }
-
-auto random_vector(const float min, const float max) -> sf::Vector3f
-{
-    return { random_float(min, max), random_float(min, max), random_float(min, max) };
-}
 
 auto random_unit_vector() -> sf::Vector3f
 {
     auto vector = sf::Vector3f();
     do {
-        vector = random_vector(-1, 1);
+        vector = { random_float(-1, 1), random_float(-1, 1), random_float(-1, 1) };
     } while (vector.lengthSq() >= 1);
-    assert(vector.length() < 1);
-    return vector;
+    return vector.normalized();
 }

@@ -70,12 +70,12 @@ int main()
     const auto start_of_rendering = std::chrono::steady_clock::now();
 
     for (size_t i = 0; i < image_height; ++i) {
-        std::cout << "\rProcessing line " << i << " of " << image_height << std::flush;
+        std::cout << "\rProcessing line " << i + 1 << " of " << image_height << std::flush;
         for (size_t j = 0; j < image_width; ++j) {
             auto color = sf::Vector3f();
             for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
-                const auto u = (random_float() + float(j)) / (image_width - 1);
-                const auto v = (random_float() + float(image_height - i)) / (image_height - 1);
+                const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
+                const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
                 const auto ray = camera.get_ray(u, v);
                 color += ray_color(ray, world, max_depth);
             }
@@ -83,6 +83,7 @@ int main()
             pixels[i][j] = to_color(color, samples_per_pixel);
         }
     }
+    std::cout << std::endl;
 
     const auto rendering_time
         = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_of_rendering);

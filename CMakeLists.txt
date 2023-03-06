@@ -12,6 +12,7 @@ FetchContent_Declare(SFML GIT_REPOSITORY https://github.com/SFML/SFML.git)
 FetchContent_MakeAvailable(SFML)
 
 add_executable(raytracer
+    src/Camera.cpp
     src/HittableList.cpp
     src/Random.cpp
     src/Raytracer.cpp

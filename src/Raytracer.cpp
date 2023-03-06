@@ -1,5 +1,7 @@
+#include "Camera.hpp"
 #include "Hittable.hpp"
 #include "HittableList.hpp"
+#include "Random.hpp"
 #include "Ray.hpp"
 #include "Sphere.hpp"
 
@@ -19,10 +21,10 @@ constexpr auto to_color(const sf::Vector3f& vector)
 auto ray_color(const Ray& ray, const Hittable& world)
 {
     if (auto maybe_hit_record = world.hit(ray, 0, std::numeric_limits<float>::infinity()))
-        return to_color(0.5f * (maybe_hit_record->normal + sf::Vector3f(1, 1, 1)));
+        return 0.5f * (maybe_hit_record->normal + sf::Vector3f(1, 1, 1));
     const auto unit_direction = ray.direction().normalized();
     const auto t = 0.5f * (unit_direction.y + 1);
-    return to_color((1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f));
+    return (1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f);
 }
 }
 
@@ -31,19 +33,13 @@ int main()
     constexpr auto aspect_ratio = 16.f / 9.f;
     constexpr auto image_width = 400;
     constexpr auto image_height = int(image_width / aspect_ratio);
-
-    constexpr auto viewport_height = 2.f;
-    constexpr auto viewport_width = aspect_ratio * viewport_height;
-    constexpr auto focal_length = 1.f;
-
-    constexpr auto origin = sf::Vector3f();
-    constexpr auto horizontal = sf::Vector3f(viewport_width, 0, 0);
-    constexpr auto vertical = sf::Vector3f(0, viewport_height, 0);
-    constexpr auto lower_left_corner = origin - horizontal / 2.f - vertical / 2.f - sf::Vector3f(0, 0, focal_length);
+    constexpr auto samples_per_pixel = 100;
 
     auto world = HittableList();
     world.add(std::make_shared<Sphere>(sf::Vector3f(0, 0, -1), 0.5f));
     world.add(std::make_shared<Sphere>(sf::Vector3f(0, -100.5, -1), 100));
+
+    auto camera = Camera();
 
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
     window.setFramerateLimit(30);
@@ -56,11 +52,15 @@ int main()
 
     for (size_t i = 0; i < image_height; ++i) {
         for (size_t j = 0; j < image_width; ++j) {
-            const auto u = float(j) / (image_width - 1);
-            const auto v = float(image_height - i) / (image_height - 1);
-            const auto ray = Ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+            auto color = sf::Vector3f();
+            for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
+                const auto u = (random_float() + float(j)) / (image_width - 1);
+                const auto v = (random_float() + float(image_height - i)) / (image_height - 1);
+                const auto ray = camera.get_ray(u, v);
+                color += ray_color(ray, world);
+            }
 
-            pixels[i][j] = ray_color(ray, world);
+            pixels[i][j] = to_color(color / float(samples_per_pixel));
         }
     }
 

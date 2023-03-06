@@ -14,4 +14,4 @@ auto rng() -> std::mt19937&
     return generator;
 }
 
-auto random_float(float min, float max) -> float { return std::uniform_real_distribution(min, max)(rng()); }
+auto random_float() -> float { return std::uniform_real_distribution(0.f, 1.f)(rng()); }

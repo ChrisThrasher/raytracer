@@ -15,6 +15,7 @@ Checks: >
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-pro-type-reinterpret-cast,
   -cppcoreguidelines-pro-type-union-access,
+  -misc-no-recursion,
   -modernize-use-trailing-return-type,
   -readability-braces-around-statements,
   -readability-identifier-length,
@@ -30,3 +31,4 @@ CheckOptions:
   - { key: readability-identifier-naming.PrivateMemberPrefix, value: m_ }
 HeaderFilterRegex: './src/'
 WarningsAsErrors: '*'
+UseColor: true

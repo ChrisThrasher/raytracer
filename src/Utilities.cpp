@@ -16,13 +16,18 @@ auto rng() -> std::mt19937&
 
 auto random_float(const float min, const float max) -> float { return std::uniform_real_distribution(min, max)(rng()); }
 
-auto random_unit_vector() -> sf::Vector3f
+auto random_vector_in_unit_sphere() -> sf::Vector3f
 {
     auto vector = sf::Vector3f();
     do {
         vector = { random_float(-1, 1), random_float(-1, 1), random_float(-1, 1) };
     } while (vector.lengthSq() >= 1);
-    return vector.normalized();
+    return vector;
+}
+
+auto random_unit_vector() -> sf::Vector3f
+{
+    return sf::Vector3f(random_float(-1, 1), random_float(-1, 1), random_float(-1, 1)).normalized();
 }
 
 auto is_near_zero(const sf::Vector3f& vector) -> bool

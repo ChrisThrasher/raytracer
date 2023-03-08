@@ -31,9 +31,10 @@ public:
 
 class Metal : public Material {
     sf::Vector3f m_albedo;
+    float m_fuzz;
 
 public:
-    Metal(const sf::Vector3f& color);
+    Metal(const sf::Vector3f& color, float fuzz);
 
     [[nodiscard]] auto scatter(const Ray& ray, const HitRecord& hit_record) const
         -> std::optional<std::pair<sf::Vector3f, Ray>> override;

@@ -20,15 +20,16 @@ auto Lambertian::scatter(const Ray& /* ray */, const HitRecord& hit_record) cons
     return std::make_pair(m_albedo, Ray(hit_record.point, scatter_direction));
 }
 
-Metal::Metal(const sf::Vector3f& color)
+Metal::Metal(const sf::Vector3f& color, const float fuzz)
     : m_albedo(color)
+    , m_fuzz(std::min(fuzz, 1.f))
 {
 }
 
 auto Metal::scatter(const Ray& ray, const HitRecord& hit_record) const -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     const auto reflected = reflect(ray.direction().normalized(), hit_record.normal);
-    const auto scattered = Ray(hit_record.point, reflected);
+    const auto scattered = Ray(hit_record.point, reflected + m_fuzz * random_vector_in_unit_sphere());
     const auto attenuation = m_albedo;
     if (scattered.direction().dot(hit_record.normal) > 0)
         return std::make_pair(attenuation, scattered);

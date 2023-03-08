@@ -56,8 +56,8 @@ int main()
 
     const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.0f));
     const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.7f, 0.3f, 0.3f));
-    const auto left_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.8f, 0.8f));
-    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f));
+    const auto left_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.8f, 0.8f), 0.3f);
+    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f), 1.f);
 
     auto world = HittableList();
     world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));

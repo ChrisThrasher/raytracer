@@ -1,9 +1,10 @@
 #include "Camera.hpp"
 #include "Hittable.hpp"
 #include "HittableList.hpp"
-#include "Random.hpp"
+#include "Material.hpp"
 #include "Ray.hpp"
 #include "Sphere.hpp"
+#include "Utilities.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -33,9 +34,12 @@ auto ray_color(const Ray& ray, const Hittable& world, const int depth) -> sf::Ve
         return {};
 
     if (const auto maybe_hit_record = world.hit(ray, 0.001f, std::numeric_limits<float>::infinity())) {
-        const auto target = maybe_hit_record->point + maybe_hit_record->normal + random_unit_vector();
-        return 0.5f * ray_color({ maybe_hit_record->point, target - maybe_hit_record->point }, world, depth - 1);
+        if (const auto result = maybe_hit_record->material->scatter(ray, *maybe_hit_record)) {
+            const auto& [attenuation, scattered] = *result;
+            return attenuation.cwiseMul(ray_color(scattered, world, depth - 1));
+        }
     }
+
     const auto unit_direction = ray.direction().normalized();
     const auto t = 0.5f * (unit_direction.y + 1);
     return (1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f);
@@ -50,9 +54,16 @@ int main()
     constexpr auto samples_per_pixel = 100;
     constexpr auto max_depth = 50;
 
+    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.0f));
+    const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.7f, 0.3f, 0.3f));
+    const auto left_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.8f, 0.8f));
+    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f));
+
     auto world = HittableList();
-    world.add(std::make_unique<Sphere>(sf::Vector3f(0, 0, -1), 0.5f));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(0, -100.5, -1), 100));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, 0.0, -1.0), 0.5, center_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), 0.5, left_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(1.0, 0.0, -1.0), 0.5, right_material));
 
     auto camera = Camera();
 

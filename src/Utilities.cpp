@@ -1,4 +1,4 @@
-#include "Random.hpp"
+#include "Utilities.hpp"
 
 #include <array>
 
@@ -23,4 +23,10 @@ auto random_unit_vector() -> sf::Vector3f
         vector = { random_float(-1, 1), random_float(-1, 1), random_float(-1, 1) };
     } while (vector.lengthSq() >= 1);
     return vector.normalized();
+}
+
+auto is_near_zero(const sf::Vector3f& vector) -> bool
+{
+    constexpr auto epsilon = 1e-9f;
+    return vector.lengthSq() < epsilon;
 }

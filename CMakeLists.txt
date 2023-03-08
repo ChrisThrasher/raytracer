@@ -14,9 +14,10 @@ FetchContent_MakeAvailable(SFML)
 add_executable(raytracer
     src/Camera.cpp
     src/HittableList.cpp
-    src/Random.cpp
+    src/Material.cpp
     src/Raytracer.cpp
     src/Sphere.cpp
+    src/Utilities.cpp
 )
 target_link_libraries(raytracer PRIVATE SFML::Graphics)
 target_compile_definitions(raytracer PRIVATE FONT_PATH="${CMAKE_SOURCE_DIR}/data")

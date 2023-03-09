@@ -39,3 +39,13 @@ public:
     [[nodiscard]] auto scatter(const Ray& ray, const HitRecord& hit_record) const
         -> std::optional<std::pair<sf::Vector3f, Ray>> override;
 };
+
+class Dielectric : public Material {
+    float m_index_of_refraction;
+
+public:
+    Dielectric(float index_of_refraction);
+
+    [[nodiscard]] auto scatter(const Ray& ray, const HitRecord& hit_record) const
+        -> std::optional<std::pair<sf::Vector3f, Ray>> override;
+};

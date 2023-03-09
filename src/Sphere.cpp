@@ -18,7 +18,7 @@ auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const -> 
     const auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0)
         return {};
-    const auto sqrt_discriminant = std::sqrtf(discriminant);
+    const auto sqrt_discriminant = std::sqrt(discriminant);
 
     // Find the nearest root that lies in the acceptable range
     auto root = (-half_b - sqrt_discriminant) / a;

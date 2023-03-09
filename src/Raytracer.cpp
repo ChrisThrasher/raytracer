@@ -18,7 +18,7 @@ namespace {
 constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
 {
     const auto adjust = [samples_per_pixel](const float channel) {
-        return uint8_t(255 * std::clamp(std::sqrtf(channel / float(samples_per_pixel)), 0.f, 1.f));
+        return uint8_t(255 * std::clamp(std::sqrt(channel / float(samples_per_pixel)), 0.f, 1.f));
     };
 
     const auto r = adjust(vector.x);
@@ -54,10 +54,10 @@ int main()
     constexpr auto samples_per_pixel = 100;
     constexpr auto max_depth = 50;
 
-    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.0f));
-    const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.7f, 0.3f, 0.3f));
-    const auto left_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.8f, 0.8f), 0.3f);
-    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f), 1.f);
+    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.f));
+    const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.1f, 0.2f, 0.5f));
+    const auto left_material = std::make_shared<Dielectric>(1.5f);
+    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f), 0);
 
     auto world = HittableList();
     world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));

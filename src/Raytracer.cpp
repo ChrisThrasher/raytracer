@@ -93,7 +93,7 @@ auto make_random_scene()
 int main()
 {
     constexpr auto aspect_ratio = 3.f / 2;
-    constexpr auto image_width = 600;
+    constexpr auto image_width = 200;
     constexpr auto image_height = int(image_width / aspect_ratio);
     constexpr auto samples_per_pixel = 100;
     constexpr auto max_depth = 50;

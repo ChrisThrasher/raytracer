@@ -38,6 +38,15 @@ auto random_vector_in_hemisphere(const sf::Vector3f& normal) -> sf::Vector3f
     return -in_unit_sphere;
 }
 
+auto random_vector_in_unit_disk() -> sf::Vector3f
+{
+    auto vector = sf::Vector3f();
+    do {
+        vector = { random_float(-1, 1), random_float(-1, 1), 0 };
+    } while (vector.lengthSq() >= 1);
+    return vector;
+}
+
 auto is_near_zero(const sf::Vector3f& vector) -> bool
 {
     constexpr auto epsilon = 1e-9f;

@@ -66,7 +66,12 @@ int main()
     world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), -0.45, left_material));
     world.add(std::make_unique<Sphere>(sf::Vector3f(1.0, 0.0, -1.0), 0.5, right_material));
 
-    auto camera = Camera({ -2, 2, 1 }, { 0, 0, -1 }, { 0, 1, 0 }, sf::degrees(20), aspect_ratio);
+    const auto look_from = sf::Vector3f(3, 3, 2);
+    const auto look_at = sf::Vector3f(0, 0, -1);
+    const auto vup = sf::Vector3f(0, 1, 0);
+    const auto focus_distance = (look_from - look_at).length();
+    const auto aperture = 2.f;
+    auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
 
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
     window.setFramerateLimit(30);

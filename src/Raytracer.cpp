@@ -44,33 +44,66 @@ auto ray_color(const Ray& ray, const Hittable& world, const int depth) -> sf::Ve
     const auto t = 0.5f * (unit_direction.y + 1);
     return (1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f);
 }
+
+auto make_random_scene()
+{
+    auto world = HittableList();
+
+    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000, ground_material));
+
+    for (int i = -11; i < 11; ++i) {
+        for (int j = -11; j < 11; ++j) {
+            const auto choose_material = random_float(0, 1);
+            const auto center
+                = sf::Vector3f(float(i) + 0.9f * random_float(0, 1), 0.2f, float(j) + 0.9f + random_float(0, 1));
+
+            if ((center - sf::Vector3f(4, 0.2f, 0)).length() > 0.9f) {
+                if (choose_material < 0.8) {
+                    // diffuse
+                    const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
+                    const auto material = std::make_shared<Lambertian>(albedo);
+                    world.add(std::make_unique<Sphere>(center, 0.2, material));
+                } else if (choose_material < 0.95) {
+                    // metal
+                    const auto albedo = random_vector(0.5f, 1);
+                    const auto fuzz = random_float(0, 0.5f);
+                    const auto material = std::make_shared<Metal>(albedo, fuzz);
+                    world.add(std::make_unique<Sphere>(center, 0.2, material));
+                } else {
+                    // glass
+                    const auto material = std::make_shared<Dielectric>(1.5f);
+                    world.add(std::make_unique<Sphere>(center, 0.2, material));
+                }
+            }
+        }
+    }
+
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1, std::make_shared<Dielectric>(1.5f)));
+    world.add(std::make_unique<Sphere>(
+        sf::Vector3f(-4, 1, 0), 1, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
+    world.add(
+        std::make_unique<Sphere>(sf::Vector3f(4, 1, 0), 1, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0)));
+
+    return world;
+}
 }
 
 int main()
 {
-    constexpr auto aspect_ratio = 16.f / 9.f;
-    constexpr auto image_width = 400;
+    constexpr auto aspect_ratio = 3.f / 2;
+    constexpr auto image_width = 600;
     constexpr auto image_height = int(image_width / aspect_ratio);
     constexpr auto samples_per_pixel = 100;
     constexpr auto max_depth = 50;
 
-    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.f));
-    const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.1f, 0.2f, 0.5f));
-    const auto left_material = std::make_shared<Dielectric>(1.5f);
-    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f), 0);
+    const auto world = make_random_scene();
 
-    auto world = HittableList();
-    world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, 0.0, -1.0), 0.5, center_material));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), 0.5, left_material));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), -0.45, left_material));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(1.0, 0.0, -1.0), 0.5, right_material));
-
-    const auto look_from = sf::Vector3f(3, 3, 2);
-    const auto look_at = sf::Vector3f(0, 0, -1);
+    const auto look_from = sf::Vector3f(13, 2, 3);
+    const auto look_at = sf::Vector3f(0, 0, 0);
     const auto vup = sf::Vector3f(0, 1, 0);
-    const auto focus_distance = (look_from - look_at).length();
-    const auto aperture = 2.f;
+    const auto focus_distance = 10.f;
+    const auto aperture = 0.1f;
     auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
 
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");

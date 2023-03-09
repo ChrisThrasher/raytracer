@@ -16,6 +16,11 @@ auto rng() -> std::mt19937&
 
 auto random_float(const float min, const float max) -> float { return std::uniform_real_distribution(min, max)(rng()); }
 
+auto random_vector(float min, float max) -> sf::Vector3f
+{
+    return { random_float(min, max), random_float(min, max), random_float(min, max) };
+}
+
 auto random_vector_in_unit_sphere() -> sf::Vector3f
 {
     auto vector = sf::Vector3f();

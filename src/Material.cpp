@@ -29,7 +29,7 @@ Metal::Metal(const sf::Vector3f& color, const float fuzz)
 auto Metal::scatter(const Ray& ray, const HitRecord& hit_record) const -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     const auto reflected = reflect(ray.direction().normalized(), hit_record.normal);
-    const auto scattered = Ray(hit_record.point, reflected + m_fuzz * random_vector_in_unit_sphere());
+    const auto scattered = Ray(hit_record.point, reflected + m_fuzz * random_vector_in_hemisphere(hit_record.normal));
     const auto attenuation = m_albedo;
     if (scattered.direction().dot(hit_record.normal) > 0)
         return std::make_pair(attenuation, scattered);

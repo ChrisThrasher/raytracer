@@ -30,6 +30,14 @@ auto random_unit_vector() -> sf::Vector3f
     return sf::Vector3f(random_float(-1, 1), random_float(-1, 1), random_float(-1, 1)).normalized();
 }
 
+auto random_vector_in_hemisphere(const sf::Vector3f& normal) -> sf::Vector3f
+{
+    const auto in_unit_sphere = random_vector_in_unit_sphere();
+    if (in_unit_sphere.dot(normal) > 0)
+        return in_unit_sphere;
+    return -in_unit_sphere;
+}
+
 auto is_near_zero(const sf::Vector3f& vector) -> bool
 {
     constexpr auto epsilon = 1e-9f;

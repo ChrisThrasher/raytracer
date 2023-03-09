@@ -137,49 +137,12 @@ int main()
 
     // Render
     auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
-    auto rendering = std::atomic(true);
     std::cout << "Starting render with " << threads.size() << " threads" << std::endl;
 
-    auto status_thread = std::thread([&rendered_row_count, &rendering]() {
-        while (rendering) {
-            std::cout << "\rRendered " << rendered_row_count << " of " << image_height << " rows..." << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-        std::cout << "\r                                                   ";
-    });
-
-    const auto start_of_rendering = std::chrono::steady_clock::now();
     const auto rows_per_thread = float(image_height) / float(threads.size());
     for (size_t i = 0; i < threads.size(); ++i)
         threads[i]
             = std::thread(render_rows, size_t(float(i) * rows_per_thread), size_t((float(i) + 1) * rows_per_thread));
-    for (auto& thread : threads)
-        thread.join();
-    const auto render_time = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now()
-                                                                                      - start_of_rendering);
-    rendering = false;
-    status_thread.join();
-
-    // Print render time
-    auto render_time_text = std::ostringstream();
-    render_time_text << std::fixed << std::setprecision(1) << render_time.count() << "s";
-    std::cout << "\rFinished rendering in " << render_time_text.str() << std::endl;
-
-    // Make sprite
-    auto image = sf::Image();
-    image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));
-    auto texture = sf::Texture();
-    if (!texture.loadFromImage(image))
-        throw std::runtime_error("Failed to load texture");
-    const auto sprite = sf::Sprite(texture);
-
-    // Make render time text
-    auto font = sf::Font();
-    if (!font.loadFromFile(FONT_PATH / std::filesystem::path("font.ttf")))
-        throw std::runtime_error("Failed to load font");
-    auto text = sf::Text(render_time_text.str(), font, 28);
-    text.setPosition({ 5, 0 });
-    text.setOutlineThickness(2.f);
 
     // Draw
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
@@ -195,9 +158,18 @@ int main()
             }
         }
 
+        auto image = sf::Image();
+        image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));
+        auto texture = sf::Texture();
+        if (!texture.loadFromImage(image))
+            throw std::runtime_error("Failed to load texture");
+        const auto sprite = sf::Sprite(texture);
+
         window.clear();
         window.draw(sprite);
-        window.draw(text);
         window.display();
     }
+
+    for (auto& thread : threads)
+        thread.join();
 }

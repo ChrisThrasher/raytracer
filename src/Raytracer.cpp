@@ -35,17 +35,17 @@ auto make_random_scene()
                     // diffuse
                     const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
                     const auto material = std::make_shared<Lambertian>(albedo);
-                    world.add(std::make_unique<Sphere>(center, 0.2, material));
+                    world.add(std::make_unique<Sphere>(center, 0.2f, material));
                 } else if (choose_material < 0.95) {
                     // metal
                     const auto albedo = random_vector(0.5f, 1);
                     const auto fuzz = random_float(0, 0.5f);
                     const auto material = std::make_shared<Metal>(albedo, fuzz);
-                    world.add(std::make_unique<Sphere>(center, 0.2, material));
+                    world.add(std::make_unique<Sphere>(center, 0.2f, material));
                 } else {
                     // glass
                     const auto material = std::make_shared<Dielectric>(1.5f);
-                    world.add(std::make_unique<Sphere>(center, 0.2, material));
+                    world.add(std::make_unique<Sphere>(center, 0.2f, material));
                 }
             }
         }
@@ -55,7 +55,7 @@ auto make_random_scene()
     world.add(std::make_unique<Sphere>(
         sf::Vector3f(-4, 1, 0), 1, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
     world.add(
-        std::make_unique<Sphere>(sf::Vector3f(4, 1, 0), 1, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0)));
+        std::make_unique<Sphere>(sf::Vector3f(4.f, 1.f, 0.f), 1, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0)));
 
     return world;
 }

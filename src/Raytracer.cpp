@@ -13,6 +13,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 namespace {
 constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
@@ -117,23 +118,30 @@ int main()
     const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
     auto& pixels = *pixels_allocation;
 
+    const auto render_rows = [&pixels, camera, &world](const size_t start, const size_t end) noexcept {
+        for (size_t i = start; i < end; ++i) {
+            for (size_t j = 0; j < image_width; ++j) {
+                auto color = sf::Vector3f();
+                for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
+                    const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
+                    const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
+                    const auto ray = camera.get_ray(u, v);
+                    color += ray_color(ray, world, max_depth);
+                }
+
+                pixels[i][j] = to_color(color, samples_per_pixel);
+            }
+        }
+    };
+
     const auto start_of_rendering = std::chrono::steady_clock::now();
 
-    for (size_t i = 0; i < image_height; ++i) {
-        std::cout << "\rProcessing line " << i + 1 << " of " << image_height << std::flush;
-        for (size_t j = 0; j < image_width; ++j) {
-            auto color = sf::Vector3f();
-            for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
-                const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
-                const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
-                const auto ray = camera.get_ray(u, v);
-                color += ray_color(ray, world, max_depth);
-            }
-
-            pixels[i][j] = to_color(color, samples_per_pixel);
-        }
-    }
-    std::cout << std::endl;
+    auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
+    const auto rows_per_thread = image_height / threads.size();
+    for (size_t i = 0; i < threads.size(); ++i)
+        threads[i] = std::thread(render_rows, i * rows_per_thread, (i + 1) * rows_per_thread);
+    for (auto& thread : threads)
+        thread.join();
 
     const auto rendering_time
         = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_of_rendering);

@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <array>
-#include <atomic>
 #include <chrono>
 #include <iostream>
 #include <memory>
@@ -97,7 +96,7 @@ int main()
 {
     // Define constants
     constexpr auto aspect_ratio = 3.f / 2;
-    constexpr auto image_height = 200;
+    constexpr auto image_height = 360;
     constexpr auto image_width = int(aspect_ratio * image_height);
 
     // Make camera
@@ -113,8 +112,7 @@ int main()
     auto& pixels = *pixels_allocation;
 
     // Set up rendering logic
-    auto rendered_row_count = std::atomic(0);
-    const auto render_rows = [&pixels, camera, &rendered_row_count](const size_t start, const size_t end) noexcept {
+    const auto render_rows = [&pixels, camera](const size_t start, const size_t end) noexcept {
         for (size_t i = start; i < end; ++i) {
             for (size_t j = 0; j < image_width; ++j) {
                 auto color = sf::Vector3f();
@@ -130,8 +128,6 @@ int main()
 
                 pixels[i][j] = to_color(color, samples_per_pixel);
             }
-
-            ++rendered_row_count;
         }
     };
 

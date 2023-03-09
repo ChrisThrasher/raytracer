@@ -142,7 +142,7 @@ int main()
 
     // Draw
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
-    window.setFramerateLimit(30);
+    window.setFramerateLimit(15);
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {
             switch (event.type) {

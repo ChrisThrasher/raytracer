@@ -1,5 +1,6 @@
 #include "Utilities.hpp"
 
+#include <algorithm>
 #include <array>
 
 auto rng() -> std::mt19937&

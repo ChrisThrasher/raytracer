@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <thread>
+#include <sstream>
 
 namespace {
 constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
@@ -164,7 +165,7 @@ int main()
     status_thread.join();
 
     const auto rendering_time
-        = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_of_rendering);
+        = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - start_of_rendering);
 
     auto image = sf::Image();
     image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));
@@ -173,7 +174,9 @@ int main()
         throw std::runtime_error("Failed to load texture");
     const auto sprite = sf::Sprite(texture);
 
-    auto text = sf::Text(std::to_string(rendering_time.count()) + " ms", font, 28);
+    auto text_text = std::ostringstream();
+    text_text << std::fixed << std::setprecision(1) << rendering_time.count() << "s";
+    auto text = sf::Text(text_text.str(), font, 28);
     text.setPosition({ 5, 0 });
     text.setOutlineThickness(2.f);
 

@@ -54,24 +54,19 @@ int main()
     constexpr auto samples_per_pixel = 100;
     constexpr auto max_depth = 50;
 
-    // const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.f));
-    // const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.1f, 0.2f, 0.5f));
-    // const auto left_material = std::make_shared<Dielectric>(1.5f);
-    // const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f), 0);
-    const auto left_material = std::make_shared<Lambertian>(sf::Vector3f(0, 0, 1));
-    const auto right_material = std::make_shared<Lambertian>(sf::Vector3f(1, 0, 0));
+    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.8f, 0.8f, 0.f));
+    const auto center_material = std::make_shared<Lambertian>(sf::Vector3f(0.1f, 0.2f, 0.5f));
+    const auto left_material = std::make_shared<Dielectric>(1.5f);
+    const auto right_material = std::make_shared<Metal>(sf::Vector3f(0.8f, 0.6f, 0.2f), 0);
 
     auto world = HittableList();
-    // world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));
-    // world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, 0.0, -1.0), 0.5, center_material));
-    // world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), 0.5, left_material));
-    // world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), -0.4, left_material));
-    // world.add(std::make_unique<Sphere>(sf::Vector3f(1.0, 0.0, -1.0), 0.5, right_material));
-    const auto cos_45 = std::cos(sf::degrees(180.f / 4).asRadians());
-    world.add(std::make_unique<Sphere>(sf::Vector3f(-cos_45, 0, -1), cos_45, left_material));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(cos_45, 0, -1), cos_45, right_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, 0.0, -1.0), 0.5, center_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), 0.5, left_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), -0.45, left_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(1.0, 0.0, -1.0), 0.5, right_material));
 
-    auto camera = Camera(sf::degrees(90), aspect_ratio);
+    auto camera = Camera({ -2, 2, 1 }, { 0, 0, -1 }, { 0, 1, 0 }, sf::degrees(20), aspect_ratio);
 
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
     window.setFramerateLimit(30);

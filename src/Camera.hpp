@@ -11,7 +11,11 @@ class Camera {
     sf::Vector3f m_lower_left_corner;
 
 public:
-    Camera(sf::Angle fov, float aspect_ratio);
+    Camera(const sf::Vector3f& look_from,
+           const sf::Vector3f& look_at,
+           const sf::Vector3f& vup,
+           sf::Angle fov,
+           float aspect_ratio);
 
-    auto get_ray(float u, float v) -> Ray;
+    [[nodiscard]] auto get_ray(float s, float t) const -> Ray;
 };

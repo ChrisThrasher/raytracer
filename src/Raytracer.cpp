@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
-#include <iostream>
 #include <memory>
 #include <random>
 #include <sstream>
@@ -133,7 +132,6 @@ int main()
 
     // Render
     auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
-    std::cout << "Starting render with " << threads.size() << " threads" << std::endl;
 
     const auto rows_per_thread = float(image_height) / float(threads.size());
     for (size_t i = 0; i < threads.size(); ++i)

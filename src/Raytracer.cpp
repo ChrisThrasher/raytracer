@@ -63,6 +63,7 @@ int main()
     world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, -100.5, -1.0), 100.0, ground_material));
     world.add(std::make_unique<Sphere>(sf::Vector3f(0.0, 0.0, -1.0), 0.5, center_material));
     world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), 0.5, left_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(-1.0, 0.0, -1.0), -0.4, left_material));
     world.add(std::make_unique<Sphere>(sf::Vector3f(1.0, 0.0, -1.0), 0.5, right_material));
 
     auto camera = Camera();

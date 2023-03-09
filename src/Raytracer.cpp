@@ -13,6 +13,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <sstream>
 #include <thread>
 
@@ -26,17 +27,16 @@ auto make_random_scene()
 
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
-            const auto choose_material = random_float(0, 1);
             const auto center
                 = sf::Vector3f(float(i) + 0.9f * random_float(0, 1), 0.2f, float(j) + 0.9f + random_float(0, 1));
 
             if ((center - sf::Vector3f(4, 0.2f, 0)).length() > 0.9f) {
-                if (choose_material < 0.8) {
+                if (std::bernoulli_distribution(0.8)(rng())) {
                     // diffuse
                     const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
                     const auto material = std::make_shared<Lambertian>(albedo);
                     world.add(std::make_unique<Sphere>(center, 0.2f, material));
-                } else if (choose_material < 0.95) {
+                } else if (std::bernoulli_distribution(0.95)(rng())) {
                     // metal
                     const auto albedo = random_vector(0.5f, 1);
                     const auto fuzz = random_float(0, 0.5f);
@@ -54,8 +54,8 @@ auto make_random_scene()
     world.add(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1, std::make_shared<Dielectric>(1.5f)));
     world.add(std::make_unique<Sphere>(
         sf::Vector3f(-4, 1, 0), 1, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
-    world.add(
-        std::make_unique<Sphere>(sf::Vector3f(4.f, 1.f, 0.f), 1, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0)));
+    world.add(std::make_unique<Sphere>(
+        sf::Vector3f(4.f, 1.f, 0.f), 1, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0)));
 
     return world;
 }

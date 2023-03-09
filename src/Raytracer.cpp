@@ -14,40 +14,10 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
-#include <thread>
 #include <sstream>
+#include <thread>
 
 namespace {
-constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
-{
-    const auto adjust = [samples_per_pixel](const float channel) {
-        return uint8_t(255 * std::clamp(std::sqrt(channel / float(samples_per_pixel)), 0.f, 1.f));
-    };
-
-    const auto r = adjust(vector.x);
-    const auto g = adjust(vector.y);
-    const auto b = adjust(vector.z);
-    return sf::Color(r, g, b);
-}
-
-auto ray_color(const Ray& ray, const Hittable& world, const int depth) -> sf::Vector3f
-{
-    assert(depth >= 0);
-    if (depth == 0)
-        return {};
-
-    if (const auto maybe_hit_record = world.hit(ray, 0.001f, std::numeric_limits<float>::infinity())) {
-        if (const auto result = maybe_hit_record->material->scatter(ray, *maybe_hit_record)) {
-            const auto& [attenuation, scattered] = *result;
-            return attenuation.cwiseMul(ray_color(scattered, world, depth - 1));
-        }
-    }
-
-    const auto unit_direction = ray.direction().normalized();
-    const auto t = 0.5f * (unit_direction.y + 1);
-    return (1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f);
-}
-
 auto make_random_scene()
 {
     auto world = HittableList();
@@ -90,6 +60,38 @@ auto make_random_scene()
 
     return world;
 }
+
+constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
+{
+    const auto adjust = [samples_per_pixel](const float channel) {
+        return uint8_t(255 * std::clamp(std::sqrt(channel / float(samples_per_pixel)), 0.f, 1.f));
+    };
+
+    const auto r = adjust(vector.x);
+    const auto g = adjust(vector.y);
+    const auto b = adjust(vector.z);
+    return sf::Color(r, g, b);
+}
+
+auto ray_color(const Ray& ray, const int depth) -> sf::Vector3f
+{
+    static const auto world = make_random_scene();
+
+    assert(depth >= 0);
+    if (depth == 0)
+        return {};
+
+    if (const auto maybe_hit_record = world.hit(ray, 0.001f, std::numeric_limits<float>::infinity())) {
+        if (const auto result = maybe_hit_record->material->scatter(ray, *maybe_hit_record)) {
+            const auto& [attenuation, scattered] = *result;
+            return attenuation.cwiseMul(ray_color(scattered, depth - 1));
+        }
+    }
+
+    const auto unit_direction = ray.direction().normalized();
+    const auto t = 0.5f * (unit_direction.y + 1);
+    return (1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f);
+}
 }
 
 int main()
@@ -97,10 +99,6 @@ int main()
     constexpr auto aspect_ratio = 3.f / 2;
     constexpr auto image_width = 200;
     constexpr auto image_height = int(image_width / aspect_ratio);
-    constexpr auto samples_per_pixel = 100;
-    constexpr auto max_depth = 50;
-
-    const auto world = make_random_scene();
 
     const auto look_from = sf::Vector3f(13, 2, 3);
     const auto look_at = sf::Vector3f(0, 0, 0);
@@ -122,24 +120,26 @@ int main()
 
     auto rendered_row_count = std::atomic(0);
 
-    const auto render_rows
-        = [&pixels, camera, &world, &rendered_row_count](const size_t start, const size_t end) noexcept {
-              for (size_t i = start; i < end; ++i) {
-                  for (size_t j = 0; j < image_width; ++j) {
-                      auto color = sf::Vector3f();
-                      for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
-                          const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
-                          const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
-                          const auto ray = camera.get_ray(u, v);
-                          color += ray_color(ray, world, max_depth);
-                      }
+    const auto render_rows = [&pixels, camera, &rendered_row_count](const size_t start, const size_t end) noexcept {
+        for (size_t i = start; i < end; ++i) {
+            for (size_t j = 0; j < image_width; ++j) {
+                auto color = sf::Vector3f();
+                static constexpr auto samples_per_pixel = 100;
+                static constexpr auto max_depth = 50;
 
-                      pixels[i][j] = to_color(color, samples_per_pixel);
-                  }
+                for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
+                    const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
+                    const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
+                    const auto ray = camera.get_ray(u, v);
+                    color += ray_color(ray, max_depth);
+                }
 
-                  ++rendered_row_count;
-              }
-          };
+                pixels[i][j] = to_color(color, samples_per_pixel);
+            }
+
+            ++rendered_row_count;
+        }
+    };
 
     const auto start_of_rendering = std::chrono::steady_clock::now();
 
@@ -164,8 +164,8 @@ int main()
     rendering = false;
     status_thread.join();
 
-    const auto rendering_time
-        = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - start_of_rendering);
+    const auto rendering_time = std::chrono::duration_cast<std::chrono::duration<float>>(
+        std::chrono::steady_clock::now() - start_of_rendering);
 
     auto image = sf::Image();
     image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));

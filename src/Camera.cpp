@@ -16,8 +16,7 @@ Camera::Camera(const sf::Vector3f& look_from,
     , m_v(m_w.cross(m_u))
     , m_lens_radius(aperture / 2)
 {
-    const auto half_height = std::tan(fov.asRadians() / 2);
-    const auto viewport_height = 2 * half_height;
+    const auto viewport_height = 2 * std::tan(fov.asRadians() / 2);
     const auto viewport_width = aspect_ratio * viewport_height;
 
     m_horizontal = focus_distance * viewport_width * m_u;

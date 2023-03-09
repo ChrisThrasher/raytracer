@@ -77,7 +77,6 @@ auto ray_color(const Ray& ray, const int depth) -> sf::Vector3f
 {
     static const auto world = make_random_scene();
 
-    assert(depth >= 0);
     if (depth == 0)
         return {};
 
@@ -96,30 +95,25 @@ auto ray_color(const Ray& ray, const int depth) -> sf::Vector3f
 
 int main()
 {
+    // Define constants
     constexpr auto aspect_ratio = 3.f / 2;
-    constexpr auto image_width = 200;
-    constexpr auto image_height = int(image_width / aspect_ratio);
+    constexpr auto image_height = 200;
+    constexpr auto image_width = int(aspect_ratio * image_height);
 
+    // Make camera
     const auto look_from = sf::Vector3f(13, 2, 3);
     const auto look_at = sf::Vector3f(0, 0, 0);
     const auto vup = sf::Vector3f(0, 1, 0);
     const auto focus_distance = 10.f;
     const auto aperture = 0.1f;
-    auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
-
-    auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
-    window.setFramerateLimit(30);
-
-    auto font = sf::Font();
-    if (!font.loadFromFile(FONT_PATH / std::filesystem::path("font.ttf")))
-        throw std::runtime_error("Failed to load font");
+    const auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
 
     // Heap allocate to accomodate systems with small (<1MB) stack sizes
     const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
     auto& pixels = *pixels_allocation;
 
+    // Set up rendering logic
     auto rendered_row_count = std::atomic(0);
-
     const auto render_rows = [&pixels, camera, &rendered_row_count](const size_t start, const size_t end) noexcept {
         for (size_t i = start; i < end; ++i) {
             for (size_t j = 0; j < image_width; ++j) {
@@ -141,32 +135,37 @@ int main()
         }
     };
 
-    const auto start_of_rendering = std::chrono::steady_clock::now();
-
-    auto rendering = std::atomic(true);
+    // Render
     auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
-    const auto rows_per_thread = float(image_height) / float(threads.size());
+    auto rendering = std::atomic(true);
+    std::cout << "Starting render with " << threads.size() << " threads" << std::endl;
+
     auto status_thread = std::thread([&rendered_row_count, &rendering]() {
         while (rendering) {
-            std::cout << "\rRendered " << rendered_row_count << " of " << image_height << " rows" << std::flush;
+            std::cout << "\rRendered " << rendered_row_count << " of " << image_height << " rows..." << std::flush;
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
-        std::cout << std::endl;
+        std::cout << "\r                                                   ";
     });
+
+    const auto start_of_rendering = std::chrono::steady_clock::now();
+    const auto rows_per_thread = float(image_height) / float(threads.size());
     for (size_t i = 0; i < threads.size(); ++i)
         threads[i]
             = std::thread(render_rows, size_t(float(i) * rows_per_thread), size_t((float(i) + 1) * rows_per_thread));
     for (auto& thread : threads)
         thread.join();
-    if (rendered_row_count != image_height)
-        throw std::runtime_error("Rendered row count of " + std::to_string(rendered_row_count) + " should be "
-                                 + std::to_string(image_height));
+    const auto render_time = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now()
+                                                                                      - start_of_rendering);
     rendering = false;
     status_thread.join();
 
-    const auto rendering_time = std::chrono::duration_cast<std::chrono::duration<float>>(
-        std::chrono::steady_clock::now() - start_of_rendering);
+    // Print render time
+    auto render_time_text = std::ostringstream();
+    render_time_text << std::fixed << std::setprecision(1) << render_time.count() << "s";
+    std::cout << "\rFinished rendering in " << render_time_text.str() << std::endl;
 
+    // Make sprite
     auto image = sf::Image();
     image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));
     auto texture = sf::Texture();
@@ -174,12 +173,17 @@ int main()
         throw std::runtime_error("Failed to load texture");
     const auto sprite = sf::Sprite(texture);
 
-    auto text_text = std::ostringstream();
-    text_text << std::fixed << std::setprecision(1) << rendering_time.count() << "s";
-    auto text = sf::Text(text_text.str(), font, 28);
+    // Make render time text
+    auto font = sf::Font();
+    if (!font.loadFromFile(FONT_PATH / std::filesystem::path("font.ttf")))
+        throw std::runtime_error("Failed to load font");
+    auto text = sf::Text(render_time_text.str(), font, 28);
     text.setPosition({ 5, 0 });
     text.setOutlineThickness(2.f);
 
+    // Draw
+    auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
+    window.setFramerateLimit(30);
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {
             switch (event.type) {

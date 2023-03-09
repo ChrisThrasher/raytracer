@@ -23,7 +23,7 @@ auto make_random_scene()
     auto world = HittableList();
 
     const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5));
-    world.add(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000, ground_material));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, ground_material));
 
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
@@ -51,11 +51,11 @@ auto make_random_scene()
         }
     }
 
-    world.add(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1, std::make_shared<Dielectric>(1.5f)));
+    world.add(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, std::make_shared<Dielectric>(1.5f)));
     world.add(std::make_unique<Sphere>(
-        sf::Vector3f(-4, 1, 0), 1, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
+        sf::Vector3f(-4, 1, 0), 1.f, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
     world.add(std::make_unique<Sphere>(
-        sf::Vector3f(4.f, 1.f, 0.f), 1, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0)));
+        sf::Vector3f(4.f, 1.f, 0.f), 1.f, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0.f)));
 
     return world;
 }

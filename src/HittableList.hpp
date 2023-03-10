@@ -9,9 +9,6 @@ class HittableList : public Hittable {
     std::vector<std::unique_ptr<Hittable>> m_objects;
 
 public:
-    HittableList() = default;
-    HittableList(std::unique_ptr<Hittable> object);
-
     void add(std::unique_ptr<Hittable> object);
 
     [[nodiscard]] auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> override;

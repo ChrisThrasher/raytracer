@@ -1,7 +1,5 @@
 #include "HittableList.hpp"
 
-HittableList::HittableList(std::unique_ptr<Hittable> object) { add(std::move(object)); }
-
 void HittableList::add(std::unique_ptr<Hittable> object) { m_objects.emplace_back(std::move(object)); }
 
 auto HittableList::hit(const Ray& ray, const float t_min, const float t_max) const -> std::optional<HitRecord>

@@ -27,25 +27,25 @@ auto make_random_scene()
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
             const auto center = sf::Vector3f(float(i) + random_float(0, 0.9f), 0.2f, float(j) + random_float(0, 0.9f));
+            if ((center - sf::Vector3f(4, 0.2f, 0)).length() <= 0.9f)
+                continue;
 
-            if ((center - sf::Vector3f(4, 0.2f, 0)).length() > 0.9f) {
-                if (std::bernoulli_distribution(0.8)(rng())) {
-                    // diffuse
-                    const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
-                    const auto material = std::make_shared<Lambertian>(albedo);
-                    world.add(std::make_unique<Sphere>(center, 0.2f, material));
-                } else if (std::bernoulli_distribution(0.95)(rng())) {
-                    // metal
-                    const auto albedo = random_vector(0.5f, 1);
-                    const auto fuzz = random_float(0, 0.5f);
-                    const auto material = std::make_shared<Metal>(albedo, fuzz);
-                    world.add(std::make_unique<Sphere>(center, 0.2f, material));
-                } else {
-                    // glass
-                    const auto material = std::make_shared<Dielectric>(1.5f);
-                    world.add(std::make_unique<Sphere>(center, 0.2f, material));
-                }
+            auto material = std::shared_ptr<Material>();
+            if (std::bernoulli_distribution(0.8)(rng())) {
+                // diffuse
+                const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
+                material = std::make_shared<Lambertian>(albedo);
+            } else if (std::bernoulli_distribution(0.95)(rng())) {
+                // metal
+                const auto albedo = random_vector(0.5f, 1);
+                const auto fuzz = random_float(0, 0.5f);
+                material = std::make_shared<Metal>(albedo, fuzz);
+            } else {
+                // glass
+                material = std::make_shared<Dielectric>(1.5f);
             }
+
+            world.add(std::make_unique<Sphere>(center, 0.2f, material));
         }
     }
 

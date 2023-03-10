@@ -9,6 +9,7 @@
 #include <array>
 #include <atomic>
 #include <iostream>
+#include <mutex>
 #include <thread>
 
 namespace {
@@ -101,11 +102,12 @@ int main()
     const auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
 
     // Set up rendering logic
-    const auto render_rows = [&pixels, camera](const size_t start, const size_t end) noexcept {
-        static auto rows_rendered = std::atomic<size_t>(0);
+    const auto render_rows = [&pixels, camera](const size_t thread_count) noexcept {
+        static auto current_row = std::atomic<size_t>(0);
+        static auto completed_threads = std::atomic<size_t>(0);
         static auto now = std::chrono::steady_clock::now();
 
-        for (size_t i = start; i < end; ++i) {
+        for (size_t i = current_row++; i < image_height; i = current_row++) {
             for (size_t j = 0; j < image_width; ++j) {
                 static constexpr auto samples_per_pixel = 50;
 
@@ -122,21 +124,18 @@ int main()
             }
         }
 
-        rows_rendered += end - start;
-        if (rows_rendered != image_height)
+        if (++completed_threads < thread_count)
             return;
 
         const auto elapsed
-            = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now() - now);
-        std::cout << "Finished rendering in " << std::setprecision(3) << elapsed.count() << "s" << std::endl;
+            = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - now);
+        std::cout << "Render time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s" << std::endl;
     };
 
     // Render
     auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
-    const auto rows_per_thread = float(image_height) / float(threads.size());
-    for (size_t i = 0; i < threads.size(); ++i)
-        threads[i]
-            = std::thread(render_rows, size_t(float(i) * rows_per_thread), size_t((float(i) + 1) * rows_per_thread));
+    for (auto& thread : threads)
+        thread = std::thread(render_rows, threads.size());
 
     // Draw
     auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");

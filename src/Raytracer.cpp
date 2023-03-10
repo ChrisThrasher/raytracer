@@ -26,8 +26,7 @@ auto make_random_scene()
 
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
-            const auto center
-                = sf::Vector3f(float(i) + 0.9f * random_float(0, 1), 0.2f, float(j) + 0.9f + random_float(0, 1));
+            const auto center = sf::Vector3f(float(i) + random_float(0, 0.9f), 0.2f, float(j) + random_float(0, 0.9f));
 
             if ((center - sf::Vector3f(4, 0.2f, 0)).length() > 0.9f) {
                 if (std::bernoulli_distribution(0.8)(rng())) {

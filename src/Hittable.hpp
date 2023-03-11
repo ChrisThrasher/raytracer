@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <vector>
 
 struct HitRecord {
     sf::Vector3f point;
@@ -30,3 +31,6 @@ public:
     Hittable& operator=(Hittable&&) = default;
     [[nodiscard]] virtual auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> = 0;
 };
+
+[[nodiscard]] auto hit(const std::vector<std::unique_ptr<Hittable>>& world, const Ray& ray, float t_min, float t_max)
+    -> std::optional<HitRecord>;

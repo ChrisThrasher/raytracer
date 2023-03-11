@@ -106,14 +106,14 @@ int main()
     const auto render_rows = [&pixels, camera](const size_t start, const size_t end) noexcept {
         for (size_t i = start; i < end; ++i) {
             for (size_t j = 0; j < image_width; ++j) {
-                auto color = sf::Vector3f();
                 static constexpr auto samples_per_pixel = 50;
-                static constexpr auto max_depth = 10;
 
+                auto color = sf::Vector3f();
                 for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
                     const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
                     const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
                     const auto ray = camera.get_ray(u, v);
+                    static constexpr auto max_depth = 10;
                     color += ray_color(ray, max_depth);
                 }
 

@@ -4,7 +4,7 @@
 
 #include <random>
 
-auto rng() -> std::mt19937&;
+auto rng() -> std::minstd_rand&;
 auto random_float(float min, float max) -> float;
 auto random_vector(float min, float max) -> sf::Vector3f;
 auto random_unit_vector() -> sf::Vector3f;

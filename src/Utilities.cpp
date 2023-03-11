@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <array>
 
-auto rng() -> std::minstd_rand&
+auto rng() noexcept -> std::minstd_rand&
 {
     thread_local auto generator = []() {
         auto seed_data = std::array<std::random_device::result_type, 4>();
@@ -15,14 +15,17 @@ auto rng() -> std::minstd_rand&
     return generator;
 }
 
-auto random_float(const float min, const float max) -> float { return std::uniform_real_distribution(min, max)(rng()); }
+auto random_float(const float min, const float max) noexcept -> float
+{
+    return std::uniform_real_distribution(min, max)(rng());
+}
 
-auto random_vector(float min, float max) -> sf::Vector3f
+auto random_vector(float min, float max) noexcept -> sf::Vector3f
 {
     return { random_float(min, max), random_float(min, max), random_float(min, max) };
 }
 
-auto random_vector_in_unit_sphere() -> sf::Vector3f
+auto random_vector_in_unit_sphere() noexcept -> sf::Vector3f
 {
     auto vector = sf::Vector3f();
     do {
@@ -31,12 +34,12 @@ auto random_vector_in_unit_sphere() -> sf::Vector3f
     return vector;
 }
 
-auto random_unit_vector() -> sf::Vector3f
+auto random_unit_vector() noexcept -> sf::Vector3f
 {
     return sf::Vector3f(random_float(-1, 1), random_float(-1, 1), random_float(-1, 1)).normalized();
 }
 
-auto random_vector_in_hemisphere(const sf::Vector3f& normal) -> sf::Vector3f
+auto random_vector_in_hemisphere(const sf::Vector3f& normal) noexcept -> sf::Vector3f
 {
     const auto in_unit_sphere = random_vector_in_unit_sphere();
     if (in_unit_sphere.dot(normal) > 0)
@@ -44,7 +47,7 @@ auto random_vector_in_hemisphere(const sf::Vector3f& normal) -> sf::Vector3f
     return -in_unit_sphere;
 }
 
-auto random_vector_in_unit_disk() -> sf::Vector3f
+auto random_vector_in_unit_disk() noexcept -> sf::Vector3f
 {
     auto vector = sf::Vector3f();
     do {
@@ -53,7 +56,7 @@ auto random_vector_in_unit_disk() -> sf::Vector3f
     return vector;
 }
 
-auto is_near_zero(const sf::Vector3f& vector) -> bool
+auto is_near_zero(const sf::Vector3f& vector) noexcept -> bool
 {
     constexpr auto epsilon = 1e-9f;
     return vector.lengthSq() < epsilon;

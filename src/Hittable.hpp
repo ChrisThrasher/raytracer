@@ -15,11 +15,7 @@ struct HitRecord {
     bool front_face {};
 };
 
-inline void set_face_normal(HitRecord& hit_record, const Ray& ray, const sf::Vector3f& outward_normal)
-{
-    hit_record.front_face = ray.direction().dot(outward_normal) < 0;
-    hit_record.normal = hit_record.front_face ? outward_normal : -outward_normal;
-}
+void set_face_normal(HitRecord& hit_record, const Ray& ray, const sf::Vector3f& outward_normal) noexcept;
 
 class Hittable {
 public:
@@ -32,5 +28,7 @@ public:
     [[nodiscard]] virtual auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> = 0;
 };
 
-[[nodiscard]] auto hit(const std::vector<std::unique_ptr<Hittable>>& world, const Ray& ray, float t_min, float t_max)
+using World = std::vector<std::unique_ptr<Hittable>>;
+
+[[nodiscard]] auto hit(const World& world, const Ray& ray, float t_min, float t_max) noexcept
     -> std::optional<HitRecord>;

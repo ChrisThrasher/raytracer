@@ -10,9 +10,9 @@
 #include <thread>
 
 namespace {
-auto make_random_scene()
+auto make_random_scene() noexcept
 {
-    auto world = std::vector<std::unique_ptr<Hittable>>();
+    auto world = World();
 
     const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5));
     world.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, ground_material));
@@ -51,7 +51,7 @@ auto make_random_scene()
     return world;
 }
 
-constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
+constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
 {
     const auto adjust = [samples_per_pixel](const float channel) {
         return uint8_t(255 * std::clamp(std::sqrt(channel / float(samples_per_pixel)), 0.f, 1.f));
@@ -63,7 +63,7 @@ constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel)
     return sf::Color(r, g, b);
 }
 
-auto ray_color(const Ray& ray, const int depth) -> sf::Vector3f
+auto ray_color(const Ray& ray, const int depth) noexcept -> sf::Vector3f
 {
     static const auto world = make_random_scene();
 
@@ -94,8 +94,8 @@ int main()
     const auto look_from = sf::Vector3f(13, 2, 3);
     const auto look_at = sf::Vector3f(0, 0, 0);
     const auto vup = sf::Vector3f(0, 1, 0);
-    const auto focus_distance = 10.f;
     const auto aperture = 0.1f;
+    const auto focus_distance = 10.f;
     const auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
 
     // Heap allocate to accomodate systems with small (<1MB) stack sizes

@@ -2,14 +2,14 @@
 
 #include <cmath>
 
-Sphere::Sphere(const sf::Vector3f& center, const float radius, std::shared_ptr<Material> material)
+Sphere::Sphere(const sf::Vector3f& center, const float radius, std::shared_ptr<Material> material) noexcept
     : m_center(center)
     , m_radius(radius)
     , m_material(std::move(material))
 {
 }
 
-auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const -> std::optional<HitRecord>
+auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noexcept -> std::optional<HitRecord>
 {
     const auto oc = ray.origin() - m_center;
     const auto a = ray.direction().lengthSq();

@@ -4,9 +4,9 @@
 #include "Utilities.hpp"
 
 namespace {
-auto reflect(const sf::Vector3f& v, const sf::Vector3f& n) { return v - 2.f * v.dot(n) * n; }
+auto reflect(const sf::Vector3f& v, const sf::Vector3f& n) noexcept { return v - 2.f * v.dot(n) * n; }
 
-auto refract(const sf::Vector3f& uv, const sf::Vector3f& n, const float etai_over_etat)
+auto refract(const sf::Vector3f& uv, const sf::Vector3f& n, const float etai_over_etat) noexcept
 {
     const auto cos_theta = std::min(-uv.dot(n), 1.f);
     const auto r_out_perp = etai_over_etat * (uv + cos_theta * n);
@@ -14,7 +14,7 @@ auto refract(const sf::Vector3f& uv, const sf::Vector3f& n, const float etai_ove
     return r_out_perp + r_out_parallel;
 }
 
-auto reflectance(const float cosine, const float ref_index)
+auto reflectance(const float cosine, const float ref_index) noexcept
 {
     // Use Schlick's approximation for reflectance
     const auto r0 = std::pow((1 - ref_index) / (1 + ref_index), 2);
@@ -22,12 +22,12 @@ auto reflectance(const float cosine, const float ref_index)
 }
 }
 
-Lambertian::Lambertian(const sf::Vector3f& color)
+Lambertian::Lambertian(const sf::Vector3f& color) noexcept
     : m_albedo(color)
 {
 }
 
-auto Lambertian::scatter(const Ray& /* ray */, const HitRecord& hit_record) const
+auto Lambertian::scatter(const Ray& /* ray */, const HitRecord& hit_record) const noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     auto scatter_direction = hit_record.normal + random_unit_vector();
@@ -36,13 +36,14 @@ auto Lambertian::scatter(const Ray& /* ray */, const HitRecord& hit_record) cons
     return std::make_pair(m_albedo, Ray(hit_record.point, scatter_direction));
 }
 
-Metal::Metal(const sf::Vector3f& color, const float fuzz)
+Metal::Metal(const sf::Vector3f& color, const float fuzz) noexcept
     : m_albedo(color)
     , m_fuzz(std::min(fuzz, 1.f))
 {
 }
 
-auto Metal::scatter(const Ray& ray, const HitRecord& hit_record) const -> std::optional<std::pair<sf::Vector3f, Ray>>
+auto Metal::scatter(const Ray& ray, const HitRecord& hit_record) const noexcept
+    -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     const auto reflected = reflect(ray.direction().normalized(), hit_record.normal);
     const auto scattered = Ray(hit_record.point, reflected + m_fuzz * random_vector_in_hemisphere(hit_record.normal));
@@ -52,12 +53,12 @@ auto Metal::scatter(const Ray& ray, const HitRecord& hit_record) const -> std::o
     return {};
 }
 
-Dielectric::Dielectric(const float index_of_refraction)
+Dielectric::Dielectric(const float index_of_refraction) noexcept
     : m_index_of_refraction(index_of_refraction)
 {
 }
 
-auto Dielectric::scatter(const Ray& ray, const HitRecord& hit_record) const
+auto Dielectric::scatter(const Ray& ray, const HitRecord& hit_record) const noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     const auto refraction_ratio = hit_record.front_face ? 1.f / m_index_of_refraction : m_index_of_refraction;

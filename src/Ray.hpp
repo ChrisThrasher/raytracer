@@ -7,7 +7,7 @@ class Ray {
     sf::Vector3f m_direction;
 
 public:
-    constexpr Ray(const sf::Vector3f& origin, const sf::Vector3f& direction)
+    constexpr Ray(const sf::Vector3f& origin, const sf::Vector3f& direction) noexcept
         : m_origin(origin)
         , m_direction(direction)
     {

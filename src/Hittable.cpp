@@ -1,7 +1,12 @@
 #include "Hittable.hpp"
 
-auto hit(const std::vector<std::unique_ptr<Hittable>>& world, const Ray& ray, const float t_min, const float t_max)
-    -> std::optional<HitRecord>
+void set_face_normal(HitRecord& hit_record, const Ray& ray, const sf::Vector3f& outward_normal) noexcept
+{
+    hit_record.front_face = ray.direction().dot(outward_normal) < 0;
+    hit_record.normal = hit_record.front_face ? outward_normal : -outward_normal;
+}
+
+auto hit(const World& world, const Ray& ray, const float t_min, const float t_max) noexcept -> std::optional<HitRecord>
 {
     auto hit_record = HitRecord();
     auto hit_something = false;

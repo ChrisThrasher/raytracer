@@ -21,7 +21,7 @@ public:
            sf::Angle fov,
            float aspect_ratio,
            float aperture,
-           float focus_distance);
+           float focus_distance) noexcept;
 
-    [[nodiscard]] auto get_ray(float s, float t) const -> Ray;
+    [[nodiscard]] auto get_ray(float s, float t) const noexcept -> Ray;
 };

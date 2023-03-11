@@ -9,7 +9,7 @@ Camera::Camera(const sf::Vector3f& look_from,
                const sf::Angle fov,
                const float aspect_ratio,
                const float aperture,
-               const float focus_distance)
+               const float focus_distance) noexcept
     : m_origin(look_from)
     , m_w((look_from - look_at).normalized())
     , m_u(vup.cross(m_w).normalized())
@@ -24,7 +24,7 @@ Camera::Camera(const sf::Vector3f& look_from,
     m_lower_left_corner = m_origin - m_horizontal / 2.f - m_vertical / 2.f - focus_distance * m_w;
 }
 
-auto Camera::get_ray(const float s, const float t) const -> Ray
+auto Camera::get_ray(const float s, const float t) const noexcept -> Ray
 {
     const auto rd = m_lens_radius * random_vector_in_unit_disk();
     const auto offset = m_u * rd.x + m_v * rd.y;

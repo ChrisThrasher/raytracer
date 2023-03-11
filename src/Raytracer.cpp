@@ -1,7 +1,5 @@
 #include "Camera.hpp"
-#include "Hittable.hpp"
 #include "Material.hpp"
-#include "Ray.hpp"
 #include "Sphere.hpp"
 #include "Utilities.hpp"
 
@@ -9,10 +7,6 @@
 
 #include <algorithm>
 #include <array>
-#include <chrono>
-#include <memory>
-#include <random>
-#include <sstream>
 #include <thread>
 
 namespace {

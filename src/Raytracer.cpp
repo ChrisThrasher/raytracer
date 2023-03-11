@@ -107,7 +107,7 @@ int main()
         for (size_t i = start; i < end; ++i) {
             for (size_t j = 0; j < image_width; ++j) {
                 auto color = sf::Vector3f();
-                static constexpr auto samples_per_pixel = 100;
+                static constexpr auto samples_per_pixel = 50;
                 static constexpr auto max_depth = 10;
 
                 for (size_t sample = 0; sample < samples_per_pixel; ++sample) {

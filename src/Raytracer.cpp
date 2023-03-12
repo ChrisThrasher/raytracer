@@ -61,7 +61,7 @@ constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexce
     return sf::Color(r, g, b);
 }
 
-auto ray_color(const Ray& ray, const int depth) noexcept -> sf::Vector3f
+auto trace_ray(const Ray& ray, const int depth) noexcept -> sf::Vector3f
 {
     static const auto scene = make_random_scene();
 
@@ -71,7 +71,7 @@ auto ray_color(const Ray& ray, const int depth) noexcept -> sf::Vector3f
     if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
         if (const auto result = scatter(*maybe_hit_record->material, ray, *maybe_hit_record)) {
             const auto& [attenuation, scattered] = *result;
-            return attenuation.cwiseMul(ray_color(scattered, depth - 1));
+            return attenuation.cwiseMul(trace_ray(scattered, depth - 1));
         }
     }
 
@@ -115,7 +115,7 @@ int main()
                     const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
                     const auto ray = camera.get_ray(u, v);
                     static constexpr auto max_depth = 10;
-                    color += ray_color(ray, max_depth);
+                    color += trace_ray(ray, max_depth);
                 }
 
                 pixels[i][j] = to_color(color, samples_per_pixel);

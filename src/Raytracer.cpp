@@ -22,7 +22,7 @@ auto make_random_scene() noexcept
             if ((center - sf::Vector3f(4, 0.2f, 0)).length() <= 0.9f)
                 continue;
 
-            auto material = std::unique_ptr<Material>();
+            auto material = std::unique_ptr<const Material>();
             if (std::bernoulli_distribution(0.8)(rng())) {
                 // diffuse
                 const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));

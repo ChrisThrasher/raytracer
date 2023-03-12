@@ -1,6 +1,5 @@
 #include "Material.hpp"
 #include "Hittable.hpp"
-#include "SFML/System/Vector3.hpp"
 #include "Utilities.hpp"
 
 namespace {

@@ -13,9 +13,8 @@ namespace {
 auto make_random_scene() noexcept
 {
     auto scene = Scene();
-
-    const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5));
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, ground_material));
+    scene.push_back(std::make_unique<Sphere>(
+        sf::Vector3f(0, -1000, 0), 1000.f, std::make_unique<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5))));
 
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
@@ -23,30 +22,30 @@ auto make_random_scene() noexcept
             if ((center - sf::Vector3f(4, 0.2f, 0)).length() <= 0.9f)
                 continue;
 
-            auto material = std::shared_ptr<Material>();
+            auto material = std::unique_ptr<Material>();
             if (std::bernoulli_distribution(0.8)(rng())) {
                 // diffuse
                 const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
-                material = std::make_shared<Lambertian>(albedo);
+                material = std::make_unique<Lambertian>(albedo);
             } else if (std::bernoulli_distribution(0.95)(rng())) {
                 // metal
                 const auto albedo = random_vector(0.5f, 1);
                 const auto fuzz = random_float(0, 0.5f);
-                material = std::make_shared<Metal>(albedo, fuzz);
+                material = std::make_unique<Metal>(albedo, fuzz);
             } else {
                 // glass
-                material = std::make_shared<Dielectric>(1.5f);
+                material = std::make_unique<Dielectric>(1.5f);
             }
 
-            scene.push_back(std::make_unique<Sphere>(center, 0.2f, material));
+            scene.push_back(std::make_unique<Sphere>(center, 0.2f, std::move(material)));
         }
     }
 
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, std::make_shared<Dielectric>(1.5f)));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, std::make_unique<Dielectric>(1.5f)));
     scene.push_back(std::make_unique<Sphere>(
-        sf::Vector3f(-4, 1, 0), 1.f, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
+        sf::Vector3f(-4, 1, 0), 1.f, std::make_unique<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
     scene.push_back(std::make_unique<Sphere>(
-        sf::Vector3f(4.f, 1.f, 0.f), 1.f, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0.f)));
+        sf::Vector3f(4.f, 1.f, 0.f), 1.f, std::make_unique<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0.f)));
 
     return scene;
 }

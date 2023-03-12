@@ -7,6 +7,8 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
+#include <iostream>
 #include <thread>
 
 namespace {
@@ -100,6 +102,9 @@ int main()
 
     // Set up rendering logic
     const auto render_rows = [&pixels, camera](const size_t start, const size_t end) noexcept {
+        static auto rows_rendered = std::atomic<size_t>(0);
+        static auto now = std::chrono::steady_clock::now();
+
         for (size_t i = start; i < end; ++i) {
             for (size_t j = 0; j < image_width; ++j) {
                 static constexpr auto samples_per_pixel = 50;
@@ -116,6 +121,14 @@ int main()
                 pixels[i][j] = to_color(color, samples_per_pixel);
             }
         }
+
+        rows_rendered += end - start;
+        if (rows_rendered != image_height)
+            return;
+
+        const auto elapsed
+            = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now() - now);
+        std::cout << "Finished rendering in " << std::setprecision(3) << elapsed.count() << "s" << std::endl;
     };
 
     // Render

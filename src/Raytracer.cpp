@@ -49,7 +49,7 @@ auto make_random_scene() noexcept
     return scene;
 }
 
-constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
+auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
 {
     const auto adjust = [samples_per_pixel](const float channel) {
         return uint8_t(255 * std::clamp(std::sqrt(channel / float(samples_per_pixel)), 0.f, 1.f));

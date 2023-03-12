@@ -90,6 +90,10 @@ int main()
     constexpr auto image_height = 360;
     constexpr auto image_width = int(aspect_ratio * image_height);
 
+    // Heap allocate to accomodate systems with small (<1MB) stack sizes
+    const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
+    auto& pixels = *pixels_allocation;
+
     // Make camera
     const auto look_from = sf::Vector3f(13, 2, 3);
     const auto look_at = sf::Vector3f(0, 0, 0);
@@ -97,10 +101,6 @@ int main()
     const auto aperture = 0.1f;
     const auto focus_distance = 10.f;
     const auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
-
-    // Heap allocate to accomodate systems with small (<1MB) stack sizes
-    const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
-    auto& pixels = *pixels_allocation;
 
     // Set up rendering logic
     const auto render_rows = [&pixels, camera](const size_t start, const size_t end) noexcept {

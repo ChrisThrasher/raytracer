@@ -58,6 +58,6 @@ auto random_vector_in_unit_disk() noexcept -> sf::Vector3f
 
 auto is_near_zero(const sf::Vector3f& vector) noexcept -> bool
 {
-    constexpr auto epsilon = 1e-9f;
+    static constexpr auto epsilon = 1e-9f;
     return vector.lengthSq() < epsilon;
 }

@@ -75,9 +75,9 @@ auto scatter(const Material& material, const Ray& ray, const HitRecord& hit_reco
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     const auto overload = Overload {
-        [ray, hit_record](const Lambertian& lambertian) { return scatter(lambertian, ray, hit_record); },
-        [ray, hit_record](const Metal& metal) { return scatter(metal, ray, hit_record); },
-        [ray, hit_record](const Dielectric& dialectric) { return scatter(dialectric, ray, hit_record); },
+        [ray, hit_record](const Lambertian& lambertian) noexcept { return scatter(lambertian, ray, hit_record); },
+        [ray, hit_record](const Metal& metal) noexcept { return scatter(metal, ray, hit_record); },
+        [ray, hit_record](const Dielectric& dialectric) noexcept { return scatter(dialectric, ray, hit_record); },
     };
     return std::visit(overload, material);
 }

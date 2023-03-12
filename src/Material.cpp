@@ -24,8 +24,9 @@ auto reflectance(const float cosine, const float ref_index) noexcept
 auto scatter(const Lambertian& lambertian, const Ray& /* ray */, const HitRecord& hit_record) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
+    static constexpr auto epsilon = 1e-9f;
     auto scatter_direction = hit_record.normal + random_unit_vector();
-    if (is_near_zero(scatter_direction))
+    if (scatter_direction.lengthSq() < epsilon)
         scatter_direction = hit_record.normal;
     return std::make_pair(lambertian.albedo, Ray(hit_record.point, scatter_direction));
 }

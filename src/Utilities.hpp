@@ -11,4 +11,3 @@ auto random_unit_vector() noexcept -> sf::Vector3f;
 auto random_vector_in_unit_sphere() noexcept -> sf::Vector3f;
 auto random_vector_in_hemisphere(const sf::Vector3f& normal) noexcept -> sf::Vector3f;
 auto random_vector_in_unit_disk() noexcept -> sf::Vector3f;
-auto is_near_zero(const sf::Vector3f& vector) noexcept -> bool;

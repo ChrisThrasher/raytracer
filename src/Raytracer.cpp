@@ -124,7 +124,6 @@ int main()
 
     // Render
     auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
-
     const auto rows_per_thread = float(image_height) / float(threads.size());
     for (size_t i = 0; i < threads.size(); ++i)
         threads[i]

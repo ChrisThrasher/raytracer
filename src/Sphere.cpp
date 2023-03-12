@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-Sphere::Sphere(const sf::Vector3f& center, const float radius, std::shared_ptr<Material> material) noexcept
+Sphere::Sphere(const sf::Vector3f& center, const float radius, std::shared_ptr<const Material> material) noexcept
     : m_center(center)
     , m_radius(radius)
     , m_material(std::move(material))

@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 #include "Material.hpp"
+#include "Random.hpp"
 #include "Sphere.hpp"
-#include "Utilities.hpp"
 
 #include <SFML/Graphics.hpp>
 

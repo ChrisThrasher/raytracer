@@ -1,6 +1,6 @@
 #include "Material.hpp"
 #include "Hittable.hpp"
-#include "Utilities.hpp"
+#include "Random.hpp"
 
 namespace {
 auto reflect(const sf::Vector3f& v, const sf::Vector3f& n) noexcept { return v - 2.f * v.dot(n) * n; }

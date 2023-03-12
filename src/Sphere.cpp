@@ -33,6 +33,6 @@ auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noe
     hit_record.point = ray.at(root);
     const auto outward_normal = (hit_record.point - m_center) / m_radius;
     set_face_normal(hit_record, ray, outward_normal);
-    hit_record.material = m_material;
+    hit_record.material = m_material.get();
     return hit_record;
 }

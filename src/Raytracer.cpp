@@ -67,7 +67,7 @@ auto ray_color(const Ray& ray, const int depth) noexcept -> sf::Vector3f
         return {};
 
     if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
-        if (const auto result = scatter(maybe_hit_record->material, ray, *maybe_hit_record)) {
+        if (const auto result = scatter(*maybe_hit_record->material, ray, *maybe_hit_record)) {
             const auto& [attenuation, scattered] = *result;
             return attenuation.cwiseMul(ray_color(scattered, depth - 1));
         }

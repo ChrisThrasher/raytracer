@@ -12,10 +12,10 @@
 namespace {
 auto make_random_scene() noexcept
 {
-    auto world = World();
+    auto scene = Scene();
 
     const auto ground_material = std::make_shared<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5));
-    world.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, ground_material));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, ground_material));
 
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
@@ -38,17 +38,17 @@ auto make_random_scene() noexcept
                 material = std::make_shared<Dielectric>(1.5f);
             }
 
-            world.push_back(std::make_unique<Sphere>(center, 0.2f, material));
+            scene.push_back(std::make_unique<Sphere>(center, 0.2f, material));
         }
     }
 
-    world.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, std::make_shared<Dielectric>(1.5f)));
-    world.push_back(std::make_unique<Sphere>(
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, std::make_shared<Dielectric>(1.5f)));
+    scene.push_back(std::make_unique<Sphere>(
         sf::Vector3f(-4, 1, 0), 1.f, std::make_shared<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
-    world.push_back(std::make_unique<Sphere>(
+    scene.push_back(std::make_unique<Sphere>(
         sf::Vector3f(4.f, 1.f, 0.f), 1.f, std::make_shared<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0.f)));
 
-    return world;
+    return scene;
 }
 
 constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
@@ -65,12 +65,12 @@ constexpr auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexce
 
 auto ray_color(const Ray& ray, const int depth) noexcept -> sf::Vector3f
 {
-    static const auto world = make_random_scene();
+    static const auto scene = make_random_scene();
 
     if (depth == 0)
         return {};
 
-    if (const auto maybe_hit_record = hit(world, ray, 0.001f, std::numeric_limits<float>::infinity())) {
+    if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
         if (const auto result = maybe_hit_record->material->scatter(ray, *maybe_hit_record)) {
             const auto& [attenuation, scattered] = *result;
             return attenuation.cwiseMul(ray_color(scattered, depth - 1));

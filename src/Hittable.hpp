@@ -28,7 +28,7 @@ public:
     [[nodiscard]] virtual auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> = 0;
 };
 
-using World = std::vector<std::unique_ptr<Hittable>>;
+using Scene = std::vector<std::unique_ptr<Hittable>>;
 
-[[nodiscard]] auto hit(const World& world, const Ray& ray, float t_min, float t_max) noexcept
+[[nodiscard]] auto hit(const Scene& scene, const Ray& ray, float t_min, float t_max) noexcept
     -> std::optional<HitRecord>;

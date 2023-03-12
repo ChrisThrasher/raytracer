@@ -21,46 +21,32 @@ auto reflectance(const float cosine, const float ref_index) noexcept
 }
 }
 
-Lambertian::Lambertian(const sf::Vector3f& color) noexcept
-    : m_albedo(color)
-{
-}
-
-auto Lambertian::scatter(const Ray& /* ray */, const HitRecord& hit_record) const noexcept
+auto scatter(const Lambertian& lambertian, const Ray& /* ray */, const HitRecord& hit_record) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     auto scatter_direction = hit_record.normal + random_unit_vector();
     if (is_near_zero(scatter_direction))
         scatter_direction = hit_record.normal;
-    return std::make_pair(m_albedo, Ray(hit_record.point, scatter_direction));
+    return std::make_pair(lambertian.albedo, Ray(hit_record.point, scatter_direction));
 }
 
-Metal::Metal(const sf::Vector3f& color, const float fuzz) noexcept
-    : m_albedo(color)
-    , m_fuzz(std::min(fuzz, 1.f))
-{
-}
-
-auto Metal::scatter(const Ray& ray, const HitRecord& hit_record) const noexcept
+auto scatter(const Metal& metal, const Ray& ray, const HitRecord& hit_record) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
     const auto reflected = reflect(ray.direction().normalized(), hit_record.normal);
-    const auto scattered = Ray(hit_record.point, reflected + m_fuzz * random_vector_in_hemisphere(hit_record.normal));
-    const auto attenuation = m_albedo;
+    const auto scattered
+        = Ray(hit_record.point, reflected + metal.fuzz * random_vector_in_hemisphere(hit_record.normal));
+    const auto attenuation = metal.albedo;
     if (scattered.direction().dot(hit_record.normal) > 0)
         return std::make_pair(attenuation, scattered);
     return {};
 }
 
-Dielectric::Dielectric(const float index_of_refraction) noexcept
-    : m_index_of_refraction(index_of_refraction)
-{
-}
-
-auto Dielectric::scatter(const Ray& ray, const HitRecord& hit_record) const noexcept
+auto scatter(const Dielectric& dialectric, const Ray& ray, const HitRecord& hit_record) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
 {
-    const auto refraction_ratio = hit_record.front_face ? 1.f / m_index_of_refraction : m_index_of_refraction;
+    const auto refraction_ratio
+        = hit_record.front_face ? 1.f / dialectric.index_of_refraction : dialectric.index_of_refraction;
     const auto unit_direction = ray.direction().normalized();
 
     const auto cos_theta = std::min(-unit_direction.dot(hit_record.normal), 1.f);
@@ -76,4 +62,22 @@ auto Dielectric::scatter(const Ray& ray, const HitRecord& hit_record) const noex
     const auto attenuation = sf::Vector3f(1, 1, 1);
     const auto scattered = Ray(hit_record.point, direction);
     return std::make_pair(attenuation, scattered);
+}
+
+template <typename... Ts>
+struct Overload : Ts... {
+    using Ts::operator()...;
+};
+template <class... Ts>
+Overload(Ts...) -> Overload<Ts...>;
+
+auto scatter(const Material& material, const Ray& ray, const HitRecord& hit_record) noexcept
+    -> std::optional<std::pair<sf::Vector3f, Ray>>
+{
+    const auto overload = Overload {
+        [ray, hit_record](const Lambertian& lambertian) { return scatter(lambertian, ray, hit_record); },
+        [ray, hit_record](const Metal& metal) { return scatter(metal, ray, hit_record); },
+        [ray, hit_record](const Dielectric& dialectric) { return scatter(dialectric, ray, hit_record); },
+    };
+    return std::visit(overload, material);
 }

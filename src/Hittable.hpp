@@ -10,7 +10,7 @@
 struct HitRecord {
     sf::Vector3f point;
     sf::Vector3f normal;
-    const Material* material {};
+    Material material;
     float t {};
     bool front_face {};
 };

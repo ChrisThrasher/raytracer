@@ -13,8 +13,7 @@ namespace {
 auto make_random_scene() noexcept
 {
     auto scene = Scene();
-    scene.push_back(std::make_unique<Sphere>(
-        sf::Vector3f(0, -1000, 0), 1000.f, std::make_unique<Lambertian>(sf::Vector3f(0.5, 0.5, 0.5))));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.5, 0.5, 0.5 } }));
 
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
@@ -22,30 +21,28 @@ auto make_random_scene() noexcept
             if ((center - sf::Vector3f(4, 0.2f, 0)).length() <= 0.9f)
                 continue;
 
-            auto material = std::unique_ptr<const Material>();
+            auto material = Material();
             if (std::bernoulli_distribution(0.8)(rng())) {
                 // diffuse
                 const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
-                material = std::make_unique<Lambertian>(albedo);
+                material = Lambertian { albedo };
             } else if (std::bernoulli_distribution(0.95)(rng())) {
                 // metal
                 const auto albedo = random_vector(0.5f, 1);
                 const auto fuzz = random_float(0, 0.5f);
-                material = std::make_unique<Metal>(albedo, fuzz);
+                material = Metal { albedo, fuzz };
             } else {
                 // glass
-                material = std::make_unique<Dielectric>(1.5f);
+                material = Dielectric { 1.5f };
             }
 
-            scene.push_back(std::make_unique<Sphere>(center, 0.2f, std::move(material)));
+            scene.push_back(std::make_unique<Sphere>(center, 0.2f, material));
         }
     }
 
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, std::make_unique<Dielectric>(1.5f)));
-    scene.push_back(std::make_unique<Sphere>(
-        sf::Vector3f(-4, 1, 0), 1.f, std::make_unique<Lambertian>(sf::Vector3f(0.4f, 0.2f, 0.1f))));
-    scene.push_back(std::make_unique<Sphere>(
-        sf::Vector3f(4.f, 1.f, 0.f), 1.f, std::make_unique<Metal>(sf::Vector3f(0.7f, 0.6f, 0.5f), 0.f)));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, Dielectric { 1.5f }));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(-4, 1, 0), 1.f, Lambertian { { 0.4f, 0.2f, 0.1f } }));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(4.f, 1.f, 0.f), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f }));
 
     return scene;
 }
@@ -70,7 +67,7 @@ auto ray_color(const Ray& ray, const int depth) noexcept -> sf::Vector3f
         return {};
 
     if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
-        if (const auto result = maybe_hit_record->material->scatter(ray, *maybe_hit_record)) {
+        if (const auto result = scatter(maybe_hit_record->material, ray, *maybe_hit_record)) {
             const auto& [attenuation, scattered] = *result;
             return attenuation.cwiseMul(ray_color(scattered, depth - 1));
         }

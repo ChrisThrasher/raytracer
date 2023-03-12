@@ -2,10 +2,10 @@
 
 #include <cmath>
 
-Sphere::Sphere(const sf::Vector3f& center, const float radius, std::unique_ptr<const Material> material) noexcept
+Sphere::Sphere(const sf::Vector3f& center, const float radius, const Material& material) noexcept
     : m_center(center)
     , m_radius(radius)
-    , m_material(std::move(material))
+    , m_material(material)
 {
 }
 
@@ -33,6 +33,6 @@ auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noe
     hit_record.point = ray.at(root);
     const auto outward_normal = (hit_record.point - m_center) / m_radius;
     set_face_normal(hit_record, ray, outward_normal);
-    hit_record.material = m_material.get();
+    hit_record.material = m_material;
     return hit_record;
 }

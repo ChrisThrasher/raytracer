@@ -62,12 +62,12 @@ auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
     return sf::Color(r, g, b);
 }
 
-auto trace_ray(const Ray& ray, const int depth) noexcept -> sf::Vector3f
+auto trace_ray(const Ray& ray, const int depth) noexcept
 {
     static const auto scene = make_random_scene();
 
     if (depth == 0)
-        return {};
+        return sf::Vector3f();
 
     if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
         if (const auto result = scatter(*maybe_hit_record->material, ray, *maybe_hit_record)) {

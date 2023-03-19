@@ -92,9 +92,9 @@ int main()
     constexpr auto image_height = 360;
     constexpr auto image_width = int(aspect_ratio * image_height);
 
-    // Heap allocate to accomodate systems with small (<1MB) stack sizes
-    const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
-    auto& pixels = *pixels_allocation;
+    // Make image
+    auto image = sf::Image();
+    image.create({ image_width, image_height });
 
     // Make scene
     const auto scene = make_random_scene();
@@ -111,18 +111,18 @@ int main()
     }();
 
     // Set up rendering logic
-    const auto render_rows = [&pixels, &scene, camera](const size_t thread_count) noexcept {
+    const auto render_rows = [&image, &scene, camera](const size_t thread_count) noexcept {
         // Tuning parameters
         static constexpr auto samples_per_pixel = 50;
         static constexpr auto max_depth = 10;
 
-        static auto current_row = std::atomic<size_t>(0);
+        static auto current_row = std::atomic<unsigned>(0);
         static auto completed_threads = std::atomic<size_t>(0);
         static auto now = std::chrono::steady_clock::now();
 
         // Render current row
-        for (size_t i = current_row++; i < image_height; i = current_row++) {
-            for (size_t j = 0; j < image_width; ++j) {
+        for (unsigned i = current_row++; i < image_height; i = current_row++) {
+            for (unsigned j = 0; j < image_width; ++j) {
 
                 auto color = sf::Vector3f();
                 for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
@@ -132,7 +132,7 @@ int main()
                     color += trace_ray(scene, ray, max_depth);
                 }
 
-                pixels[i][j] = to_color(color, samples_per_pixel);
+                image.setPixel({ j, i }, to_color(color, samples_per_pixel));
             }
         }
 
@@ -165,8 +165,6 @@ int main()
             }
         }
 
-        auto image = sf::Image();
-        image.create({ image_width, image_height }, reinterpret_cast<uint8_t*>(pixels.data()));
         auto texture = sf::Texture();
         if (!texture.loadFromImage(image))
             throw std::runtime_error("Failed to load texture");

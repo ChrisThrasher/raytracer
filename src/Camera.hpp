@@ -23,5 +23,5 @@ public:
            float aperture,
            float focus_distance) noexcept;
 
-    [[nodiscard]] auto get_ray(float s, float t) const noexcept -> Ray;
+    [[nodiscard]] auto get_ray(float u, float v) const noexcept -> Ray;
 };

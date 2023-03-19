@@ -126,8 +126,8 @@ int main()
 
                 auto color = sf::Vector3f();
                 for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
-                    const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
-                    const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
+                    const auto u = (random_float(0, 1) + float(j)) / (image_width + 1);
+                    const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height + 1);
                     const auto ray = camera.get_ray(u, v);
                     color += trace_ray(scene, ray, max_depth);
                 }

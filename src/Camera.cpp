@@ -24,9 +24,14 @@ Camera::Camera(const sf::Vector3f& look_from,
     m_lower_left_corner = m_origin - m_horizontal / 2.f - m_vertical / 2.f - focus_distance * m_w;
 }
 
-auto Camera::get_ray(const float s, const float t) const noexcept -> Ray
+auto Camera::get_ray(const float u, const float v) const noexcept -> Ray
 {
+    assert(u >= 0);
+    assert(u <= 1);
+    assert(v >= 0);
+    assert(v <= 1);
+
     const auto rd = m_lens_radius * random_vector_in_unit_disk();
     const auto offset = m_u * rd.x + m_v * rd.y;
-    return { m_origin + offset, m_lower_left_corner + s * m_horizontal + t * m_vertical - m_origin - offset };
+    return { m_origin + offset, m_lower_left_corner + u * m_horizontal + v * m_vertical - m_origin - offset };
 }

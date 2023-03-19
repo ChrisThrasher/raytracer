@@ -66,17 +66,16 @@ auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
     return sf::Color(r, g, b);
 }
 
-auto trace_ray(const Ray& ray, const int depth) noexcept
+auto trace_ray(const Scene& scene, const Ray& ray, const int depth) noexcept
 {
-    static const auto scene = make_random_scene();
-
+    assert(depth >= 0);
     if (depth == 0)
         return sf::Vector3f();
 
     if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
         if (const auto result = scatter(*maybe_hit_record->material, ray, *maybe_hit_record)) {
             const auto& [attenuation, scattered] = *result;
-            return attenuation.cwiseMul(trace_ray(scattered, depth - 1));
+            return attenuation.cwiseMul(trace_ray(scene, scattered, depth - 1));
         }
     }
 
@@ -97,6 +96,9 @@ int main()
     const auto pixels_allocation = std::make_unique<std::array<std::array<sf::Color, image_width>, image_height>>();
     auto& pixels = *pixels_allocation;
 
+    // Make scene
+    const auto scene = make_random_scene();
+
     // Make camera
     const auto camera = []() {
         const auto look_from = sf::Vector3f(13, 2, 3);
@@ -109,37 +111,42 @@ int main()
     }();
 
     // Set up rendering logic
-    const auto render_rows = [&pixels, camera](const size_t thread_count) noexcept {
+    const auto render_rows = [&pixels, &scene, camera](const size_t thread_count) noexcept {
+        // Tuning parameters
+        static constexpr auto samples_per_pixel = 50;
+        static constexpr auto max_depth = 10;
+
         static auto current_row = std::atomic<size_t>(0);
         static auto completed_threads = std::atomic<size_t>(0);
         static auto now = std::chrono::steady_clock::now();
 
+        // Render current row
         for (size_t i = current_row++; i < image_height; i = current_row++) {
             for (size_t j = 0; j < image_width; ++j) {
-                static constexpr auto samples_per_pixel = 50;
 
                 auto color = sf::Vector3f();
                 for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
                     const auto u = (random_float(0, 1) + float(j)) / (image_width - 1);
                     const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height - 1);
                     const auto ray = camera.get_ray(u, v);
-                    static constexpr auto max_depth = 10;
-                    color += trace_ray(ray, max_depth);
+                    color += trace_ray(scene, ray, max_depth);
                 }
 
                 pixels[i][j] = to_color(color, samples_per_pixel);
             }
         }
 
+        // Return if not the final thread to complete rendering
         if (++completed_threads < thread_count)
             return;
 
+        // Print elapased time
         const auto elapsed
             = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - now);
         std::cout << "Render time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s" << std::endl;
     };
 
-    // Render
+    // Start rendering
     auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
     for (auto& thread : threads)
         thread = std::thread(render_rows, threads.size());

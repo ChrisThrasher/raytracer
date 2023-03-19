@@ -98,12 +98,15 @@ int main()
     auto& pixels = *pixels_allocation;
 
     // Make camera
-    const auto look_from = sf::Vector3f(13, 2, 3);
-    const auto look_at = sf::Vector3f(0, 0, 0);
-    const auto vup = sf::Vector3f(0, 1, 0);
-    const auto aperture = 0.1f;
-    const auto focus_distance = 10.f;
-    const auto camera = Camera(look_from, look_at, vup, sf::degrees(20), aspect_ratio, aperture, focus_distance);
+    const auto camera = []() {
+        const auto look_from = sf::Vector3f(13, 2, 3);
+        const auto look_at = sf::Vector3f(0, 0, 0);
+        const auto vup = sf::Vector3f(0, 1, 0);
+        const auto fov = sf::degrees(20);
+        const auto aperture = 0.1f;
+        const auto focus_distance = 10.f;
+        return Camera(look_from, look_at, vup, fov, aspect_ratio, aperture, focus_distance);
+    }();
 
     // Set up rendering logic
     const auto render_rows = [&pixels, camera](const size_t thread_count) noexcept {

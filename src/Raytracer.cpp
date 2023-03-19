@@ -16,8 +16,16 @@ namespace {
 auto make_random_scene() noexcept
 {
     auto scene = Scene();
+
+    // Add ground
     scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.5, 0.5, 0.5 } }));
 
+    // Add fixed large spheres
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(-4, 1, 0), 1.f, Lambertian { { 0.4f, 0.2f, 0.1f } }));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, Dielectric { 1.5f }));
+    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(4, 1, 0), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f }));
+
+    // Add random smaller spheres
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
             const auto center = sf::Vector3f(float(i) + random_float(0, 0.9f), 0.2f, float(j) + random_float(0, 0.9f));
@@ -42,10 +50,6 @@ auto make_random_scene() noexcept
             scene.push_back(std::make_unique<Sphere>(center, 0.2f, material));
         }
     }
-
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, Dielectric { 1.5f }));
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(-4, 1, 0), 1.f, Lambertian { { 0.4f, 0.2f, 0.1f } }));
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(4.f, 1.f, 0.f), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f }));
 
     return scene;
 }

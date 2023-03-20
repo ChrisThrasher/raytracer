@@ -160,6 +160,10 @@ int main()
             case sf::Event::Closed:
                 window.close();
                 break;
+            case sf::Event::KeyPressed:
+                if (event.key.scancode == sf::Keyboard::Scan::Escape)
+                    window.close();
+                break;
             default:
                 break;
             }

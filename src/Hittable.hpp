@@ -3,7 +3,6 @@
 #include "Material.hpp"
 #include "Ray.hpp"
 
-#include <memory>
 #include <optional>
 #include <vector>
 
@@ -27,8 +26,3 @@ public:
     Hittable& operator=(Hittable&&) = default;
     [[nodiscard]] virtual auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> = 0;
 };
-
-using Scene = std::vector<std::unique_ptr<const Hittable>>;
-
-[[nodiscard]] auto hit(const Scene& scene, const Ray& ray, float t_min, float t_max) noexcept
-    -> std::optional<HitRecord>;

@@ -12,18 +12,40 @@
 #include <mutex>
 #include <thread>
 
+using Scene = std::vector<Sphere>;
+
 namespace {
-auto make_random_scene() noexcept
+[[nodiscard]] auto hit(const Scene& scene, const Ray& ray, const float t_min, const float t_max) noexcept
+    -> std::optional<HitRecord>
+{
+    auto hit_record = HitRecord();
+    auto hit_something = false;
+    auto closest_yet = t_max;
+
+    for (const auto& object : scene) {
+        if (const auto maybe_hit_record = object.hit(ray, t_min, closest_yet)) {
+            hit_something = true;
+            closest_yet = maybe_hit_record->t;
+            hit_record = *maybe_hit_record;
+        }
+    }
+
+    if (hit_something)
+        return hit_record;
+    return {};
+}
+
+[[nodiscard]] auto make_random_scene() noexcept
 {
     auto scene = Scene();
 
     // Add ground
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.5, 0.5, 0.5 } }));
+    scene.emplace_back(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.5, 0.5, 0.5 } });
 
     // Add fixed large spheres
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(-4, 1, 0), 1.f, Lambertian { { 0.4f, 0.2f, 0.1f } }));
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(0, 1, 0), 1.f, Dielectric { 1.5f }));
-    scene.push_back(std::make_unique<Sphere>(sf::Vector3f(4, 1, 0), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f }));
+    scene.emplace_back(sf::Vector3f(-4, 1, 0), 1.f, Lambertian { { 0.4f, 0.2f, 0.1f } });
+    scene.emplace_back(sf::Vector3f(0, 1, 0), 1.f, Dielectric { 1.5f });
+    scene.emplace_back(sf::Vector3f(4, 1, 0), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f });
 
     // Add random smaller spheres
     for (int i = -11; i < 11; ++i) {
@@ -33,28 +55,25 @@ auto make_random_scene() noexcept
                 continue;
 
             auto material = Material();
-            if (std::bernoulli_distribution(0.8)(rng())) {
-                // diffuse
+            if (std::bernoulli_distribution(0.8)(rng())) { // diffuse
                 const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
                 material = Lambertian { albedo };
-            } else if (std::bernoulli_distribution(0.95)(rng())) {
-                // metal
+            } else if (std::bernoulli_distribution(0.95)(rng())) { // metal
                 const auto albedo = random_vector(0.5f, 1);
                 const auto fuzz = random_float(0, 0.5f);
                 material = Metal { albedo, fuzz };
-            } else {
-                // glass
+            } else { // glass
                 material = Dielectric { 1.5f };
             }
 
-            scene.push_back(std::make_unique<Sphere>(center, 0.2f, material));
+            scene.emplace_back(center, 0.2f, material);
         }
     }
 
     return scene;
 }
 
-auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
+[[nodiscard]] auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
 {
     const auto adjust = [samples_per_pixel](const float channel) noexcept {
         return uint8_t(255 * std::clamp(std::sqrt(channel / float(samples_per_pixel)), 0.f, 1.f));
@@ -66,7 +85,7 @@ auto to_color(sf::Vector3f vector, const int samples_per_pixel) noexcept
     return sf::Color(r, g, b);
 }
 
-auto trace_ray(const Scene& scene, const Ray& ray, const int depth) noexcept
+[[nodiscard]] auto trace_ray(const Scene& scene, const Ray& ray, const int depth) noexcept
 {
     assert(depth >= 0);
     if (depth == 0)

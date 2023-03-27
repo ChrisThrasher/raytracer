@@ -6,10 +6,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <algorithm>
-#include <array>
 #include <atomic>
 #include <iostream>
-#include <mutex>
 #include <thread>
 
 using Scene = std::vector<Sphere>;

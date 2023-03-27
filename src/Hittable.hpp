@@ -4,7 +4,6 @@
 #include "Ray.hpp"
 
 #include <optional>
-#include <vector>
 
 struct HitRecord {
     sf::Vector3f point;

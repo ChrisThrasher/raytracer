@@ -16,23 +16,18 @@ using Scene = std::vector<Sphere>;
 
 namespace {
 [[nodiscard]] auto hit(const Scene& scene, const Ray& ray, const float t_min, const float t_max) noexcept
-    -> std::optional<HitRecord>
 {
-    auto hit_record = HitRecord();
-    auto hit_something = false;
+    auto hit_record = std::optional<HitRecord>();
     auto closest_yet = t_max;
 
     for (const auto& object : scene) {
         if (const auto maybe_hit_record = object.hit(ray, t_min, closest_yet)) {
-            hit_something = true;
             closest_yet = maybe_hit_record->t;
-            hit_record = *maybe_hit_record;
+            hit_record = maybe_hit_record;
         }
     }
 
-    if (hit_something)
-        return hit_record;
-    return {};
+    return hit_record;
 }
 
 [[nodiscard]] auto make_random_scene() noexcept

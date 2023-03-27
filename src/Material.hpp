@@ -23,5 +23,5 @@ struct Dielectric {
 
 using Material = std::variant<Lambertian, Metal, Dielectric>;
 
-auto scatter(const Material& material, const Ray& ray, const HitRecord& hit_record) noexcept
+[[nodiscard]] auto scatter(const Material& material, const Ray& ray, const HitRecord& hit_record) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>;

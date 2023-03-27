@@ -172,10 +172,9 @@ int main()
         auto texture = sf::Texture();
         if (!texture.loadFromImage(image))
             throw std::runtime_error("Failed to load texture");
-        const auto sprite = sf::Sprite(texture);
 
         window.clear();
-        window.draw(sprite);
+        window.draw(sf::Sprite(texture));
         window.display();
     }
 

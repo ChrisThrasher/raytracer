@@ -28,40 +28,20 @@ namespace {
     return hit;
 }
 
-[[nodiscard]] auto make_random_scene() noexcept
+[[nodiscard]] auto make_scene() noexcept
 {
     auto scene = Scene();
 
     // Add ground
-    scene.emplace_back(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.5, 0.5, 0.5 } });
+    scene.emplace_back(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.3f, 0.6f, 0.1f } });
 
     // Add fixed large spheres
-    scene.emplace_back(sf::Vector3f(-4, 1, 0), 1.f, Lambertian { { 0.4f, 0.2f, 0.1f } });
-    scene.emplace_back(sf::Vector3f(0, 1, 0), 1.f, Dielectric { 1.5f });
-    scene.emplace_back(sf::Vector3f(4, 1, 0), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f });
-
-    // Add random smaller spheres
-    for (int i = -11; i < 11; ++i) {
-        for (int j = -11; j < 11; ++j) {
-            const auto center = sf::Vector3f(float(i) + random_float(0, 0.9f), 0.2f, float(j) + random_float(0, 0.9f));
-            if ((center - sf::Vector3f(4, 0.2f, 0)).length() <= 0.9f)
-                continue;
-
-            auto material = Material();
-            if (std::bernoulli_distribution(0.8)(rng())) { // diffuse
-                const auto albedo = random_vector(0, 1).cwiseMul(random_vector(0, 1));
-                material = Lambertian { albedo };
-            } else if (std::bernoulli_distribution(0.95)(rng())) { // metal
-                const auto albedo = random_vector(0.5f, 1);
-                const auto fuzz = random_float(0, 0.5f);
-                material = Metal { albedo, fuzz };
-            } else { // glass
-                material = Dielectric { 1.5f };
-            }
-
-            scene.emplace_back(center, 0.2f, material);
-        }
-    }
+    scene.emplace_back(sf::Vector3f(-4, 2, 0), 2.f, Lambertian { { 0.2f, 0.3f, 0.7f } });
+    scene.emplace_back(sf::Vector3f(-0.5f, 1.5, 1), 1.5f, Metal { { 0.7f, 0.4f, 0.3f }, 1.f });
+    scene.emplace_back(sf::Vector3f(1.25f, 1, 1.5f), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f });
+    scene.emplace_back(sf::Vector3f(3, 0.75f, 3), 0.75f, Metal { { 0.8f, 0.2f, 0.1f }, 0.5f });
+    scene.emplace_back(sf::Vector3f(4, 0.5f, 5), 0.5f, Metal { { 0.8f, 0.7f, 0.1f }, 0.f });
+    scene.emplace_back(sf::Vector3f(2, 0.5, 6), 0.5f, Dielectric { 1.5f });
 
     return scene;
 }
@@ -101,7 +81,7 @@ int main()
 {
     // Define constants
     constexpr auto aspect_ratio = 3.f / 2;
-    constexpr auto image_height = 360;
+    constexpr auto image_height = 640;
     constexpr auto image_width = int(aspect_ratio * image_height);
 
     // Make image
@@ -109,23 +89,23 @@ int main()
     image.create({ image_width, image_height });
 
     // Make scene
-    const auto scene = make_random_scene();
+    const auto scene = make_scene();
 
     // Make camera
     const auto camera = []() {
-        const auto look_from = sf::Vector3f(13, 2, 3);
-        const auto look_at = sf::Vector3f(0, 0, 0);
+        const auto look_from = sf::Vector3f(5, 1.25f, 10);
+        const auto look_at = sf::Vector3f(0, 1, 0);
         const auto vup = sf::Vector3f(0, 1, 0);
-        const auto fov = sf::degrees(20);
-        const auto aperture = 0.1f;
-        const auto focus_distance = 10.f;
+        const auto fov = sf::degrees(40);
+        const auto aperture = 0.04f;
+        const auto focus_distance = (look_at - look_from).length();
         return Camera(look_from, look_at, vup, fov, aspect_ratio, aperture, focus_distance);
     }();
 
     // Set up rendering logic
     const auto render_rows = [&image, &scene, camera](const size_t thread_count) noexcept {
         // Tuning parameters
-        static constexpr auto samples_per_pixel = 50;
+        static constexpr auto samples_per_pixel = 100;
         static constexpr auto max_depth = 10;
 
         static auto current_row = std::atomic<unsigned>(0);

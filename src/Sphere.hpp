@@ -2,7 +2,7 @@
 
 #include "Hittable.hpp"
 
-class Sphere : public Hittable {
+class Sphere : Hittable {
     sf::Vector3f m_center;
     float m_radius {};
     Material m_material;

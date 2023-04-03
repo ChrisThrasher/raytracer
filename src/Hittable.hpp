@@ -15,8 +15,7 @@ struct Hit {
 
 void set_face_normal(Hit& hit, const Ray& ray, const sf::Vector3f& outward_normal) noexcept;
 
-class Hittable {
-public:
+struct Hittable {
     Hittable() = default;
     virtual ~Hittable() = default;
     Hittable(const Hittable&) = default;

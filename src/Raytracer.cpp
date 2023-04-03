@@ -15,17 +15,17 @@ using Scene = std::vector<Sphere>;
 namespace {
 [[nodiscard]] auto hit(const Scene& scene, const Ray& ray, const float t_min, const float t_max) noexcept
 {
-    auto hit_record = std::optional<HitRecord>();
+    auto hit = std::optional<Hit>();
     auto closest_yet = t_max;
 
     for (const auto& object : scene) {
-        if (const auto maybe_hit_record = object.hit(ray, t_min, closest_yet)) {
-            closest_yet = maybe_hit_record->t;
-            hit_record = maybe_hit_record;
+        if (const auto maybe_hit = object.hit(ray, t_min, closest_yet)) {
+            closest_yet = maybe_hit->t;
+            hit = maybe_hit;
         }
     }
 
-    return hit_record;
+    return hit;
 }
 
 [[nodiscard]] auto make_random_scene() noexcept
@@ -84,8 +84,8 @@ namespace {
     if (depth == 0)
         return sf::Vector3f();
 
-    if (const auto maybe_hit_record = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
-        if (const auto result = scatter(*maybe_hit_record->material, ray, *maybe_hit_record)) {
+    if (const auto maybe_hit = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
+        if (const auto result = scatter(*maybe_hit->material, ray, *maybe_hit)) {
             const auto& [attenuation, scattered] = *result;
             return attenuation.cwiseMul(trace_ray(scene, scattered, depth - 1));
         }

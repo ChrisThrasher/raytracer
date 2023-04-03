@@ -5,7 +5,7 @@
 
 #include <optional>
 
-struct HitRecord {
+struct Hit {
     sf::Vector3f point;
     sf::Vector3f normal;
     const Material* material {};
@@ -13,7 +13,7 @@ struct HitRecord {
     bool front_face {};
 };
 
-void set_face_normal(HitRecord& hit_record, const Ray& ray, const sf::Vector3f& outward_normal) noexcept;
+void set_face_normal(Hit& hit, const Ray& ray, const sf::Vector3f& outward_normal) noexcept;
 
 class Hittable {
 public:
@@ -23,5 +23,5 @@ public:
     Hittable& operator=(const Hittable&) = default;
     Hittable(Hittable&&) = default;
     Hittable& operator=(Hittable&&) = default;
-    [[nodiscard]] virtual auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<HitRecord> = 0;
+    [[nodiscard]] virtual auto hit(const Ray& ray, float t_min, float t_max) const -> std::optional<Hit> = 0;
 };

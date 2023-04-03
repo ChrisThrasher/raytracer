@@ -6,7 +6,7 @@
 #include <utility>
 #include <variant>
 
-struct HitRecord;
+struct Hit;
 
 struct Lambertian {
     sf::Vector3f albedo;
@@ -23,5 +23,5 @@ struct Dielectric {
 
 using Material = std::variant<Lambertian, Metal, Dielectric>;
 
-[[nodiscard]] auto scatter(const Material& material, const Ray& ray, const HitRecord& hit_record) noexcept
+[[nodiscard]] auto scatter(const Material& material, const Ray& ray, const Hit& hit) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>;

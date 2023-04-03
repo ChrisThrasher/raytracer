@@ -9,7 +9,7 @@ Sphere::Sphere(const sf::Vector3f& center, const float radius, const Material& m
 {
 }
 
-auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noexcept -> std::optional<HitRecord>
+auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noexcept -> std::optional<Hit>
 {
     const auto oc = ray.origin() - m_center;
     const auto a = ray.direction().lengthSq();
@@ -28,11 +28,11 @@ auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noe
             return {};
     }
 
-    HitRecord hit_record;
-    hit_record.t = root;
-    hit_record.point = ray.at(root);
-    const auto outward_normal = (hit_record.point - m_center) / m_radius;
-    set_face_normal(hit_record, ray, outward_normal);
-    hit_record.material = &m_material;
-    return hit_record;
+    Hit hit;
+    hit.t = root;
+    hit.point = ray.at(root);
+    const auto outward_normal = (hit.point - m_center) / m_radius;
+    set_face_normal(hit, ray, outward_normal);
+    hit.material = &m_material;
+    return hit;
 }

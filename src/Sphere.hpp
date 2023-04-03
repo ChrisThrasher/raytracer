@@ -10,6 +10,5 @@ class Sphere : public Hittable {
 public:
     Sphere(const sf::Vector3f& center, float radius, const Material& material) noexcept;
 
-    [[nodiscard]] auto hit(const Ray& ray, float t_min, float t_max) const noexcept
-        -> std::optional<HitRecord> override;
+    [[nodiscard]] auto hit(const Ray& ray, float t_min, float t_max) const noexcept -> std::optional<Hit> override;
 };

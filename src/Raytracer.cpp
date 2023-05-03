@@ -144,7 +144,8 @@ int main()
         thread = std::thread(render_rows, threads.size());
 
     // Draw
-    auto window = sf::RenderWindow(sf::VideoMode({ image_width, image_height }), "Raytracer");
+    auto window = sf::RenderWindow(
+        sf::VideoMode({ image_width, image_height }), "Raytracer", sf::Style::Default ^ sf::Style::Resize);
     window.setFramerateLimit(15);
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {

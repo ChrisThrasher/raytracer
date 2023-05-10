@@ -6,9 +6,10 @@
 #include <SFML/Graphics.hpp>
 
 #include <algorithm>
-#include <atomic>
+#include <execution>
 #include <iostream>
-#include <thread>
+#include <numeric>
+#include <type_traits>
 
 using Scene = std::vector<Sphere>;
 
@@ -75,6 +76,77 @@ namespace {
     const auto t = 0.5f * (unit_direction.y + 1);
     return (1 - t) * sf::Vector3f(1, 1, 1) + t * sf::Vector3f(0.5f, 0.7f, 1.f);
 }
+
+template <class T>
+struct counting_iterator {
+    static_assert(std::is_integral_v<T>, "T must be an integral type");
+    using difference_type = T; // std::ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::random_access_iterator_tag;
+
+    constexpr T operator*() const noexcept { return m_value; }
+
+    constexpr counting_iterator& operator++() noexcept
+    {
+        ++m_value;
+        return *this;
+    }
+    constexpr counting_iterator operator++(int) noexcept
+    {
+        T rv { m_value };
+        ++m_value;
+        return rv;
+    }
+    constexpr counting_iterator& operator--() noexcept
+    {
+        --m_value;
+        return *this;
+    }
+    constexpr counting_iterator operator--(int) noexcept
+    {
+        T rv { m_value };
+        --m_value;
+        return rv;
+    }
+
+    constexpr counting_iterator& operator+=(difference_type n) noexcept
+    {
+        m_value += n;
+        return *this;
+    }
+    constexpr counting_iterator& operator-=(difference_type n) noexcept
+    {
+        m_value -= n;
+        return *this;
+    }
+
+    friend constexpr counting_iterator operator+(const counting_iterator& lhs, const difference_type n) noexcept
+    {
+        return counting_iterator { lhs } += n;
+    }
+    friend constexpr counting_iterator operator+(const difference_type n, const counting_iterator& rhs) noexcept
+    {
+        return counting_iterator { rhs } += n;
+    }
+    friend constexpr difference_type operator-(const counting_iterator& lhs, const counting_iterator& rhs) noexcept
+    {
+        return lhs.m_value - rhs.m_value;
+    }
+
+    constexpr value_type operator[](difference_type n) noexcept { return m_value + n; }
+
+    constexpr bool operator==(const counting_iterator& other) const noexcept { return m_value == other.m_value; }
+    constexpr bool operator!=(const counting_iterator& other) const noexcept { return m_value != other.m_value; }
+    constexpr bool operator<(const counting_iterator& other) const noexcept { return m_value < other.m_value; }
+    constexpr bool operator>(const counting_iterator& other) const noexcept { return m_value > other.m_value; }
+    constexpr bool operator<=(const counting_iterator& other) const noexcept { return m_value <= other.m_value; }
+    constexpr bool operator>=(const counting_iterator& other) const noexcept { return m_value >= other.m_value; }
+
+    T m_value;
+};
+
 }
 
 int main()
@@ -103,45 +175,54 @@ int main()
     }();
 
     // Set up rendering logic
-    const auto render_rows = [&image, &scene, camera](const size_t thread_count) noexcept {
+    const auto render_rows = [&image, &scene, camera](const unsigned row) noexcept {
         // Tuning parameters
         static constexpr auto samples_per_pixel = 100;
         static constexpr auto max_depth = 10;
 
-        static auto current_row = std::atomic<unsigned>(0);
-        static auto completed_threads = std::atomic<size_t>(0);
-        static auto now = std::chrono::steady_clock::now();
-
         // Render current row
-        for (unsigned i = current_row++; i < image_height; i = current_row++) {
-            for (unsigned j = 0; j < image_width; ++j) {
+        for (unsigned j = 0; j < image_width; ++j) {
 
-                auto color = sf::Vector3f();
-                for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
-                    const auto u = (random_float(0, 1) + float(j)) / (image_width + 1);
-                    const auto v = (random_float(0, 1) + float(image_height - i)) / (image_height + 1);
-                    const auto ray = camera.get_ray(u, v);
-                    color += trace_ray(scene, ray, max_depth);
-                }
-
-                image.setPixel({ j, i }, to_color(color, samples_per_pixel));
+            auto color = sf::Vector3f();
+            for (size_t sample = 0; sample < samples_per_pixel; ++sample) {
+                const auto u = (random_float(0, 1) + float(j)) / (image_width + 1);
+                const auto v = (random_float(0, 1) + float(image_height - row)) / (image_height + 1);
+                const auto ray = camera.get_ray(u, v);
+                color += trace_ray(scene, ray, max_depth);
             }
+
+            image.setPixel({ j, row }, to_color(color, samples_per_pixel));
         }
-
-        // Return if not the final thread to complete rendering
-        if (++completed_threads < thread_count)
-            return;
-
-        // Print elapased time
-        const auto elapsed
-            = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - now);
-        std::cout << "Render time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s" << std::endl;
     };
 
+    const auto now = std::chrono::steady_clock::now();
+
     // Start rendering
-    auto threads = std::vector<std::thread>(std::thread::hardware_concurrency());
-    for (auto& thread : threads)
-        thread = std::thread(render_rows, threads.size());
+
+#if RT_ROW_METHOD == 0
+    // Using a vector for storing row numbers:
+    std::vector<unsigned> rows(image_height);
+    std::iota(rows.begin(), rows.end(), 0u);
+    std::for_each(std::execution::RT_EXECUTION_POLICY, rows.begin(), rows.end(), render_rows);
+#elif RT_ROW_METHOD == 1
+    // Using a unique_ptr<unsigned[]> for storing row numbers:
+    std::unique_ptr<unsigned[]> rows(new unsigned[image_height]); // no initialization
+    std::iota(rows.get(), rows.get() + image_height, 0u);
+    std::for_each(std::execution::RT_EXECUTION_POLICY, rows.get(), rows.get() + image_height, render_rows);
+#elif RT_ROW_METHOD == 2
+    // counting_iterator for row numbers - no setup needed
+    std::for_each(std::execution::RT_EXECUTION_POLICY,
+                  counting_iterator<unsigned> { 0u },
+                  counting_iterator<unsigned> { image_height },
+                  render_rows);
+#else
+    static_assert(false, "ROW_METHOD must be [0,2]");
+#endif
+
+    // Print elapased time
+    const auto elapsed
+        = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - now);
+    std::cout << "Render time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s" << std::endl;
 
     // Draw
     auto window = sf::RenderWindow(
@@ -170,7 +251,4 @@ int main()
         window.draw(sf::Sprite(texture));
         window.display();
     }
-
-    for (auto& thread : threads)
-        thread.join();
 }

@@ -21,6 +21,7 @@ Checks: >
   -modernize-use-trailing-return-type,
   -performance-avoid-endl,
   -readability-braces-around-statements,
+  -readability-function-cognitive-complexity,
   -readability-identifier-length,
   -readability-magic-numbers,
   -readability-uppercase-literal-suffix,

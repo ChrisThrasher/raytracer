@@ -85,8 +85,7 @@ int main()
     constexpr auto image_width = int(aspect_ratio * image_height);
 
     // Make image
-    auto image = sf::Image();
-    image.create({ image_width, image_height });
+    auto image = sf::Image({ image_width, image_height });
 
     // Make scene
     const auto scene = make_scene();
@@ -148,7 +147,7 @@ int main()
         sf::VideoMode({ image_width, image_height }), "Raytracer", sf::Style::Default ^ sf::Style::Resize);
     window.setFramerateLimit(15);
     while (window.isOpen()) {
-        for (auto event = sf::Event(); window.pollEvent(event);) {
+        while (const auto event = window.pollEvent()) {
             if (event.is<sf::Event::Closed>()) {
                 window.close();
             } else if (const auto* key_pressed = event.getIf<sf::Event::KeyPressed>()) {

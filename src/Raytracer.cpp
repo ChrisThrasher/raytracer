@@ -156,9 +156,7 @@ int main()
             }
         }
 
-        auto texture = sf::Texture();
-        if (!texture.loadFromImage(image))
-            throw std::runtime_error("Failed to load texture");
+        const auto texture = sf::Texture::loadFromImage(image).value();
 
         window.clear();
         window.draw(sf::Sprite(texture));

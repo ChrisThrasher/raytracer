@@ -147,10 +147,10 @@ int main()
         sf::VideoMode({ image_width, image_height }), "Raytracer", sf::Style::Default ^ sf::Style::Resize);
     window.setFramerateLimit(15);
     while (window.isOpen()) {
-        while (const auto event = window.pollEvent()) {
-            if (event.is<sf::Event::Closed>()) {
+        while (const std::optional event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) {
                 window.close();
-            } else if (const auto* key_pressed = event.getIf<sf::Event::KeyPressed>()) {
+            } else if (const auto* key_pressed = event->getIf<sf::Event::KeyPressed>()) {
                 if (key_pressed->scancode == sf::Keyboard::Scan::Escape)
                     window.close();
             }

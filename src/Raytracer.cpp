@@ -64,7 +64,7 @@ namespace {
     if (depth == 0)
         return sf::Vector3f();
 
-    if (const auto maybe_hit = hit(scene, ray, 0.001f, std::numeric_limits<float>::infinity())) {
+    if (const auto maybe_hit = hit(scene, ray, 0.001f, std::numeric_limits<float>::max())) {
         if (const auto result = scatter(*maybe_hit->material, ray, *maybe_hit)) {
             const auto& [attenuation, scattered] = *result;
             return attenuation.cwiseMul(trace_ray(scene, scattered, depth - 1));

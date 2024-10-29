@@ -9,7 +9,7 @@ auto refract(const sf::Vector3f& uv, const sf::Vector3f& n, const float etai_ove
 {
     const auto cos_theta = std::min(-uv.dot(n), 1.f);
     const auto r_out_perp = etai_over_etat * (uv + cos_theta * n);
-    const auto r_out_parallel = -std::sqrt(std::abs(1.f - r_out_perp.lengthSq())) * n;
+    const auto r_out_parallel = -std::sqrt(std::abs(1.f - r_out_perp.lengthSquared())) * n;
     return r_out_perp + r_out_parallel;
 }
 
@@ -26,7 +26,7 @@ auto scatter(const Lambertian& lambertian, const Ray& /* ray */, const Hit& hit)
 {
     static constexpr auto epsilon = 1e-9f;
     auto scatter_direction = hit.normal + random_unit_vector();
-    if (scatter_direction.lengthSq() < epsilon)
+    if (scatter_direction.lengthSquared() < epsilon)
         scatter_direction = hit.normal;
     return std::make_pair(lambertian.albedo, Ray(hit.point, scatter_direction));
 }

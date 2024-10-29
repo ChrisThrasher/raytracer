@@ -12,9 +12,9 @@ Sphere::Sphere(const sf::Vector3f& center, const float radius, const Material& m
 auto Sphere::hit(const Ray& ray, const float t_min, const float t_max) const noexcept -> std::optional<Hit>
 {
     const auto oc = ray.origin() - m_center;
-    const auto a = ray.direction().lengthSq();
+    const auto a = ray.direction().lengthSquared();
     const auto half_b = oc.dot(ray.direction());
-    const auto c = oc.lengthSq() - m_radius * m_radius;
+    const auto c = oc.lengthSquared() - m_radius * m_radius;
     const auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0)
         return {};

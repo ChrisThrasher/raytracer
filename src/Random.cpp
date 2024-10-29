@@ -30,7 +30,7 @@ auto random_vector_in_unit_sphere() noexcept -> sf::Vector3f
     auto vector = sf::Vector3f();
     do {
         vector = { random_float(-1, 1), random_float(-1, 1), random_float(-1, 1) };
-    } while (vector.lengthSq() >= 1);
+    } while (vector.lengthSquared() >= 1);
     return vector;
 }
 
@@ -52,6 +52,6 @@ auto random_vector_in_unit_disk() noexcept -> sf::Vector3f
     auto vector = sf::Vector3f();
     do {
         vector = { random_float(-1, 1), random_float(-1, 1), 0 };
-    } while (vector.lengthSq() >= 1);
+    } while (vector.lengthSquared() >= 1);
     return vector;
 }

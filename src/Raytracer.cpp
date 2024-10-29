@@ -67,7 +67,7 @@ namespace {
     if (const auto maybe_hit = hit(scene, ray, 0.001f, std::numeric_limits<float>::max())) {
         if (const auto result = scatter(*maybe_hit->material, ray, *maybe_hit)) {
             const auto& [attenuation, scattered] = *result;
-            return attenuation.cwiseMul(trace_ray(scene, scattered, depth - 1));
+            return attenuation.componentWiseMul(trace_ray(scene, scattered, depth - 1));
         }
     }
 
@@ -85,7 +85,7 @@ int main()
     constexpr auto image_width = int(aspect_ratio * image_height);
 
     // Make image
-    auto image = sf::Image({ image_width, image_height });
+    auto image = sf::Image(sf::Vector2u(image_width, image_height));
 
     // Make scene
     const auto scene = make_scene();
@@ -156,7 +156,7 @@ int main()
             }
         }
 
-        const auto texture = sf::Texture::loadFromImage(image).value();
+        const auto texture = sf::Texture(image);
 
         window.clear();
         window.draw(sf::Sprite(texture));

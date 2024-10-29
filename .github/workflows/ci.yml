@@ -12,8 +12,8 @@ jobs:
       matrix:
         platform:
         - { name: Windows,     os: windows-latest }
-        - { name: Linux GCC,   os: ubuntu-latest }
-        - { name: Linux Clang, os: ubuntu-latest, flags: -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Linux GCC,   os: ubuntu-24.04 }
+        - { name: Linux Clang, os: ubuntu-24.04, flags: -DCMAKE_CXX_COMPILER=clang++ }
         - { name: macOS,       os: macos-latest }
         config:
         - { name: Debug }
@@ -24,7 +24,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt update
-        sudo apt install libxrandr-dev libxcursor-dev libxi-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+        sudo apt install libfreetype-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
 
     - name: Checkout
       uses: actions/checkout@v3

@@ -21,6 +21,7 @@ add_executable(raytracer
 )
 target_link_libraries(raytracer PRIVATE SFML::Graphics)
 target_compile_definitions(raytracer PRIVATE FONT_PATH="${CMAKE_SOURCE_DIR}/data")
+target_compile_features(raytracer PRIVATE cxx_std_20)
 
 add_custom_target(format
     COMMAND clang-format -i `git ls-files *.hpp *.cpp`

@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <format>
 #include <iostream>
 #include <thread>
 
@@ -36,12 +37,12 @@ namespace {
     scene.emplace_back(sf::Vector3f(0, -1000, 0), 1000.f, Lambertian { { 0.3f, 0.6f, 0.1f } });
 
     // Add fixed large spheres
-    scene.emplace_back(sf::Vector3f(-4, 2, 0), 2.f, Lambertian { { 0.2f, 0.3f, 0.7f } });
-    scene.emplace_back(sf::Vector3f(-0.5f, 1.5, 1), 1.5f, Metal { { 0.7f, 0.4f, 0.3f }, 1.f });
-    scene.emplace_back(sf::Vector3f(1.25f, 1, 1.5f), 1.f, Metal { { 0.7f, 0.6f, 0.5f }, 0.f });
-    scene.emplace_back(sf::Vector3f(3, 0.75f, 3), 0.75f, Metal { { 0.8f, 0.2f, 0.1f }, 0.5f });
-    scene.emplace_back(sf::Vector3f(4, 0.5f, 5), 0.5f, Metal { { 0.8f, 0.7f, 0.1f }, 0.f });
-    scene.emplace_back(sf::Vector3f(2, 0.5, 6), 0.5f, Dielectric { 1.5f });
+    scene.emplace_back(sf::Vector3f(-4, 2, 0), 2.f, Lambertian { .albedo { 0.2f, 0.3f, 0.7f } });
+    scene.emplace_back(sf::Vector3f(-0.5f, 1.5, 1), 1.5f, Metal { .albedo = { 0.7f, 0.4f, 0.3f }, .fuzz = 1.f });
+    scene.emplace_back(sf::Vector3f(1.25f, 1, 1.5f), 1.f, Metal { .albedo = { 0.7f, 0.6f, 0.5f }, .fuzz = 0.f });
+    scene.emplace_back(sf::Vector3f(3, 0.75f, 3), 0.75f, Metal { .albedo = { 0.8f, 0.2f, 0.1f }, .fuzz = 0.5f });
+    scene.emplace_back(sf::Vector3f(4, 0.5f, 5), 0.5f, Metal { .albedo = { 0.8f, 0.7f, 0.1f }, .fuzz = 0.f });
+    scene.emplace_back(sf::Vector3f(2, 0.5, 6), 0.5f, Dielectric { .index_of_refraction = 1.5f });
 
     return scene;
 }
@@ -134,7 +135,7 @@ int main()
         // Print elapased time
         const auto elapsed
             = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - now);
-        std::cout << "Render time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s" << std::endl;
+        std::cout << std::format("Render time: {:.2f}s\n", elapsed.count());
     };
 
     // Start rendering

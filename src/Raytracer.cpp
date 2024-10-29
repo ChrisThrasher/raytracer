@@ -59,9 +59,8 @@ namespace {
     return sf::Color(r, g, b);
 }
 
-[[nodiscard]] auto trace_ray(const Scene& scene, const Ray& ray, const int depth) noexcept
+[[nodiscard]] auto trace_ray(const Scene& scene, const Ray& ray, const unsigned depth) noexcept
 {
-    assert(depth >= 0);
     if (depth == 0)
         return sf::Vector3f();
 

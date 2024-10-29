@@ -6,7 +6,7 @@ SFML-based raytracer program
 
 # Requirements
  * C++17
- * CMake 3.22
+ * CMake 3.28
 
 # Building & Running
 

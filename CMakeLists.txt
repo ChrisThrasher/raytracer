@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.28)
 project(raytracer CXX)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
@@ -8,7 +8,7 @@ elseif(MSVC)
 endif()
 
 include(FetchContent)
-FetchContent_Declare(SFML GIT_REPOSITORY https://github.com/SFML/SFML.git)
+FetchContent_Declare(SFML GIT_REPOSITORY https://github.com/SFML/SFML.git SYSTEM EXCLUDE_FROM_ALL)
 FetchContent_MakeAvailable(SFML)
 
 add_executable(raytracer

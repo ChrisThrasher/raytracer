@@ -19,6 +19,7 @@ Checks: >
   -performance-avoid-endl,
   -readability-braces-around-statements,
   -readability-identifier-length,
+  -readability-math-missing-parentheses,
   -readability-magic-numbers,
   -readability-uppercase-literal-suffix,
 CheckOptions:

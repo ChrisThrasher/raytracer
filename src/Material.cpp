@@ -19,7 +19,6 @@ auto reflectance(const float cosine, const float ref_index) noexcept
     const auto r0 = std::pow((1 - ref_index) / (1 + ref_index), 2);
     return r0 + (1 - r0) * std::pow((1 - cosine), 5);
 }
-}
 
 auto scatter(const Lambertian& lambertian, const Ray& /* ray */, const Hit& hit) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>
@@ -69,6 +68,7 @@ struct Overload : Ts... {
 };
 template <class... Ts>
 Overload(Ts...) -> Overload<Ts...>;
+}
 
 auto scatter(const Material& material, const Ray& ray, const Hit& hit) noexcept
     -> std::optional<std::pair<sf::Vector3f, Ray>>

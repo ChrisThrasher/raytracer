@@ -5,7 +5,7 @@
 
 auto rng() noexcept -> std::minstd_rand&
 {
-    thread_local auto generator = []() {
+    static thread_local auto generator = []() {
         auto seed_data = std::array<std::random_device::result_type, 4>();
         auto random_device = std::random_device();
         std::generate_n(seed_data.data(), seed_data.size(), std::ref(random_device));

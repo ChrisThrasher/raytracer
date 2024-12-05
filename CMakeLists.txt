@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.28)
 project(raytracer CXX)
 
+include(FetchContent)
+FetchContent_Declare(SFML GIT_REPOSITORY https://github.com/SFML/SFML.git SYSTEM EXCLUDE_FROM_ALL)
+FetchContent_MakeAvailable(SFML)
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
     add_compile_options(-Werror -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Wold-style-cast -ffast-math)
 elseif(MSVC)
     add_compile_options(/WX /W4 /permissive-)
 endif()
-
-include(FetchContent)
-FetchContent_Declare(SFML GIT_REPOSITORY https://github.com/SFML/SFML.git SYSTEM EXCLUDE_FROM_ALL)
-FetchContent_MakeAvailable(SFML)
 
 add_executable(raytracer
     src/Camera.cpp
